@@ -1,0 +1,66 @@
+{
+    "name": "L2_loading_data",
+    "description": "L2 loading data",
+    "artifact": {
+        "name": "cdap-data-pipeline",
+        "version": "6.4.0",
+        "scope": "SYSTEM"
+    },
+    "config": {
+        "resources": {
+            "memoryMB": 2048,
+            "virtualCores": 1
+        },
+        "driverResources": {
+            "memoryMB": 2048,
+            "virtualCores": 1
+        },
+        "connections": [],
+        "comments": [],
+        "postActions": [],
+        "properties": {},
+        "processTimingEnabled": true,
+        "stageLoggingEnabled": false,
+        "stages": [
+            {
+                "name": "L2 loading data",
+                "plugin": {
+                    "name": "BigQueryExecute",
+                    "type": "action",
+                    "label": "L2 loading data",
+                    "artifact": {
+                        "name": "google-cloud",
+                        "version": "0.17.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "project": "auto-detect",
+                        "sql": "TRUNCATE TABLE `${ProjectID}.${TargetDatasetNames3}.inventory`;\nINSERT INTO `${ProjectID}.${TargetDatasetNames3}.inventory`\nSELECT * FROM `${ProjectID}.${TargetDatasetNames3}.inventory_vw`;\n\nTRUNCATE TABLE `${ProjectID}.${TargetDatasetNames3}.legal_entity`;\nINSERT INTO `${ProjectID}.${TargetDatasetNames3}.legal_entity`\nSELECT * FROM `${ProjectID}.${TargetDatasetNames3}.legal_entity_vw`;\n\nTRUNCATE TABLE `${ProjectID}.${TargetDatasetNames3}.location`;\nINSERT INTO `${ProjectID}.${TargetDatasetNames3}.location`\nSELECT * FROM `${ProjectID}.${TargetDatasetNames3}.location_vw`;\n\nTRUNCATE TABLE `${ProjectID}.${TargetDatasetNames3}.order`;\nINSERT INTO `${ProjectID}.${TargetDatasetNames3}.order`\nSELECT * FROM `${ProjectID}.${TargetDatasetNames3}.order_vw`;\n\nTRUNCATE TABLE `${ProjectID}.${TargetDatasetNames3}.product`;\nINSERT INTO `${ProjectID}.${TargetDatasetNames3}.product`\nSELECT * FROM `${ProjectID}.${TargetDatasetNames3}.product_vw`;",
+                        "dialect": "standard",
+                        "mode": "batch",
+                        "useCache": "false",
+                        "location": "US",
+                        "rowAsArguments": "false",
+                        "serviceAccountType": "filePath",
+                        "serviceFilePath": "auto-detect"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": ""
+                    }
+                ],
+                "id": "L2-loading-data",
+                "type": "action",
+                "label": "L2 loading data",
+                "icon": "fa-plug"
+            }
+        ],
+        "schedule": "0 * * * *",
+        "engine": "spark",
+        "numOfRecordsPreview": 100,
+        "description": "L2 loading data",
+        "maxConcurrentRuns": 1
+    }
+}

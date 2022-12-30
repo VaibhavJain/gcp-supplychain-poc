@@ -1,0 +1,2131 @@
+MERGE INTO `{{ projectid }}.{$lst_l1_facts}.sales_order_fact` tgt
+USING (
+with tmp_scr AS(
+SELECT  CONCAT(sdh.client,'-',sdh.sales_document,'-',sdi.item,'-',sds.schedule_line) as sales_order_key
+       ,sdh.client
+       ,sdh.sales_document
+       ,sdh.created_on
+       ,sdh.entry_time
+       ,sdh.created_by
+       ,sdh.valid_from
+       ,sdh.valid_to
+       ,sdh.document_date
+       ,sdh.document_cat
+       ,sdh.transact_group
+       ,sdh.sales_doc_type
+       ,sdh.order_reason
+       ,sdh.begin_guarantee
+       ,sdh.collective_no
+       ,sdh.delivery_block
+       ,sdh.billing_block
+       ,sdh.net_value
+       ,sdh.doc_currency
+       ,sdh.sales_org
+       ,sdh.distr_channel
+       ,sdh.division
+       ,sdh.sales_group
+       ,sdh.sales_office
+       ,sdh.business_area
+       ,sdh.business_area_1
+       ,sdh.valid_from_1
+       ,sdh.valid_to_1
+       ,sdh.doc_condition
+       ,sdh.reqd_deliv_date
+       ,sdh.prop_date_type
+       ,sdh.complete_dlv
+       ,sdh.original_system
+       ,sdh.indicator
+       ,sdh.pric_procedure
+       ,sdh.shp_cond
+       ,sdh.ord_rel_bill_ty
+       ,sdh.probability
+       ,sdh.description
+       ,sdh.cust_reference
+       ,sdh.pur_ord_type
+       ,sdh.cust_ref_date
+       ,sdh.supplement
+       ,sdh.your_reference
+       ,sdh.name
+       ,sdh.telephone
+       ,sdh.no_of_contacts
+       ,sdh.last_contact_dt
+       ,sdh.sold_to_party
+       ,sdh.cost_center
+       ,sdh.update_group
+       ,sdh.stats_currency
+       ,sdh.changed_on
+       ,sdh.customer_grp_1
+       ,sdh.customer_grp_2
+       ,sdh.customer_grp_3
+       ,sdh.customer_grp_4
+       ,sdh.customer_grp_5
+       ,sdh.agreement
+       ,sdh.co_area
+       ,sdh.wbs_element
+       ,sdh.exch_rate_type
+       ,sdh.cred_contr_area
+       ,sdh.credit_account
+       ,sdh.cust_cred_group
+       ,sdh.cred_rep_grp
+       ,sdh.risk_category
+       ,sdh.currency
+       ,sdh.release_date
+       ,sdh.next_check
+       ,sdh.next_date
+       ,sdh.credit_value
+       ,sdh.hiertypepricing
+       ,sdh.usage
+       ,sdh.mrp_for_ds_type
+       ,sdh.reference_doc
+       ,sdh.object_no_hdr
+       ,sdh.ccodetobebilled
+       ,sdh.alt_tax_class
+       ,sdh.taxclass2_cust
+       ,sdh.taxclass3_cust
+       ,sdh.taxclass4_cust
+       ,sdh.taxclass5_cust
+       ,sdh.taxclass6_cust
+       ,sdh.taxclass7_cust
+       ,sdh.taxclass8_cust
+       ,sdh.taxclass9_cust
+       ,sdh.reference
+       ,sdh.assignment_number
+       ,sdh.prec_doc_categ
+       ,sdh.search_proced
+       ,sdh.accrual_period
+       ,sdh.order_number
+       ,sdh.notification
+       ,sdh.master_contract
+       ,sdh.ref_procedure
+       ,sdh.check_partner
+       ,sdh.pick_up_date
+       ,sdh.pick_up_time
+       ,sdh.pick_up_time_1
+       ,sdh.paym_ca_pl_no
+       ,sdh.req_dely_time
+       ,sdh.tax_dest_cntry
+       ,sdh.tax_depart_cty
+       ,sdh.eu_triang_deal
+       ,sdh.block_master_contr_until_all
+       ,sdh.cmlqtydate
+       ,sdh.mat_avail_date
+       ,sdh.version
+       ,sdh.int_id
+       ,sdh.dg_mgmt_profile
+       ,sdh.contains_dg
+       ,sdh.char_70
+       ,sdh.time_stamp
+       ,sdh.process_id_no
+       ,sdh.control_key
+       ,sdh.location_id
+       ,sdh.last_changed_by
+       ,sdh.handover_location
+       ,sdh.ext_bus_syst_id
+       ,sdh.external_document_id
+       ,sdh.external_revision
+       ,sdh.approval_status
+       ,sdh.apprvl_req_rsn_id
+       ,sdh.apprvl_req_rjcn_rsn
+       ,sdh.data_filter_value_for_data_agi
+       ,sdh.rejection_sts
+       ,sdh.confirmed
+       ,sdh.value
+       ,sdh.termsofpayment
+       ,sdh.financial_doc
+       ,sdh.exptcreditinsur
+       ,sdh.payment_card
+       ,sdh.sap_cred_mgmt
+       ,sdh.crma_te_status
+       ,sdh.overallcredstat
+       ,sdh.confirm_status
+       ,sdh.delay_status
+       ,sdh.bill_stat_order
+       ,sdh.status_funds_mgmt
+       ,sdh.ov_b_blk_stat
+       ,sdh.overall_status
+       ,sdh.ovrl_delvry_sts
+       ,sdh.delivery_status
+       ,sdh.dlv_blk_status
+       ,sdh.manual_completion
+       ,sdh.total_refstatus
+       ,sdh.ref_status
+       ,sdh.overall_blk_st
+       ,sdh.trns_plan_stat
+       ,sdh.header_data
+       ,sdh.item_data
+       ,sdh.header_bill_dat
+       ,sdh.item_bill_data
+       ,sdh.pricing
+       ,sdh.header_dlv_data
+       ,sdh.item_deliv_data
+       ,sdh.hdr_reserves_1
+       ,sdh.hdr_reserves_2
+       ,sdh.hdr_reserves_3
+       ,sdh.hdr_reserves_4
+       ,sdh.hdr_reserves_5
+       ,sdh.total_reserves1
+       ,sdh.totalreserves2
+       ,sdh.total_reserves3
+       ,sdh.total_reserves4
+       ,sdh.total_reserves5
+       ,sdh.ovrlgdsmvtstat
+       ,sdh.embargo_status
+       ,sdh.wls_sts
+       ,sdh.total_legal_status
+       ,sdh.prod_marktablty_sts
+       ,sdh.dangerous_goods_sts
+       ,sdh.sfty_data_sheet_sts
+       ,sdh.down_payment_status
+       ,sdh.dummy_function_in_length_1
+       ,sdh.annexing_package
+       ,sdh.ann_package_extend
+       ,sdh.annexing_base_date
+       ,sdh.a_d_bill_rule
+       ,sdh.initial_doc
+       ,sdh.last_voucher
+       ,sdh.posting_date
+       ,sdh.customer_grp_6
+       ,sdh.customer_grp_7
+       ,sdh.customer_grp_8
+       ,sdh.customer_grp_5_1
+       ,sdh.customer_grp_10
+       ,sdh.release_rule
+       ,sdh.rqmt_relevant
+       ,sdh.snap_status
+       ,sdh.transaction_number
+       ,sdh.vas_cust_group
+       ,sdh.cancel_date
+       ,sdh.sched_strat
+       ,sdh.changed_manually
+       ,sdh.etm_rel_ind
+       ,sdh.application_id
+       ,sdh.treasury_account_sym
+       ,sdh.business_evt_typ_cd
+       ,sdh.modification_allowed
+       ,sdh.cancellation_allowed
+       ,sdh.payment_methods
+       ,sdh.business_partner_no
+       ,sdh.reporting_frequency
+       ,sdh.logical_system
+       ,sdh.proc_camp_det
+       ,sdh.multiple_promotions
+       ,sdh.paymmethod
+       ,sdh.claim_header
+       ,sdi.sales_document as sales_document_vbap
+       ,sdi.item
+       ,sdi.material
+       ,sdi.materialentered
+       ,sdi.pr_ref_matl
+       ,sdi.batch
+       ,sdi.material_group
+       ,sdi.item_descr
+       ,sdi.item_category
+       ,sdi.item_type
+       ,sdi.item_del_f_dlv
+       ,sdi.relev_for_bill
+       ,sdi.higher_lev_item
+       ,sdi.altern_to_item
+       ,sdi.rejectionreason
+       ,sdi.prod_hierarchy
+       ,sdi.node_id
+       ,sdi.origin_of_prodhier
+       ,sdi.node_id_1
+       ,sdi.origin_of_prodhier_1
+       ,sdi.target_value
+       ,sdi.target_quantity
+       ,sdi.target_qty_uom
+       ,sdi.convers_factor
+       ,sdi.convers_factor_1
+       ,sdi.base_unit
+       ,sdi.scale_quantity
+       ,sdi.rounding_qty
+       ,sdi.reconcil_date
+       ,sdi.absolute_deviation
+       ,sdi.po_item
+       ,sdi.cust_material
+       ,sdi.deviation
+       ,sdi.dev_days
+       ,sdi.class_of_items
+       ,sdi.usage as usage_vbap
+       ,sdi.delivery_group
+       ,sdi.qty_is_fixed
+       ,sdi.unlimited_tol
+       ,sdi.overdeliv_tol
+       ,sdi.underdel_tol
+       ,sdi.billing_block as billing_block_vbap
+       ,sdi.replacemt_part
+       ,sdi.bill_meth_co_ppc
+       ,sdi.division as division_vbap
+       ,sdi.business_area as business_area_vbap
+       ,sdi.net_value as net_value_vbap
+       ,sdi.doc_currency as doc_currency_vbap
+       ,sdi.max_part_deliv
+       ,sdi.part_dlv_item
+       ,sdi.batch_split
+       ,sdi.order_quantity
+       ,sdi.required_dlvqty
+       ,sdi.cumltvconfdqty
+       ,sdi.cumltvconfdqty_1
+       ,sdi.sales_unit
+       ,sdi.numerator
+       ,sdi.denominat
+       ,sdi.gross_weight
+       ,sdi.net_weight
+       ,sdi.weight_unit
+       ,sdi.volume
+       ,sdi.volume_unit
+       ,sdi.originating_doc
+       ,sdi.item_1
+       ,sdi.reference_doc as reference_doc_vbap
+       ,sdi.reference_item
+       ,sdi.complete_refer
+       ,sdi.update_doc_flow
+       ,sdi.completion_rule
+       ,sdi.delivery_prior
+       ,sdi.plant
+       ,sdi.stor_loc
+       ,sdi.shipping_point
+       ,sdi.route
+       ,sdi.bom_origin
+       ,sdi.bom_key_date
+       ,sdi.bom
+       ,sdi.bom_item_number
+       ,sdi.order_probab
+       ,sdi.created_on as created_on_vbap
+       ,sdi.created_by as created_by_vbap
+       ,sdi.entry_time as entry_time_vbap
+       ,sdi.tax_classific
+       ,sdi.tax_classific_1
+       ,sdi.tax_classific_2
+       ,sdi.tax_classific_3
+       ,sdi.tax_classific_4
+       ,sdi.tax_classific_5
+       ,sdi.tax_classific_6
+       ,sdi.tax_classific_7
+       ,sdi.tax_classific_8
+       ,sdi.fixed_proc_time
+       ,sdi.var_proc_time
+       ,sdi.preced_with_ref
+       ,sdi.net_price
+       ,sdi.pricing_unit
+       ,sdi.unit_of_measure
+       ,sdi.returns_item
+       ,sdi.cash_discount
+       ,sdi.avail_check
+       ,sdi.req_mt_totals
+       ,sdi.mat_price_grp
+       ,sdi.acctassmtgrpmat
+       ,sdi.vol_rebate_grp
+       ,sdi.commission_grp
+       ,sdi.ean_number
+       ,sdi.pricing as pricing_vbap
+       ,sdi.valuation_type
+       ,sdi.separate_val
+       ,sdi.batch_mgmt_rqt
+       ,sdi.batches
+       ,sdi.min_dely_qty
+       ,sdi.update_group as update_group_vbap
+       ,sdi.cost
+       ,sdi.subtotal_1
+       ,sdi.subtotal_2
+       ,sdi.subtotal_3
+       ,sdi.subtotal_4
+       ,sdi.subtotal_5
+       ,sdi.subtotal_6
+       ,sdi.exch_rate_stats
+       ,sdi.changed_on as changed_on_vbap
+       ,sdi.ean_upc
+       ,sdi.fix_qty_date
+       ,sdi.profit_center
+       ,sdi.materialgroup_1
+       ,sdi.materialgroup_2
+       ,sdi.materialgroup_3
+       ,sdi.materialgroup_4
+       ,sdi.materialgroup_5
+       ,sdi.quantity
+       ,sdi.reasn
+       ,sdi.special_stock
+       ,sdi.allocation_ind
+       ,sdi.profit_segment
+       ,sdi.wbs_element as wbs_element_vbap
+       ,sdi.order_number as order_number_vbap
+       ,sdi.plng_material
+       ,sdi.planning_plant
+       ,sdi.prod_grp_unit
+       ,sdi.conversion
+       ,sdi.acct_assgmt_cat
+       ,sdi.consumption
+       ,sdi.bom_expl_number
+       ,sdi.objno_item
+       ,sdi.ra_key
+       ,sdi.reqmts_type
+       ,sdi.credit_price
+       ,sdi.partial_release
+       ,sdi.credit_active
+       ,sdi.exchange_rate
+       ,sdi.configuration
+       ,sdi.int_object_no
+       ,sdi.expected_price
+       ,sdi.condit_update
+       ,sdi.serialnoprofile
+       ,sdi.no_serial_no
+       ,sdi.no_gr_posted
+       ,sdi.matl_grp_pckmat
+       ,sdi.manual_price
+       ,sdi.prec_doc_categ as prec_doc_categ_vbap
+       ,sdi.matdetermactive
+       ,sdi.usage_hl_item
+       ,sdi.cost_estimateno
+       ,sdi.costing_variant
+       ,sdi.item_2
+       ,sdi.stat_value
+       ,sdi.statistics_date
+       ,sdi.bus_trans_type
+       ,sdi.cus_preference
+       ,sdi.nocondrec_batch
+       ,sdi.int_class_no
+       ,sdi.qty_proposal
+       ,sdi.bom_category
+       ,sdi.item_node
+       ,sdi.counter
+       ,sdi.inconsist_conf
+       ,sdi.overhead_key
+       ,sdi.costing_sheet
+       ,sdi.costing_variant_1
+       ,sdi.prod_allocation
+       ,sdi.mnitm_prrefmatl
+       ,sdi.mnitem_matprcgr
+       ,sdi.mat_freight_grp
+       ,sdi.plandelschedins
+       ,sdi.sequence_number
+       ,sdi.credit_price_1
+       ,sdi.paytguarantform
+       ,sdi.guaranteed
+       ,sdi.cfop
+       ,sdi.icms_law
+       ,sdi.ipi_law
+       ,sdi.tax_code
+       ,sdi.value_contract_no
+       ,sdi.val_cont_item
+       ,sdi.module
+       ,sdi.valuation
+       ,sdi.matgroup_1
+       ,sdi.matgroup_2
+       ,sdi.promotion
+       ,sdi.sales_deal
+       ,sdi.leading_uom
+       ,sdi.freegoods_delycontrl
+       ,sdi.standardvariant
+       ,sdi.tax_amount
+       ,sdi.mrp_area
+       ,sdi.profit_ctr_bill
+       ,sdi.logical_system as logical_system_vbap
+       ,sdi.iss_law
+       ,sdi.cofins_law
+       ,sdi.pis_law
+       ,sdi.location
+       ,sdi.location_type
+       ,sdi.return_reason
+       ,sdi.refund_code
+       ,sdi.approval
+       ,sdi.cond_record_no
+       ,sdi.risk_relevancy
+       ,sdi.reqmnt_segment
+       ,sdi.item_3
+       ,sdi.item_4
+       ,sdi.handover_location as handover_location_vbap
+       ,sdi.external_item_id
+       ,sdi.handover_date
+       ,sdi.handover_time
+       ,sdi.tc_auto_det
+       ,sdi.man_tc_reason
+       ,sdi.tax_incent_type
+       ,sdi.tax_subj_to_st
+       ,sdi.incentive_id
+       ,sdi.nf_special_case
+       ,sdi.rev_acc_ref_id
+       ,sdi.rev_acc_ref_type
+       ,sdi.data_filter_value_for_data_agi as data_filter_value_for_data_agi_vbap
+       ,sdi.rejection_sts as rejection_sts_vbap
+       ,sdi.confirmed as confirmed_vbap
+       ,sdi.financial_doc as financial_doc_vbap
+       ,sdi.exptcreditinsur as exptcreditinsur_vbap
+       ,sdi.confirm_status as confirm_status_vbap
+       ,sdi.delay_status as delay_status_vbap
+       ,sdi.billing_status
+       ,sdi.billg_block_sts
+       ,sdi.overall_status as overall_status_vbap
+       ,sdi.ovrl_delvry_sts as ovrl_delvry_sts_vbap
+       ,sdi.delivery_status as delivery_status_vbap
+       ,sdi.dlv_blk_status as dlv_blk_status_vbap
+       ,sdi.manual_completion as manual_completion_vbap
+       ,sdi.reference_stat
+       ,sdi.reference_sts
+       ,sdi.item_5
+       ,sdi.item_bill_data as item_bill_data_vbap
+       ,sdi.pricing_1
+       ,sdi.item_deliv_data as item_deliv_data_vbap
+       ,sdi.item_reserves_1
+       ,sdi.item_reserves_2
+       ,sdi.item_reserves_3
+       ,sdi.item_reserves_4
+       ,sdi.item_reserves_5
+       ,sdi.goodsmovementst
+       ,sdi.embargo_status as embargo_status_vbap
+       ,sdi.wls_status
+       ,sdi.total_legal_status as total_legal_status_vbap
+       ,sdi.prod_marktablty_sts as prod_marktablty_sts_vbap
+       ,sdi.dangerous_goods_sts as dangerous_goods_sts_vbap
+       ,sdi.sfty_data_sheet_sts as sfty_data_sheet_sts_vbap
+       ,sdi.down_payment_status as down_payment_status_vbap
+       ,sdi.committed_deliv_date
+       ,sdi.cmtd_deliv_crtn_date
+       ,sdi.cmtd_delivery_qty
+       ,sdi.requ_salesorder_qty
+       ,sdi.guid_16
+       ,sdi.pbs_state
+       ,sdi.ifrs_15_relevant
+       ,sdi.ssp
+       ,sdi.availcheck_rule
+       ,sdi.net_amount_cap
+       ,sdi.cap_notif_threshold
+       ,sdi.overtime_category
+       ,sdi.session_created_on
+       ,sdi.session_created_at
+       ,sdi.original_plant
+       ,sdi.sub_status
+       ,sdi.dummy_function_in_length_1 as dummy_function_in_length_1_vbap
+       ,sdi.po_quantity
+       ,sdi.order_unit
+       ,sdi.global_item
+       ,sdi.mill_bselind
+       ,sdi.time_stamp as time_stamp_vbap
+       ,sdi.annexing_package as annexing_package_vbap
+       ,sdi.ann_package_extend as ann_package_extend_vbap
+       ,sdi.annexing_base_date as annexing_base_date_vbap
+       ,sdi.plan_no_f_oper
+       ,sdi.counter_1
+       ,sdi.dip_profile
+       ,sdi.model_id_code
+       ,sdi.interchang_code
+       ,sdi.order_priority
+       ,sdi.donotsub
+       ,sdi.aircraftreg_no
+       ,sdi.fcstdelsched_edi_ind
+       ,sdi.jitdschdedi_ind
+       ,sdi.comp_fctds_fctds
+       ,sdi.comp_jitds_jitds
+       ,sdi.comp_jitds_fcstds
+       ,sdi.reg_indicator
+       ,sdi.season_year
+       ,sdi.season
+       ,sdi.collection
+       ,sdi.theme
+       ,sdi.cond_record_no_1
+       ,sdi.copied_season
+       ,sdi.cancel_date as cancel_date_vbap
+       ,sdi.split_id
+       ,sdi.vas_relevant
+       ,sdi.item_6
+       ,sdi.transaction_number as transaction_number_vbap
+       ,sdi.item_group
+       ,sdi.item_number
+       ,sdi.copied_vas_data
+       ,sdi.record_num
+       ,sdi.higher_lev_item_pqr
+       ,sdi.season_comp_ind
+       ,sdi.cost_center as cost_center_vbap
+       ,sdi.fund
+       ,sdi.funds_center
+       ,sdi.functional_area
+       ,sdi.grant as grant_vbap
+       ,sdi.budget_period
+       ,sdi.iuid_cust_rel
+       ,sdi.equipment
+       ,sdi.object_type
+       ,sdi.activity_type
+       ,sdi.from_date
+       ,sdi.to_date
+       ,sdi.document_number
+       ,sdi.item_number_1
+       ,sdi.eng_mgmt_object_nr
+       ,sdi.std_wbs_element
+       ,sdi.work_period
+       ,sdi.treasury_account_sym as treasury_account_sym_vbap
+       ,sdi.business_evt_typ_cd as business_evt_typ_cd_vbap
+       ,sdi.modification_allowed as modification_allowed_vbap
+       ,sdi.cancellation_allowed as cancellation_allowed_vbap
+       ,sdi.payment_methods as payment_methods_vbap
+       ,sdi.business_partner_no as business_partner_no_vbap
+       ,sdi.reporting_frequency as reporting_frequency_vbap
+       ,sdi.us_govt
+       ,sdi.psst_grouping_rule
+       ,sdi.psst_group
+       ,sdi.trdg_part_ba
+       ,sdi.plan_no_f_oper_1
+       ,sdi.counter_2
+       ,sdi.end_customer
+       ,sdi.characteristic_1
+       ,sdi.characteristic_2
+       ,sdi.characteristic_3
+       ,sdi.reservation_number
+       ,sdi.item_no
+       ,sdi.claim_item_no
+       ,sds.sales_document as sales_document_vbep
+       ,sds.item as item_vbep
+       ,sds.schedule_line
+       ,sds.sched_line_cat
+       ,sds.item_rel_f_dlv
+       ,sds.delivery_date
+       ,sds.arrival_time
+       ,sds.order_quantity as order_quantity_vbep
+       ,sds.confirmed_qty
+       ,sds.sales_unit as sales_unit_vbep
+       ,sds.required_qty
+       ,sds.base_unit as base_unit_vbep
+       ,sds.requirement_dte
+       ,sds.requirementtype
+       ,sds.planning_type
+       ,sds.business_docum
+       ,sds.items
+       ,sds.schedule_line_1
+       ,sds.reservation_number as reservation_number_vbep
+       ,sds.maintenance_req
+       ,sds.purchase_req
+       ,sds.order_type
+       ,sds.doc_category
+       ,sds.confirm_status as confirm_status_vbep
+       ,sds.invoice_receipt
+       ,sds.returnpackaging
+       ,sds.date_type
+       ,sds.transpplngdate
+       ,sds.mat_avail_date as mat_avail_date_vbep
+       ,sds.loading_date
+       ,sds.goods_issue
+       ,sds.corr_qty
+       ,sds.delivery_block as delivery_block_vbep
+       ,sds.group_definition_of_structure
+       ,sds.release_type
+       ,sds.f_dlv_sched
+       ,sds.committed_qty
+       ,sds.size_2
+       ,sds.size_3
+       ,sds.size_unit
+       ,sds.formula_key
+       ,sds.numerator as numerator_vbep
+       ,sds.denominat as denominat_vbep
+       ,sds.avail_confirm
+       ,sds.movement_type
+       ,sds.requisn_item
+       ,sds.sched_line_type
+       ,sds.order_number as order_number_vbep
+       ,sds.planned_order
+       ,sds.bom_expl_number as bom_expl_number_vbep
+       ,sds.engin_change
+       ,sds.guaranteed as guaranteed_vbep
+       ,sds.matl_staging_tme
+       ,sds.tr_plan_time
+       ,sds.loading_time
+       ,sds.gi_time
+       ,sds.route_schedule
+       ,sds.handover_date as handover_date_vbep
+       ,sds.handover_time as handover_time_vbep
+       ,sds.delivered_qty
+       ,sds.delivered_qty_1
+       ,sds.open_quantity
+       ,sds.open_quantity_1
+       ,sds.open_quantity_2
+       ,sds.open_quantity_3
+       ,sds.delivery_date_1
+       ,sds.delivery_date_2
+       ,sds.reqmts_class
+       ,sds.data_filter_value_for_data_agi as data_filter_value_for_data_agi_vbep
+       ,sds.doc_currency as doc_currency_vbep
+       ,sds.open_delivery_amount
+       ,sds.guid_16 as guid_16_vbep
+       ,sds.legal_status
+       ,sds.reqd_rqmt_qty
+       ,sds.confd_rqmt_qty
+       ,sds.dummy_function_in_length_1 as dummy_function_in_length_1_vbep
+       ,sds.alloc_qty
+       ,sds.order_sch_gr_id
+       ,sds.rejection_code
+       ,sds.mat_av_date_tpp
+       ,case when sdh.dw_last_update_date > sdi.dw_last_update_date and sdh.dw_last_update_date > sds.dw_last_update_date
+             then sdh.dw_last_update_date
+             when sdi.dw_last_update_date > sdh.dw_last_update_date and sdi.dw_last_update_date > sds.dw_last_update_date
+             then sdi.dw_last_update_date
+             else sds.dw_last_update_date
+        end as input_last_update_date
+       ,sdh.dw_active_indicator
+       ,md.material_uuid
+       ,md.material_key
+       ,sd.supplier_uuid
+       ,sd.supplier_key
+       ,pd.plant_uuid
+       ,pd.plant_key
+       ,sld.storage_location_uuid
+       ,sld.storage_location_key
+       ,csod.customer_sales_org_uuid
+       ,csod.customer_sales_org_key
+       ,spd.shipping_point_uuid
+       ,spd.shipping_point_key
+       ,cd.customer_uuid
+       ,cd.customer_key
+ from `{{ projectid }}.{{ slt_l0_staging }}.sales_document_header` sdh
+       inner join `{{ projectid }}.{{ slt_l0_staging }}.sales_document_item`  sdi
+   on  sdh.client = sdi.client
+  and  sdh.sales_document = sdi.sales_document
+  and  sdi.dw_active_indicator = sdh.dw_active_indicator
+       inner join `{{ projectid }}.{{ slt_l0_staging }}.sales_document_schedule` sds
+   on  sds.client = sdi.client
+  and  sds.sales_document = sdi.sales_document
+  and  sds.item = sdi.item
+  and  sds.dw_active_indicator = sdh.dw_active_indicator
+       left join `{{ projectid }}.{{ slt_l1_dimension }}.material_dimension` md
+    on md.material_key = CONCAT(sdh.client,'-',sdi.material,'-',sdi.plant)
+   and md.dw_active_indicator = 'Y'
+       left join `{{ projectid }}.{{ slt_l1_dimension }}.plant_dimension` pd
+    on pd.plant_key = CONCAT(sdi.client,'-',sdi.plant)
+   and pd.dw_active_indicator = 'Y'
+       left join `{{ projectid }}.{{ slt_l1_dimension }}.supplier_dimension` sd
+    on sd.supplier_key = CONCAT(sdh.client,'-',sdh.sold_to_party)
+   and sd.dw_active_indicator = 'Y'
+       left join `{{ projectid }}.{{ slt_l1_dimension }}.storage_location_dimension` sld
+    on sld.storage_location_key = CONCAT(sdi.client,'-',sdi.plant,'-',sdi.stor_loc)
+   and sld.dw_active_indicator = 'Y'
+       left join `{{ projectid }}.{{ slt_l1_dimension }}.customer_sales_org_dimension` csod
+    on csod.customer_sales_org_key = CONCAT(sdh.client,'-',sdh.sold_to_party,'-',sdh.sales_org,'-',sdh.distr_channel,'-',sdh.division)
+   and csod.dw_active_indicator = 'Y'
+       left join `{{ projectid }}.{{ slt_l1_dimension }}.customer_dimension` cd
+    on cd.customer_key = CONCAT(sdh.client,'-',sdh.sold_to_party)
+   and cd.dw_active_indicator = 'Y'
+       left join `{{ projectid }}.{{ slt_l1_dimension }}.shipping_point_dimension` spd
+    on spd.shipping_point_key = CONCAT(sdi.client,'-',sdi.shipping_point)
+   and spd.dw_active_indicator = 'Y'
+where sdh.dw_active_indicator = 'Y'
+  and (sdh.dw_last_update_date >= coalesce((SELECT CASE WHEN lat.full_delta_indicator = 'F' THEN lat.full_load_datetime
+                                             WHEN lat.full_delta_indicator <> 'F' THEN lat.delta_load_datetime
+                                             ELSE CAST('1900-01-01T00:00:00' AS DATETIME)
+                                        END FROM `{{ projectid }}.{{ slt_l0_staging }}.layer1_audit_table` lat
+                                WHERE lat.table_name = 'sales_order_fact'),CAST('1900-01-01T00:00:00' AS DATETIME))
+   or sdi.dw_last_update_date >= coalesce((SELECT CASE WHEN lat.full_delta_indicator = 'F' THEN lat.full_load_datetime
+                                             WHEN lat.full_delta_indicator <> 'F' THEN lat.delta_load_datetime
+                                             ELSE CAST('1900-01-01T00:00:00' AS DATETIME)
+                                        END FROM `{{ projectid }}.{{ slt_l0_staging }}.layer1_audit_table` lat
+                                WHERE lat.table_name = 'sales_order_fact'),CAST('1900-01-01T00:00:00' AS DATETIME))
+   or sds.dw_last_update_date >= coalesce((SELECT CASE WHEN lat.full_delta_indicator = 'F' THEN lat.full_load_datetime
+                                             WHEN lat.full_delta_indicator <> 'F' THEN lat.delta_load_datetime
+                                             ELSE CAST('1900-01-01T00:00:00' AS DATETIME)
+                                        END FROM `{{ projectid }}.{{ slt_l0_staging }}.layer1_audit_table` lat
+                                WHERE lat.table_name = 'sales_order_fact'),CAST('1900-01-01T00:00:00' AS DATETIME)))),
+tmp_so AS (SELECT ts.*,
+     TO_HEX(MD5((select string_agg(CAST(col as STRING), ', ' order by offset)
+    from unnest(split(trim(format('%t',(select as struct ts.* except(input_last_update_date))), '()'),', ')) col with offset 
+    where not col IS NULL
+    ))) as finalmd5key 
+  from tmp_scr ts)
+SELECT t.sales_order_key as sales_order_join_key,t.*
+  from tmp_so t
+UNION ALL 
+SELECT NULL as sales_order_join_key,t.*
+  from tmp_so t
+       INNER JOIN `{{ projectid }}.{$lst_l1_facts}.sales_order_fact` sof
+    on sof.sales_order_key = t.sales_order_key
+   AND sof.finalmd5key <> t.finalmd5key
+ WHERE sof.dw_active_indicator = 'Y') scr
+ON tgt.sales_order_key = scr.sales_order_join_key
+WHEN MATCHED AND tgt.finalmd5key <> scr.finalmd5key THEN 
+UPDATE set tgt.dw_end_date = CURRENT_DATETIME()
+          ,tgt.dw_active_indicator = 'N'
+WHEN NOT MATCHED THEN 
+INSERT(
+ sales_order_uuid
+,sales_order_key
+,client
+,sales_document
+,item
+,schedule_line
+,material_uuid
+,material_key
+,supplier_uuid
+,supplier_key
+,plant_uuid
+,plant_key
+,storage_location_uuid
+,storage_location_key
+,customer_sales_org_uuid
+,customer_sales_org_key
+,shipping_point_uuid
+,shipping_point_key
+,customer_uuid
+,customer_key
+,created_on
+,entry_time
+,created_by
+,valid_from
+,valid_to
+,document_date
+,document_cat
+,transact_group
+,sales_doc_type
+,order_reason
+,begin_guarantee
+,collective_no
+,delivery_block
+,billing_block
+,net_value
+,doc_currency
+,sales_org
+,distr_channel
+,division
+,sales_group
+,sales_office
+,business_area
+,business_area_1
+,valid_from_1
+,valid_to_1
+,doc_condition
+,reqd_deliv_date
+,prop_date_type
+,complete_dlv
+,original_system
+,indicator
+,pric_procedure
+,shp_cond
+,ord_rel_bill_ty
+,probability
+,description
+,cust_reference
+,pur_ord_type
+,cust_ref_date
+,supplement
+,your_reference
+,name
+,telephone
+,no_of_contacts
+,last_contact_dt
+,sold_to_party
+,cost_center
+,update_group
+,stats_currency
+,changed_on
+,customer_grp_1
+,customer_grp_2
+,customer_grp_3
+,customer_grp_4
+,customer_grp_5
+,agreement
+,co_area
+,wbs_element
+,exch_rate_type
+,cred_contr_area
+,credit_account
+,cust_cred_group
+,cred_rep_grp
+,risk_category
+,currency
+,release_date
+,next_check
+,next_date
+,credit_value
+,hiertypepricing
+,usage
+,mrp_for_ds_type
+,reference_doc
+,object_no_hdr
+,ccodetobebilled
+,alt_tax_class
+,taxclass2_cust
+,taxclass3_cust
+,taxclass4_cust
+,taxclass5_cust
+,taxclass6_cust
+,taxclass7_cust
+,taxclass8_cust
+,taxclass9_cust
+,reference
+,assignment_number
+,prec_doc_categ
+,search_proced
+,accrual_period
+,order_number
+,notification
+,master_contract
+,ref_procedure
+,check_partner
+,pick_up_date
+,pick_up_time
+,pick_up_time_1
+,paym_ca_pl_no
+,req_dely_time
+,tax_dest_cntry
+,tax_depart_cty
+,eu_triang_deal
+,block_master_contr_until_all
+,cmlqtydate
+,mat_avail_date
+,version
+,int_id
+,dg_mgmt_profile
+,contains_dg
+,char_70
+,time_stamp
+,process_id_no
+,control_key
+,location_id
+,last_changed_by
+,handover_location
+,ext_bus_syst_id
+,external_document_id
+,external_revision
+,approval_status
+,apprvl_req_rsn_id
+,apprvl_req_rjcn_rsn
+,data_filter_value_for_data_agi
+,rejection_sts
+,confirmed
+,value
+,termsofpayment
+,financial_doc
+,exptcreditinsur
+,payment_card
+,sap_cred_mgmt
+,crma_te_status
+,overallcredstat
+,confirm_status
+,delay_status
+,bill_stat_order
+,status_funds_mgmt
+,ov_b_blk_stat
+,overall_status
+,ovrl_delvry_sts
+,delivery_status
+,dlv_blk_status
+,manual_completion
+,total_refstatus
+,ref_status
+,overall_blk_st
+,trns_plan_stat
+,header_data
+,item_data
+,header_bill_dat
+,item_bill_data
+,pricing
+,header_dlv_data
+,item_deliv_data
+,hdr_reserves_1
+,hdr_reserves_2
+,hdr_reserves_3
+,hdr_reserves_4
+,hdr_reserves_5
+,total_reserves1
+,totalreserves2
+,total_reserves3
+,total_reserves4
+,total_reserves5
+,ovrlgdsmvtstat
+,embargo_status
+,wls_sts
+,total_legal_status
+,prod_marktablty_sts
+,dangerous_goods_sts
+,sfty_data_sheet_sts
+,down_payment_status
+,dummy_function_in_length_1
+,annexing_package
+,ann_package_extend
+,annexing_base_date
+,a_d_bill_rule
+,initial_doc
+,last_voucher
+,posting_date
+,customer_grp_6
+,customer_grp_7
+,customer_grp_8
+,customer_grp_5_1
+,customer_grp_10
+,release_rule
+,rqmt_relevant
+,snap_status
+,transaction_number
+,vas_cust_group
+,cancel_date
+,sched_strat
+,changed_manually
+,etm_rel_ind
+,application_id
+,treasury_account_sym
+,business_evt_typ_cd
+,modification_allowed
+,cancellation_allowed
+,payment_methods
+,business_partner_no
+,reporting_frequency
+,logical_system
+,proc_camp_det
+,multiple_promotions
+,paymmethod
+,claim_header
+,sales_document_vbap
+,material
+,materialentered
+,pr_ref_matl
+,batch
+,material_group
+,item_descr
+,item_category
+,item_type
+,item_del_f_dlv
+,relev_for_bill
+,higher_lev_item
+,altern_to_item
+,rejectionreason
+,prod_hierarchy
+,node_id
+,origin_of_prodhier
+,node_id_1
+,origin_of_prodhier_1
+,target_value
+,target_quantity
+,target_qty_uom
+,convers_factor
+,convers_factor_1
+,base_unit
+,scale_quantity
+,rounding_qty
+,reconcil_date
+,absolute_deviation
+,po_item
+,cust_material
+,deviation
+,dev_days
+,class_of_items
+,usage_vbap
+,delivery_group
+,qty_is_fixed
+,unlimited_tol
+,overdeliv_tol
+,underdel_tol
+,billing_block_vbap
+,replacemt_part
+,bill_meth_co_ppc
+,division_vbap
+,business_area_vbap
+,net_value_vbap
+,doc_currency_vbap
+,max_part_deliv
+,part_dlv_item
+,batch_split
+,order_quantity
+,required_dlvqty
+,cumltvconfdqty
+,cumltvconfdqty_1
+,sales_unit
+,numerator
+,denominat
+,gross_weight
+,net_weight
+,weight_unit
+,volume
+,volume_unit
+,originating_doc
+,item_1
+,reference_doc_vbap
+,reference_item
+,complete_refer
+,update_doc_flow
+,completion_rule
+,delivery_prior
+,plant
+,stor_loc
+,shipping_point
+,route
+,bom_origin
+,bom_key_date
+,bom
+,bom_item_number
+,order_probab
+,created_on_vbap
+,created_by_vbap
+,entry_time_vbap
+,tax_classific
+,tax_classific_1
+,tax_classific_2
+,tax_classific_3
+,tax_classific_4
+,tax_classific_5
+,tax_classific_6
+,tax_classific_7
+,tax_classific_8
+,fixed_proc_time
+,var_proc_time
+,preced_with_ref
+,net_price
+,pricing_unit
+,unit_of_measure
+,returns_item
+,cash_discount
+,avail_check
+,req_mt_totals
+,mat_price_grp
+,acctassmtgrpmat
+,vol_rebate_grp
+,commission_grp
+,ean_number
+,pricing_vbap
+,valuation_type
+,separate_val
+,batch_mgmt_rqt
+,batches
+,min_dely_qty
+,update_group_vbap
+,cost
+,subtotal_1
+,subtotal_2
+,subtotal_3
+,subtotal_4
+,subtotal_5
+,subtotal_6
+,exch_rate_stats
+,changed_on_vbap
+,ean_upc
+,fix_qty_date
+,profit_center
+,materialgroup_1
+,materialgroup_2
+,materialgroup_3
+,materialgroup_4
+,materialgroup_5
+,quantity
+,reasn
+,special_stock
+,allocation_ind
+,profit_segment
+,wbs_element_vbap
+,order_number_vbap
+,plng_material
+,planning_plant
+,prod_grp_unit
+,conversion
+,acct_assgmt_cat
+,consumption
+,bom_expl_number
+,objno_item
+,ra_key
+,reqmts_type
+,credit_price
+,partial_release
+,credit_active
+,exchange_rate
+,configuration
+,int_object_no
+,expected_price
+,condit_update
+,serialnoprofile
+,no_serial_no
+,no_gr_posted
+,matl_grp_pckmat
+,manual_price
+,prec_doc_categ_vbap
+,matdetermactive
+,usage_hl_item
+,cost_estimateno
+,costing_variant
+,item_2
+,stat_value
+,statistics_date
+,bus_trans_type
+,cus_preference
+,nocondrec_batch
+,int_class_no
+,qty_proposal
+,bom_category
+,item_node
+,counter
+,inconsist_conf
+,overhead_key
+,costing_sheet
+,costing_variant_1
+,prod_allocation
+,mnitm_prrefmatl
+,mnitem_matprcgr
+,mat_freight_grp
+,plandelschedins
+,sequence_number
+,credit_price_1
+,paytguarantform
+,guaranteed
+,cfop
+,icms_law
+,ipi_law
+,tax_code
+,value_contract_no
+,val_cont_item
+,module
+,valuation
+,matgroup_1
+,matgroup_2
+,promotion
+,sales_deal
+,leading_uom
+,freegoods_delycontrl
+,standardvariant
+,tax_amount
+,mrp_area
+,profit_ctr_bill
+,logical_system_vbap
+,iss_law
+,cofins_law
+,pis_law
+,location
+,location_type
+,return_reason
+,refund_code
+,approval
+,cond_record_no
+,risk_relevancy
+,reqmnt_segment
+,item_3
+,item_4
+,handover_location_vbap
+,external_item_id
+,handover_date
+,handover_time
+,tc_auto_det
+,man_tc_reason
+,tax_incent_type
+,tax_subj_to_st
+,incentive_id
+,nf_special_case
+,rev_acc_ref_id
+,rev_acc_ref_type
+,data_filter_value_for_data_agi_vbap
+,rejection_sts_vbap
+,confirmed_vbap
+,financial_doc_vbap
+,exptcreditinsur_vbap
+,confirm_status_vbap
+,delay_status_vbap
+,billing_status
+,billg_block_sts
+,overall_status_vbap
+,ovrl_delvry_sts_vbap
+,delivery_status_vbap
+,dlv_blk_status_vbap
+,manual_completion_vbap
+,reference_stat
+,reference_sts
+,item_5
+,item_bill_data_vbap
+,pricing_1
+,item_deliv_data_vbap
+,item_reserves_1
+,item_reserves_2
+,item_reserves_3
+,item_reserves_4
+,item_reserves_5
+,goodsmovementst
+,embargo_status_vbap
+,wls_status
+,total_legal_status_vbap
+,prod_marktablty_sts_vbap
+,dangerous_goods_sts_vbap
+,sfty_data_sheet_sts_vbap
+,down_payment_status_vbap
+,committed_deliv_date
+,cmtd_deliv_crtn_date
+,cmtd_delivery_qty
+,requ_salesorder_qty
+,guid_16
+,pbs_state
+,ifrs_15_relevant
+,ssp
+,availcheck_rule
+,net_amount_cap
+,cap_notif_threshold
+,overtime_category
+,session_created_on
+,session_created_at
+,original_plant
+,sub_status
+,dummy_function_in_length_1_vbap
+,po_quantity
+,order_unit
+,global_item
+,mill_bselind
+,time_stamp_vbap
+,annexing_package_vbap
+,ann_package_extend_vbap
+,annexing_base_date_vbap
+,plan_no_f_oper
+,counter_1
+,dip_profile
+,model_id_code
+,interchang_code
+,order_priority
+,donotsub
+,aircraftreg_no
+,fcstdelsched_edi_ind
+,jitdschdedi_ind
+,comp_fctds_fctds
+,comp_jitds_jitds
+,comp_jitds_fcstds
+,reg_indicator
+,season_year
+,season
+,collection
+,theme
+,cond_record_no_1
+,copied_season
+,cancel_date_vbap
+,split_id
+,vas_relevant
+,item_6
+,transaction_number_vbap
+,item_group
+,item_number
+,copied_vas_data
+,record_num
+,higher_lev_item_pqr
+,season_comp_ind
+,cost_center_vbap
+,fund
+,funds_center
+,functional_area
+,grant_vbap
+,budget_period
+,iuid_cust_rel
+,equipment
+,object_type
+,activity_type
+,from_date
+,to_date
+,document_number
+,item_number_1
+,eng_mgmt_object_nr
+,std_wbs_element
+,work_period
+,treasury_account_sym_vbap
+,business_evt_typ_cd_vbap
+,modification_allowed_vbap
+,cancellation_allowed_vbap
+,payment_methods_vbap
+,business_partner_no_vbap
+,reporting_frequency_vbap
+,us_govt
+,psst_grouping_rule
+,psst_group
+,trdg_part_ba
+,plan_no_f_oper_1
+,counter_2
+,end_customer
+,characteristic_1
+,characteristic_2
+,characteristic_3
+,reservation_number
+,item_no
+,claim_item_no
+,sales_document_vbep
+,item_vbep
+,sched_line_cat
+,item_rel_f_dlv
+,delivery_date
+,arrival_time
+,order_quantity_vbep
+,confirmed_qty
+,sales_unit_vbep
+,required_qty
+,base_unit_vbep
+,requirement_dte
+,requirementtype
+,planning_type
+,business_docum
+,items
+,schedule_line_1
+,reservation_number_vbep
+,maintenance_req
+,purchase_req
+,order_type
+,doc_category
+,confirm_status_vbep
+,invoice_receipt
+,returnpackaging
+,date_type
+,transpplngdate
+,mat_avail_date_vbep
+,loading_date
+,goods_issue
+,corr_qty
+,delivery_block_vbep
+,group_definition_of_structure
+,release_type
+,f_dlv_sched
+,committed_qty
+,size_2
+,size_3
+,size_unit
+,formula_key
+,numerator_vbep
+,denominat_vbep
+,avail_confirm
+,movement_type
+,requisn_item
+,sched_line_type
+,order_number_vbep
+,planned_order
+,bom_expl_number_vbep
+,engin_change
+,guaranteed_vbep
+,matl_staging_tme
+,tr_plan_time
+,loading_time
+,gi_time
+,route_schedule
+,handover_date_vbep
+,handover_time_vbep
+,delivered_qty
+,delivered_qty_1
+,open_quantity
+,open_quantity_1
+,open_quantity_2
+,open_quantity_3
+,delivery_date_1
+,delivery_date_2
+,reqmts_class
+,data_filter_value_for_data_agi_vbep
+,doc_currency_vbep
+,open_delivery_amount
+,guid_16_vbep
+,legal_status
+,reqd_rqmt_qty
+,confd_rqmt_qty
+,dummy_function_in_length_1_vbep
+,alloc_qty
+,order_sch_gr_id
+,rejection_code
+,mat_av_date_tpp
+,finalmd5key
+,input_last_update_date
+,dw_active_indicator
+,dw_start_date
+,dw_end_date
+,dw_last_update_date
+)
+VALUES
+(
+ TO_HEX(MD5(CONCAT(scr.sales_order_key,scr.finalmd5key)))
+,scr.sales_order_key
+,scr.client
+,scr.sales_document
+,scr.item
+,scr.schedule_line
+,scr.material_uuid
+,scr.material_key
+,scr.supplier_uuid
+,scr.supplier_key
+,scr.plant_uuid
+,scr.plant_key
+,scr.storage_location_uuid
+,scr.storage_location_key
+,scr.customer_sales_org_uuid
+,scr.customer_sales_org_key
+,scr.shipping_point_uuid
+,scr.shipping_point_key
+,scr.customer_uuid
+,scr.customer_key
+,scr.created_on
+,scr.entry_time
+,scr.created_by
+,scr.valid_from
+,scr.valid_to
+,scr.document_date
+,scr.document_cat
+,scr.transact_group
+,scr.sales_doc_type
+,scr.order_reason
+,scr.begin_guarantee
+,scr.collective_no
+,scr.delivery_block
+,scr.billing_block
+,scr.net_value
+,scr.doc_currency
+,scr.sales_org
+,scr.distr_channel
+,scr.division
+,scr.sales_group
+,scr.sales_office
+,scr.business_area
+,scr.business_area_1
+,scr.valid_from_1
+,scr.valid_to_1
+,scr.doc_condition
+,scr.reqd_deliv_date
+,scr.prop_date_type
+,scr.complete_dlv
+,scr.original_system
+,scr.indicator
+,scr.pric_procedure
+,scr.shp_cond
+,scr.ord_rel_bill_ty
+,scr.probability
+,scr.description
+,scr.cust_reference
+,scr.pur_ord_type
+,scr.cust_ref_date
+,scr.supplement
+,scr.your_reference
+,scr.name
+,scr.telephone
+,scr.no_of_contacts
+,scr.last_contact_dt
+,scr.sold_to_party
+,scr.cost_center
+,scr.update_group
+,scr.stats_currency
+,scr.changed_on
+,scr.customer_grp_1
+,scr.customer_grp_2
+,scr.customer_grp_3
+,scr.customer_grp_4
+,scr.customer_grp_5
+,scr.agreement
+,scr.co_area
+,scr.wbs_element
+,scr.exch_rate_type
+,scr.cred_contr_area
+,scr.credit_account
+,scr.cust_cred_group
+,scr.cred_rep_grp
+,scr.risk_category
+,scr.currency
+,scr.release_date
+,scr.next_check
+,scr.next_date
+,scr.credit_value
+,scr.hiertypepricing
+,scr.usage
+,scr.mrp_for_ds_type
+,scr.reference_doc
+,scr.object_no_hdr
+,scr.ccodetobebilled
+,scr.alt_tax_class
+,scr.taxclass2_cust
+,scr.taxclass3_cust
+,scr.taxclass4_cust
+,scr.taxclass5_cust
+,scr.taxclass6_cust
+,scr.taxclass7_cust
+,scr.taxclass8_cust
+,scr.taxclass9_cust
+,scr.reference
+,scr.assignment_number
+,scr.prec_doc_categ
+,scr.search_proced
+,scr.accrual_period
+,scr.order_number
+,scr.notification
+,scr.master_contract
+,scr.ref_procedure
+,scr.check_partner
+,scr.pick_up_date
+,scr.pick_up_time
+,scr.pick_up_time_1
+,scr.paym_ca_pl_no
+,scr.req_dely_time
+,scr.tax_dest_cntry
+,scr.tax_depart_cty
+,scr.eu_triang_deal
+,scr.block_master_contr_until_all
+,scr.cmlqtydate
+,scr.mat_avail_date
+,scr.version
+,scr.int_id
+,scr.dg_mgmt_profile
+,scr.contains_dg
+,scr.char_70
+,scr.time_stamp
+,scr.process_id_no
+,scr.control_key
+,scr.location_id
+,scr.last_changed_by
+,scr.handover_location
+,scr.ext_bus_syst_id
+,scr.external_document_id
+,scr.external_revision
+,scr.approval_status
+,scr.apprvl_req_rsn_id
+,scr.apprvl_req_rjcn_rsn
+,scr.data_filter_value_for_data_agi
+,scr.rejection_sts
+,scr.confirmed
+,scr.value
+,scr.termsofpayment
+,scr.financial_doc
+,scr.exptcreditinsur
+,scr.payment_card
+,scr.sap_cred_mgmt
+,scr.crma_te_status
+,scr.overallcredstat
+,scr.confirm_status
+,scr.delay_status
+,scr.bill_stat_order
+,scr.status_funds_mgmt
+,scr.ov_b_blk_stat
+,scr.overall_status
+,scr.ovrl_delvry_sts
+,scr.delivery_status
+,scr.dlv_blk_status
+,scr.manual_completion
+,scr.total_refstatus
+,scr.ref_status
+,scr.overall_blk_st
+,scr.trns_plan_stat
+,scr.header_data
+,scr.item_data
+,scr.header_bill_dat
+,scr.item_bill_data
+,scr.pricing
+,scr.header_dlv_data
+,scr.item_deliv_data
+,scr.hdr_reserves_1
+,scr.hdr_reserves_2
+,scr.hdr_reserves_3
+,scr.hdr_reserves_4
+,scr.hdr_reserves_5
+,scr.total_reserves1
+,scr.totalreserves2
+,scr.total_reserves3
+,scr.total_reserves4
+,scr.total_reserves5
+,scr.ovrlgdsmvtstat
+,scr.embargo_status
+,scr.wls_sts
+,scr.total_legal_status
+,scr.prod_marktablty_sts
+,scr.dangerous_goods_sts
+,scr.sfty_data_sheet_sts
+,scr.down_payment_status
+,scr.dummy_function_in_length_1
+,scr.annexing_package
+,scr.ann_package_extend
+,scr.annexing_base_date
+,scr.a_d_bill_rule
+,scr.initial_doc
+,scr.last_voucher
+,scr.posting_date
+,scr.customer_grp_6
+,scr.customer_grp_7
+,scr.customer_grp_8
+,scr.customer_grp_5_1
+,scr.customer_grp_10
+,scr.release_rule
+,scr.rqmt_relevant
+,scr.snap_status
+,scr.transaction_number
+,scr.vas_cust_group
+,scr.cancel_date
+,scr.sched_strat
+,scr.changed_manually
+,scr.etm_rel_ind
+,scr.application_id
+,scr.treasury_account_sym
+,scr.business_evt_typ_cd
+,scr.modification_allowed
+,scr.cancellation_allowed
+,scr.payment_methods
+,scr.business_partner_no
+,scr.reporting_frequency
+,scr.logical_system
+,scr.proc_camp_det
+,scr.multiple_promotions
+,scr.paymmethod
+,scr.claim_header
+,scr.sales_document_vbap
+,scr.material
+,scr.materialentered
+,scr.pr_ref_matl
+,scr.batch
+,scr.material_group
+,scr.item_descr
+,scr.item_category
+,scr.item_type
+,scr.item_del_f_dlv
+,scr.relev_for_bill
+,scr.higher_lev_item
+,scr.altern_to_item
+,scr.rejectionreason
+,scr.prod_hierarchy
+,scr.node_id
+,scr.origin_of_prodhier
+,scr.node_id_1
+,scr.origin_of_prodhier_1
+,scr.target_value
+,scr.target_quantity
+,scr.target_qty_uom
+,scr.convers_factor
+,scr.convers_factor_1
+,scr.base_unit
+,scr.scale_quantity
+,scr.rounding_qty
+,scr.reconcil_date
+,scr.absolute_deviation
+,scr.po_item
+,scr.cust_material
+,scr.deviation
+,scr.dev_days
+,scr.class_of_items
+,scr.usage_vbap
+,scr.delivery_group
+,scr.qty_is_fixed
+,scr.unlimited_tol
+,scr.overdeliv_tol
+,scr.underdel_tol
+,scr.billing_block_vbap
+,scr.replacemt_part
+,scr.bill_meth_co_ppc
+,scr.division_vbap
+,scr.business_area_vbap
+,scr.net_value_vbap
+,scr.doc_currency_vbap
+,scr.max_part_deliv
+,scr.part_dlv_item
+,scr.batch_split
+,scr.order_quantity
+,scr.required_dlvqty
+,scr.cumltvconfdqty
+,scr.cumltvconfdqty_1
+,scr.sales_unit
+,scr.numerator
+,scr.denominat
+,scr.gross_weight
+,scr.net_weight
+,scr.weight_unit
+,scr.volume
+,scr.volume_unit
+,scr.originating_doc
+,scr.item_1
+,scr.reference_doc_vbap
+,scr.reference_item
+,scr.complete_refer
+,scr.update_doc_flow
+,scr.completion_rule
+,scr.delivery_prior
+,scr.plant
+,scr.stor_loc
+,scr.shipping_point
+,scr.route
+,scr.bom_origin
+,scr.bom_key_date
+,scr.bom
+,scr.bom_item_number
+,scr.order_probab
+,scr.created_on_vbap
+,scr.created_by_vbap
+,scr.entry_time_vbap
+,scr.tax_classific
+,scr.tax_classific_1
+,scr.tax_classific_2
+,scr.tax_classific_3
+,scr.tax_classific_4
+,scr.tax_classific_5
+,scr.tax_classific_6
+,scr.tax_classific_7
+,scr.tax_classific_8
+,scr.fixed_proc_time
+,scr.var_proc_time
+,scr.preced_with_ref
+,scr.net_price
+,scr.pricing_unit
+,scr.unit_of_measure
+,scr.returns_item
+,scr.cash_discount
+,scr.avail_check
+,scr.req_mt_totals
+,scr.mat_price_grp
+,scr.acctassmtgrpmat
+,scr.vol_rebate_grp
+,scr.commission_grp
+,scr.ean_number
+,scr.pricing_vbap
+,scr.valuation_type
+,scr.separate_val
+,scr.batch_mgmt_rqt
+,scr.batches
+,scr.min_dely_qty
+,scr.update_group_vbap
+,scr.cost
+,scr.subtotal_1
+,scr.subtotal_2
+,scr.subtotal_3
+,scr.subtotal_4
+,scr.subtotal_5
+,scr.subtotal_6
+,scr.exch_rate_stats
+,scr.changed_on_vbap
+,scr.ean_upc
+,scr.fix_qty_date
+,scr.profit_center
+,scr.materialgroup_1
+,scr.materialgroup_2
+,scr.materialgroup_3
+,scr.materialgroup_4
+,scr.materialgroup_5
+,scr.quantity
+,scr.reasn
+,scr.special_stock
+,scr.allocation_ind
+,scr.profit_segment
+,scr.wbs_element_vbap
+,scr.order_number_vbap
+,scr.plng_material
+,scr.planning_plant
+,scr.prod_grp_unit
+,scr.conversion
+,scr.acct_assgmt_cat
+,scr.consumption
+,scr.bom_expl_number
+,scr.objno_item
+,scr.ra_key
+,scr.reqmts_type
+,scr.credit_price
+,scr.partial_release
+,scr.credit_active
+,scr.exchange_rate
+,scr.configuration
+,scr.int_object_no
+,scr.expected_price
+,scr.condit_update
+,scr.serialnoprofile
+,scr.no_serial_no
+,scr.no_gr_posted
+,scr.matl_grp_pckmat
+,scr.manual_price
+,scr.prec_doc_categ_vbap
+,scr.matdetermactive
+,scr.usage_hl_item
+,scr.cost_estimateno
+,scr.costing_variant
+,scr.item_2
+,scr.stat_value
+,scr.statistics_date
+,scr.bus_trans_type
+,scr.cus_preference
+,scr.nocondrec_batch
+,scr.int_class_no
+,scr.qty_proposal
+,scr.bom_category
+,scr.item_node
+,scr.counter
+,scr.inconsist_conf
+,scr.overhead_key
+,scr.costing_sheet
+,scr.costing_variant_1
+,scr.prod_allocation
+,scr.mnitm_prrefmatl
+,scr.mnitem_matprcgr
+,scr.mat_freight_grp
+,scr.plandelschedins
+,scr.sequence_number
+,scr.credit_price_1
+,scr.paytguarantform
+,scr.guaranteed
+,scr.cfop
+,scr.icms_law
+,scr.ipi_law
+,scr.tax_code
+,scr.value_contract_no
+,scr.val_cont_item
+,scr.module
+,scr.valuation
+,scr.matgroup_1
+,scr.matgroup_2
+,scr.promotion
+,scr.sales_deal
+,scr.leading_uom
+,scr.freegoods_delycontrl
+,scr.standardvariant
+,scr.tax_amount
+,scr.mrp_area
+,scr.profit_ctr_bill
+,scr.logical_system_vbap
+,scr.iss_law
+,scr.cofins_law
+,scr.pis_law
+,scr.location
+,scr.location_type
+,scr.return_reason
+,scr.refund_code
+,scr.approval
+,scr.cond_record_no
+,scr.risk_relevancy
+,scr.reqmnt_segment
+,scr.item_3
+,scr.item_4
+,scr.handover_location_vbap
+,scr.external_item_id
+,scr.handover_date
+,scr.handover_time
+,scr.tc_auto_det
+,scr.man_tc_reason
+,scr.tax_incent_type
+,scr.tax_subj_to_st
+,scr.incentive_id
+,scr.nf_special_case
+,scr.rev_acc_ref_id
+,scr.rev_acc_ref_type
+,scr.data_filter_value_for_data_agi_vbap
+,scr.rejection_sts_vbap
+,scr.confirmed_vbap
+,scr.financial_doc_vbap
+,scr.exptcreditinsur_vbap
+,scr.confirm_status_vbap
+,scr.delay_status_vbap
+,scr.billing_status
+,scr.billg_block_sts
+,scr.overall_status_vbap
+,scr.ovrl_delvry_sts_vbap
+,scr.delivery_status_vbap
+,scr.dlv_blk_status_vbap
+,scr.manual_completion_vbap
+,scr.reference_stat
+,scr.reference_sts
+,scr.item_5
+,scr.item_bill_data_vbap
+,scr.pricing_1
+,scr.item_deliv_data_vbap
+,scr.item_reserves_1
+,scr.item_reserves_2
+,scr.item_reserves_3
+,scr.item_reserves_4
+,scr.item_reserves_5
+,scr.goodsmovementst
+,scr.embargo_status_vbap
+,scr.wls_status
+,scr.total_legal_status_vbap
+,scr.prod_marktablty_sts_vbap
+,scr.dangerous_goods_sts_vbap
+,scr.sfty_data_sheet_sts_vbap
+,scr.down_payment_status_vbap
+,scr.committed_deliv_date
+,scr.cmtd_deliv_crtn_date
+,scr.cmtd_delivery_qty
+,scr.requ_salesorder_qty
+,scr.guid_16
+,scr.pbs_state
+,scr.ifrs_15_relevant
+,scr.ssp
+,scr.availcheck_rule
+,scr.net_amount_cap
+,scr.cap_notif_threshold
+,scr.overtime_category
+,scr.session_created_on
+,scr.session_created_at
+,scr.original_plant
+,scr.sub_status
+,scr.dummy_function_in_length_1_vbap
+,scr.po_quantity
+,scr.order_unit
+,scr.global_item
+,scr.mill_bselind
+,scr.time_stamp_vbap
+,scr.annexing_package_vbap
+,scr.ann_package_extend_vbap
+,scr.annexing_base_date_vbap
+,scr.plan_no_f_oper
+,scr.counter_1
+,scr.dip_profile
+,scr.model_id_code
+,scr.interchang_code
+,scr.order_priority
+,scr.donotsub
+,scr.aircraftreg_no
+,scr.fcstdelsched_edi_ind
+,scr.jitdschdedi_ind
+,scr.comp_fctds_fctds
+,scr.comp_jitds_jitds
+,scr.comp_jitds_fcstds
+,scr.reg_indicator
+,scr.season_year
+,scr.season
+,scr.collection
+,scr.theme
+,scr.cond_record_no_1
+,scr.copied_season
+,scr.cancel_date_vbap
+,scr.split_id
+,scr.vas_relevant
+,scr.item_6
+,scr.transaction_number_vbap
+,scr.item_group
+,scr.item_number
+,scr.copied_vas_data
+,scr.record_num
+,scr.higher_lev_item_pqr
+,scr.season_comp_ind
+,scr.cost_center_vbap
+,scr.fund
+,scr.funds_center
+,scr.functional_area
+,scr.grant_vbap
+,scr.budget_period
+,scr.iuid_cust_rel
+,scr.equipment
+,scr.object_type
+,scr.activity_type
+,scr.from_date
+,scr.to_date
+,scr.document_number
+,scr.item_number_1
+,scr.eng_mgmt_object_nr
+,scr.std_wbs_element
+,scr.work_period
+,scr.treasury_account_sym_vbap
+,scr.business_evt_typ_cd_vbap
+,scr.modification_allowed_vbap
+,scr.cancellation_allowed_vbap
+,scr.payment_methods_vbap
+,scr.business_partner_no_vbap
+,scr.reporting_frequency_vbap
+,scr.us_govt
+,scr.psst_grouping_rule
+,scr.psst_group
+,scr.trdg_part_ba
+,scr.plan_no_f_oper_1
+,scr.counter_2
+,scr.end_customer
+,scr.characteristic_1
+,scr.characteristic_2
+,scr.characteristic_3
+,scr.reservation_number
+,scr.item_no
+,scr.claim_item_no
+,scr.sales_document_vbep
+,scr.item_vbep
+,scr.sched_line_cat
+,scr.item_rel_f_dlv
+,scr.delivery_date
+,scr.arrival_time
+,scr.order_quantity_vbep
+,scr.confirmed_qty
+,scr.sales_unit_vbep
+,scr.required_qty
+,scr.base_unit_vbep
+,scr.requirement_dte
+,scr.requirementtype
+,scr.planning_type
+,scr.business_docum
+,scr.items
+,scr.schedule_line_1
+,scr.reservation_number_vbep
+,scr.maintenance_req
+,scr.purchase_req
+,scr.order_type
+,scr.doc_category
+,scr.confirm_status_vbep
+,scr.invoice_receipt
+,scr.returnpackaging
+,scr.date_type
+,scr.transpplngdate
+,scr.mat_avail_date_vbep
+,scr.loading_date
+,scr.goods_issue
+,scr.corr_qty
+,scr.delivery_block_vbep
+,scr.group_definition_of_structure
+,scr.release_type
+,scr.f_dlv_sched
+,scr.committed_qty
+,scr.size_2
+,scr.size_3
+,scr.size_unit
+,scr.formula_key
+,scr.numerator_vbep
+,scr.denominat_vbep
+,scr.avail_confirm
+,scr.movement_type
+,scr.requisn_item
+,scr.sched_line_type
+,scr.order_number_vbep
+,scr.planned_order
+,scr.bom_expl_number_vbep
+,scr.engin_change
+,scr.guaranteed_vbep
+,scr.matl_staging_tme
+,scr.tr_plan_time
+,scr.loading_time
+,scr.gi_time
+,scr.route_schedule
+,scr.handover_date_vbep
+,scr.handover_time_vbep
+,scr.delivered_qty
+,scr.delivered_qty_1
+,scr.open_quantity
+,scr.open_quantity_1
+,scr.open_quantity_2
+,scr.open_quantity_3
+,scr.delivery_date_1
+,scr.delivery_date_2
+,scr.reqmts_class
+,scr.data_filter_value_for_data_agi_vbep
+,scr.doc_currency_vbep
+,scr.open_delivery_amount
+,scr.guid_16_vbep
+,scr.legal_status
+,scr.reqd_rqmt_qty
+,scr.confd_rqmt_qty
+,scr.dummy_function_in_length_1_vbep
+,scr.alloc_qty
+,scr.order_sch_gr_id
+,scr.rejection_code
+,scr.mat_av_date_tpp
+,scr.finalmd5key
+,scr.input_last_update_date
+,scr.dw_active_indicator
+,CURRENT_DATETIME()
+,DATETIME(9999, 12, 31, 23, 59, 59)
+,CURRENT_DATETIME());
+
+MERGE INTO 
+`{{ projectid }}.{{ slt_l0_staging }}.layer1_audit_table` tgt
+USING ( SELECT 
+         'sales_order_fact' as table_name
+         ,CASE WHEN (select full_delta_indicator from `{{ projectid }}.{{ slt_l0_staging }}.layer1_audit_table` where table_name = 'sales_order_fact') IS NULL
+                    OR (select full_delta_indicator from `{{ projectid }}.{{ slt_l0_staging }}.layer1_audit_table` where table_name = 'sales_order_fact') = 'F'
+               THEN 'F'
+               ELSE 'D'
+          END AS full_delta_indicator
+        ,'sales_document_header,sales_document_item,sales_document_schedule' as source_table_names
+        ,CAST('1900-01-01T00:00:00' AS DATETIME) as full_load_datetime
+        ,COALESCE((select max(input_last_update_date) as delta_load_datatime from `{{ projectid }}.{$lst_l1_facts}.sales_order_fact`),CAST('1900-01-01T00:00:00' AS DATETIME)) as delta_load_datetime
+        ,(coalesce((select COUNT(*) AS inserted_record_count from `{{ projectid }}.{$lst_l1_facts}.sales_order_fact` a 
+          where a.dw_active_indicator = 'Y'  and a.dw_last_update_date > COALESCE((SELECT CASE WHEN b.full_delta_indicator = 'F' 
+                                                              THEN b.full_load_datetime
+                                                              WHEN b.full_delta_indicator <> 'F' THEN b.delta_load_datetime
+                                                          END
+                                                    from `{{ projectid }}.{{ slt_l0_staging }}.layer1_audit_table` b
+                                        where b.table_name = 'sales_order_fact'),CAST('1900-01-01T00:00:00' AS DATETIME))),(select count(*) as inserted_record_count from `{{ projectid }}.{$lst_l1_facts}.sales_order_fact` where dw_active_indicator = 'Y'))) as inserted_record_count
+        ,CURRENT_DATETIME() as last_update_date
+) scr
+on tgt.table_name = scr.table_name
+WHEN MATCHED THEN 
+UPDATE set tgt.full_load_datetime ='1900-01-01T00:00:00'
+          ,tgt.delta_load_datetime = scr.delta_load_datetime
+          ,tgt.inserted_record_count = scr.inserted_record_count
+          ,tgt.last_update_date = scr.last_update_date
+          ,tgt.source_table_names = scr.source_table_names
+WHEN NOT MATCHED THEN
+INSERT (table_name,
+        full_delta_indicator,
+        source_table_names,
+        full_load_datetime,
+        delta_load_datetime,
+        inserted_record_count,
+        last_update_date)
+VALUES(scr.table_name,
+       scr.full_delta_indicator,
+       scr.source_table_names,
+       scr.full_load_datetime,
+       scr.delta_load_datetime,
+       scr.inserted_record_count,
+       scr.last_update_date);

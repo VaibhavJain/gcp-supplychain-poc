@@ -1,0 +1,10 @@
+sql_file_names
+delivery_fact.sql
+forecasting_fact.sql
+inventory_fact.sql
+production_order_fact.sql
+material_movement_fact.sql
+purchase_order_fact.sql
+purchase_requisition_fact.sql
+sales_order_fact.sql
+transfer_order_fact.sql

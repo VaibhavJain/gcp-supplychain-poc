@@ -1,0 +1,365 @@
+{
+    "name": "2LIS_12_VCHDR_delivery_header",
+    "description": "delivery header",
+    "artifact": {
+        "name": "cdap-data-pipeline",
+        "version": "6.4.0",
+        "scope": "SYSTEM"
+    },
+    "config": {
+        "resources": {
+            "memoryMB": 2048,
+            "virtualCores": 1
+        },
+        "driverResources": {
+            "memoryMB": 2048,
+            "virtualCores": 1
+        },
+        "connections": [
+            {
+                "from": "2LIS_12_VCHDR",
+                "to": "ColumnsToEnglishName"
+            },
+            {
+                "from": "ColumnsToEnglishName",
+                "to": "AddingAuditColumns"
+            },
+            {
+                "from": "AddingAuditColumns",
+                "to": "CancelDeleteRecords"
+            },
+            {
+                "from": "CancelDeleteRecords",
+                "to": "RemoveAuditColumns"
+            },
+            {
+                "from": "RemoveAuditColumns",
+                "to": "delivery_header"
+            },
+            {
+                "from": "CancelDeleteRecords",
+                "to": "KeepAuditColumns"
+            },
+            {
+                "from": "KeepAuditColumns",
+                "to": "CountInputRecords"
+            },
+            {
+                "from": "CountInputRecords",
+                "to": "staging_audit_table"
+            }
+        ],
+        "comments": [],
+        "postActions": [],
+        "properties": {},
+        "processTimingEnabled": true,
+        "stageLoggingEnabled": false,
+        "stages": [
+            {
+                "name": "2LIS_12_VCHDR",
+                "plugin": {
+                    "name": "SapOdp",
+                    "type": "batchsource",
+                    "label": "2LIS_12_VCHDR",
+                    "artifact": {
+                        "name": "sap-odp-plugins",
+                        "version": "0.0.12-SNAPSHOT",
+                        "scope": "USER"
+                    },
+                    "properties": {
+                        "referenceName": "2LIS_12_VCHDR",
+                        "jco.client.client": "${SAPClient}",
+                        "jco.client.lang": "${SAPLanguage}",
+                        "connType": "directClient",
+                        "jco.client.ashost": "${SAPApplicationServerHost}",
+                        "jco.client.sysnr": "${SAPSystemNumber}",
+                        "sapSourceObjName": "2LIS_12_VCHDR",
+                        "extractType": "Full",
+                        "jco.client.user": "${secure(saplogonusername)}",
+                        "jco.client.passwd": "${secure(saplogonpassword)}",
+                        "gcpProjectId": "auto-detect",
+                        "gcsPath": "gs://cdf-sap-dependent-files",
+                        "subscriberName": "lisvchdr",
+                        "schema": "{\"type\":\"record\",\"name\":\"columnMetadata_2LIS_12_VCHDR\",\"fields\":[{\"name\":\"ROCANCEL\",\"type\":[\"string\",\"null\"]},{\"name\":\"VBELN\",\"type\":[\"string\",\"null\"]},{\"name\":\"ABLAD\",\"type\":[\"string\",\"null\"]},{\"name\":\"BTGEW\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"BUKRS\",\"type\":[\"string\",\"null\"]},{\"name\":\"BZIRK\",\"type\":[\"string\",\"null\"]},{\"name\":\"ERDAT\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"FAKSK\",\"type\":[\"string\",\"null\"]},{\"name\":\"GEWEI\",\"type\":[\"string\",\"null\"]},{\"name\":\"INCO1\",\"type\":[\"string\",\"null\"]},{\"name\":\"INCO2\",\"type\":[\"string\",\"null\"]},{\"name\":\"KDGRP\",\"type\":[\"string\",\"null\"]},{\"name\":\"KUNAG\",\"type\":[\"string\",\"null\"]},{\"name\":\"KUNNR\",\"type\":[\"string\",\"null\"]},{\"name\":\"LFART\",\"type\":[\"string\",\"null\"]},{\"name\":\"LFDAT\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"LIFNR\",\"type\":[\"string\",\"null\"]},{\"name\":\"LIFSK\",\"type\":[\"string\",\"null\"]},{\"name\":\"LSTEL\",\"type\":[\"string\",\"null\"]},{\"name\":\"NTGEW\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"PKUNRE\",\"type\":[\"string\",\"null\"]},{\"name\":\"PKUNRG\",\"type\":[\"string\",\"null\"]},{\"name\":\"PSPDNR\",\"type\":[\"string\",\"null\"]},{\"name\":\"PVRTNR\",\"type\":[\"string\",\"null\"]},{\"name\":\"ROUTE\",\"type\":[\"string\",\"null\"]},{\"name\":\"VBTYP\",\"type\":[\"string\",\"null\"]},{\"name\":\"VKORG\",\"type\":[\"string\",\"null\"]},{\"name\":\"VOLEH\",\"type\":[\"string\",\"null\"]},{\"name\":\"VOLUM\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"VSTEL\",\"type\":[\"string\",\"null\"]},{\"name\":\"WADAT\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"WADAT_IST\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"ANZLI\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"MCBW_ANZPK\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"PERIV\",\"type\":[\"string\",\"null\"]},{\"name\":\"WA_DELAY_LF\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]}]}"
+                    }
+                },
+                "outputSchema": "{\"type\":\"record\",\"name\":\"columnMetadata_2LIS_12_VCHDR\",\"fields\":[{\"name\":\"ROCANCEL\",\"type\":[\"string\",\"null\"]},{\"name\":\"VBELN\",\"type\":[\"string\",\"null\"]},{\"name\":\"ABLAD\",\"type\":[\"string\",\"null\"]},{\"name\":\"BTGEW\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"BUKRS\",\"type\":[\"string\",\"null\"]},{\"name\":\"BZIRK\",\"type\":[\"string\",\"null\"]},{\"name\":\"ERDAT\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"FAKSK\",\"type\":[\"string\",\"null\"]},{\"name\":\"GEWEI\",\"type\":[\"string\",\"null\"]},{\"name\":\"INCO1\",\"type\":[\"string\",\"null\"]},{\"name\":\"INCO2\",\"type\":[\"string\",\"null\"]},{\"name\":\"KDGRP\",\"type\":[\"string\",\"null\"]},{\"name\":\"KUNAG\",\"type\":[\"string\",\"null\"]},{\"name\":\"KUNNR\",\"type\":[\"string\",\"null\"]},{\"name\":\"LFART\",\"type\":[\"string\",\"null\"]},{\"name\":\"LFDAT\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"LIFNR\",\"type\":[\"string\",\"null\"]},{\"name\":\"LIFSK\",\"type\":[\"string\",\"null\"]},{\"name\":\"LSTEL\",\"type\":[\"string\",\"null\"]},{\"name\":\"NTGEW\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"PKUNRE\",\"type\":[\"string\",\"null\"]},{\"name\":\"PKUNRG\",\"type\":[\"string\",\"null\"]},{\"name\":\"PSPDNR\",\"type\":[\"string\",\"null\"]},{\"name\":\"PVRTNR\",\"type\":[\"string\",\"null\"]},{\"name\":\"ROUTE\",\"type\":[\"string\",\"null\"]},{\"name\":\"VBTYP\",\"type\":[\"string\",\"null\"]},{\"name\":\"VKORG\",\"type\":[\"string\",\"null\"]},{\"name\":\"VOLEH\",\"type\":[\"string\",\"null\"]},{\"name\":\"VOLUM\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"VSTEL\",\"type\":[\"string\",\"null\"]},{\"name\":\"WADAT\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"WADAT_IST\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"ANZLI\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"MCBW_ANZPK\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"PERIV\",\"type\":[\"string\",\"null\"]},{\"name\":\"WA_DELAY_LF\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]}]}",
+                "id": "2LIS_12_VCHDR",
+                "type": "batchsource",
+                "label": "2LIS_12_VCHDR",
+                "icon": "fa-plug"
+            },
+            {
+                "name": "ColumnsToEnglishName",
+                "plugin": {
+                    "name": "Projection",
+                    "type": "transform",
+                    "label": "ColumnsToEnglishName",
+                    "artifact": {
+                        "name": "core-plugins",
+                        "version": "2.6.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "rename": "ABLAD:unloading_point,ANZLI:number_deliveries,BTGEW:total_weight,BUKRS:company_code,BZIRK:sales_district,ERDAT:created_on,FAKSK:billing_block,GEWEI:weight_unit,INCO1:incoterms_part_1,INCO2:incoterms_part_2,KDGRP:customer_group,KUNAG:sold_to_party,KUNNR:customer_number,LFART:delivery_type,LFDAT:delivery_date,LIFNR:vendors_account_number,LIFSK:delivery_block,LSTEL:departure_loading_point,MCBW_ANZPK:number_packages,NTGEW:net_weight,PERIV:fiscal_year_variant,PKUNRE:bill_to_party,PKUNRG:payer,PSPDNR:forwarding_agent,PVRTNR:sales_employee,ROCANCEL:cancel_data_record,ROUTE:shipment_route,VBELN:sales_document,VBTYP:sd_document_category,VKORG:sales_organization,VOLEH:volume_unit,VOLUM:volume,VSTEL:shipping_point,WA_DELAY_LF:goods_issue_delay,WADAT:planned_goods_movement_date,WADAT_IST:actual_goods_movement_date"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": "{\"type\":\"record\",\"name\":\"columnMetadata_2LIS_12_VCHDR.typeprojected\",\"fields\":[{\"name\":\"cancel_data_record\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_document\",\"type\":[\"string\",\"null\"]},{\"name\":\"unloading_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"total_weight\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_district\",\"type\":[\"string\",\"null\"]},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"billing_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"weight_unit\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_part_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_part_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"customer_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"sold_to_party\",\"type\":[\"string\",\"null\"]},{\"name\":\"customer_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_type\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"vendors_account_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"departure_loading_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"net_weight\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"bill_to_party\",\"type\":[\"string\",\"null\"]},{\"name\":\"payer\",\"type\":[\"string\",\"null\"]},{\"name\":\"forwarding_agent\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_employee\",\"type\":[\"string\",\"null\"]},{\"name\":\"shipment_route\",\"type\":[\"string\",\"null\"]},{\"name\":\"sd_document_category\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_organization\",\"type\":[\"string\",\"null\"]},{\"name\":\"volume_unit\",\"type\":[\"string\",\"null\"]},{\"name\":\"volume\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"shipping_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_goods_movement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"actual_goods_movement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"number_deliveries\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"number_packages\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"fiscal_year_variant\",\"type\":[\"string\",\"null\"]},{\"name\":\"goods_issue_delay\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]}]}"
+                    }
+                ],
+                "inputSchema": [
+                    {
+                        "name": "2LIS_12_VCHDR",
+                        "schema": "{\"type\":\"record\",\"name\":\"columnMetadata_2LIS_12_VCHDR\",\"fields\":[{\"name\":\"ROCANCEL\",\"type\":[\"string\",\"null\"]},{\"name\":\"VBELN\",\"type\":[\"string\",\"null\"]},{\"name\":\"ABLAD\",\"type\":[\"string\",\"null\"]},{\"name\":\"BTGEW\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"BUKRS\",\"type\":[\"string\",\"null\"]},{\"name\":\"BZIRK\",\"type\":[\"string\",\"null\"]},{\"name\":\"ERDAT\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"FAKSK\",\"type\":[\"string\",\"null\"]},{\"name\":\"GEWEI\",\"type\":[\"string\",\"null\"]},{\"name\":\"INCO1\",\"type\":[\"string\",\"null\"]},{\"name\":\"INCO2\",\"type\":[\"string\",\"null\"]},{\"name\":\"KDGRP\",\"type\":[\"string\",\"null\"]},{\"name\":\"KUNAG\",\"type\":[\"string\",\"null\"]},{\"name\":\"KUNNR\",\"type\":[\"string\",\"null\"]},{\"name\":\"LFART\",\"type\":[\"string\",\"null\"]},{\"name\":\"LFDAT\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"LIFNR\",\"type\":[\"string\",\"null\"]},{\"name\":\"LIFSK\",\"type\":[\"string\",\"null\"]},{\"name\":\"LSTEL\",\"type\":[\"string\",\"null\"]},{\"name\":\"NTGEW\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"PKUNRE\",\"type\":[\"string\",\"null\"]},{\"name\":\"PKUNRG\",\"type\":[\"string\",\"null\"]},{\"name\":\"PSPDNR\",\"type\":[\"string\",\"null\"]},{\"name\":\"PVRTNR\",\"type\":[\"string\",\"null\"]},{\"name\":\"ROUTE\",\"type\":[\"string\",\"null\"]},{\"name\":\"VBTYP\",\"type\":[\"string\",\"null\"]},{\"name\":\"VKORG\",\"type\":[\"string\",\"null\"]},{\"name\":\"VOLEH\",\"type\":[\"string\",\"null\"]},{\"name\":\"VOLUM\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"VSTEL\",\"type\":[\"string\",\"null\"]},{\"name\":\"WADAT\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"WADAT_IST\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"ANZLI\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"MCBW_ANZPK\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"PERIV\",\"type\":[\"string\",\"null\"]},{\"name\":\"WA_DELAY_LF\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]}]}"
+                    }
+                ],
+                "id": "ColumnsToEnglishName",
+                "type": "transform",
+                "label": "ColumnsToEnglishName",
+                "icon": "icon-projection"
+            },
+            {
+                "name": "AddingAuditColumns",
+                "plugin": {
+                    "name": "Wrangler",
+                    "type": "transform",
+                    "label": "AddingAuditColumns",
+                    "artifact": {
+                        "name": "wrangler-transform",
+                        "version": "4.4.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "field": "*",
+                        "precondition": "false",
+                        "directives": "set-column :dw_active_indicator \"Y\";\ncurrent-datetime :dw_start_date;\nset-column :dw_end_date \"9999-12-31 23:59:59\";\nparse-as-datetime :dw_end_date \"yyyy-MM-dd HH:mm:ss\";\ncurrent-datetime :dw_last_update_date;\nset-column :table_name \"2LIS_12_VCHDR\";\nset-column :table_load_type \"FULLLOAD\";\nset-column :input_counts \"1\";\ncurrent-datetime :last_update_date;\nset-column :odp_subscriber \"lisvchdr\";\ncurrent-datetime :dw_end_date_update;",
+                        "on-error": "skip-error",
+                        "schema": "{\"name\":\"etlSchemaBody\",\"type\":\"record\",\"fields\":[{\"name\":\"cancel_data_record\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_document\",\"type\":[\"string\",\"null\"]},{\"name\":\"unloading_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"total_weight\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_district\",\"type\":[\"string\",\"null\"]},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"billing_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"weight_unit\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_part_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_part_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"customer_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"sold_to_party\",\"type\":[\"string\",\"null\"]},{\"name\":\"customer_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_type\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"vendors_account_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"departure_loading_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"net_weight\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"bill_to_party\",\"type\":[\"string\",\"null\"]},{\"name\":\"payer\",\"type\":[\"string\",\"null\"]},{\"name\":\"forwarding_agent\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_employee\",\"type\":[\"string\",\"null\"]},{\"name\":\"shipment_route\",\"type\":[\"string\",\"null\"]},{\"name\":\"sd_document_category\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_organization\",\"type\":[\"string\",\"null\"]},{\"name\":\"volume_unit\",\"type\":[\"string\",\"null\"]},{\"name\":\"volume\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"shipping_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_goods_movement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"actual_goods_movement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"number_deliveries\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"number_packages\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"fiscal_year_variant\",\"type\":[\"string\",\"null\"]},{\"name\":\"goods_issue_delay\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"input_counts\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"odp_subscriber\",\"type\":\"string\"},{\"name\":\"dw_end_date_update\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": "{\"name\":\"etlSchemaBody\",\"type\":\"record\",\"fields\":[{\"name\":\"cancel_data_record\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_document\",\"type\":[\"string\",\"null\"]},{\"name\":\"unloading_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"total_weight\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_district\",\"type\":[\"string\",\"null\"]},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"billing_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"weight_unit\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_part_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_part_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"customer_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"sold_to_party\",\"type\":[\"string\",\"null\"]},{\"name\":\"customer_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_type\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"vendors_account_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"departure_loading_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"net_weight\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"bill_to_party\",\"type\":[\"string\",\"null\"]},{\"name\":\"payer\",\"type\":[\"string\",\"null\"]},{\"name\":\"forwarding_agent\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_employee\",\"type\":[\"string\",\"null\"]},{\"name\":\"shipment_route\",\"type\":[\"string\",\"null\"]},{\"name\":\"sd_document_category\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_organization\",\"type\":[\"string\",\"null\"]},{\"name\":\"volume_unit\",\"type\":[\"string\",\"null\"]},{\"name\":\"volume\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"shipping_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_goods_movement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"actual_goods_movement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"number_deliveries\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"number_packages\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"fiscal_year_variant\",\"type\":[\"string\",\"null\"]},{\"name\":\"goods_issue_delay\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"input_counts\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"odp_subscriber\",\"type\":\"string\"},{\"name\":\"dw_end_date_update\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                ],
+                "inputSchema": [
+                    {
+                        "name": "ColumnsToEnglishName",
+                        "schema": "{\"type\":\"record\",\"name\":\"columnMetadata_2LIS_12_VCHDR.typeprojected\",\"fields\":[{\"name\":\"cancel_data_record\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_document\",\"type\":[\"string\",\"null\"]},{\"name\":\"unloading_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"total_weight\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_district\",\"type\":[\"string\",\"null\"]},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"billing_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"weight_unit\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_part_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_part_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"customer_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"sold_to_party\",\"type\":[\"string\",\"null\"]},{\"name\":\"customer_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_type\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"vendors_account_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"departure_loading_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"net_weight\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"bill_to_party\",\"type\":[\"string\",\"null\"]},{\"name\":\"payer\",\"type\":[\"string\",\"null\"]},{\"name\":\"forwarding_agent\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_employee\",\"type\":[\"string\",\"null\"]},{\"name\":\"shipment_route\",\"type\":[\"string\",\"null\"]},{\"name\":\"sd_document_category\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_organization\",\"type\":[\"string\",\"null\"]},{\"name\":\"volume_unit\",\"type\":[\"string\",\"null\"]},{\"name\":\"volume\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"shipping_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_goods_movement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"actual_goods_movement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"number_deliveries\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"number_packages\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"fiscal_year_variant\",\"type\":[\"string\",\"null\"]},{\"name\":\"goods_issue_delay\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]}]}"
+                    }
+                ],
+                "id": "AddingAuditColumns",
+                "type": "transform",
+                "label": "AddingAuditColumns",
+                "icon": "icon-DataPreparation"
+            },
+            {
+                "name": "CancelDeleteRecords",
+                "plugin": {
+                    "name": "JavaScript",
+                    "type": "transform",
+                    "label": "CancelDeleteRecords",
+                    "artifact": {
+                        "name": "core-plugins",
+                        "version": "2.6.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "script": "/**\n * @summary Transforms the provided input record into zero or more output records or errors.\n\n * Input records are available in JavaScript code as JSON objects. \n\n * @param input an object that contains the input record as a JSON.   e.g. to access a field called 'total' from the input record, use input.total.\n * @param emitter an object that can be used to emit zero or more records (using the emitter.emit() method) or errors (using the emitter.emitError() method) \n * @param context an object that provides access to:\n *            1. CDAP Metrics - context.getMetrics().count('output', 1);\n *            2. CDAP Logs - context.getLogger().debug('Received a record');\n *            3. Lookups - context.getLookup('blacklist').lookup(input.id); or\n *            4. Runtime Arguments - context.getArguments().get('priceThreshold') \n */ \nfunction transform(input, emitter, context) {\n  if(input.cancel_data_record !== \"\")\n    {\n     input.dw_active_indicator = 'N';\n     input.dw_end_date = input.dw_end_date_update;\n    }\n  emitter.emit(input);\n}",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody\",\"fields\":[{\"name\":\"cancel_data_record\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_document\",\"type\":[\"string\",\"null\"]},{\"name\":\"unloading_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"total_weight\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_district\",\"type\":[\"string\",\"null\"]},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"billing_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"weight_unit\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_part_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_part_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"customer_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"sold_to_party\",\"type\":[\"string\",\"null\"]},{\"name\":\"customer_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_type\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"vendors_account_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"departure_loading_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"net_weight\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"bill_to_party\",\"type\":[\"string\",\"null\"]},{\"name\":\"payer\",\"type\":[\"string\",\"null\"]},{\"name\":\"forwarding_agent\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_employee\",\"type\":[\"string\",\"null\"]},{\"name\":\"shipment_route\",\"type\":[\"string\",\"null\"]},{\"name\":\"sd_document_category\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_organization\",\"type\":[\"string\",\"null\"]},{\"name\":\"volume_unit\",\"type\":[\"string\",\"null\"]},{\"name\":\"volume\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"shipping_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_goods_movement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"actual_goods_movement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"number_deliveries\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"number_packages\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"fiscal_year_variant\",\"type\":[\"string\",\"null\"]},{\"name\":\"goods_issue_delay\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"input_counts\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"odp_subscriber\",\"type\":\"string\"},{\"name\":\"dw_end_date_update\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody\",\"fields\":[{\"name\":\"cancel_data_record\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_document\",\"type\":[\"string\",\"null\"]},{\"name\":\"unloading_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"total_weight\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_district\",\"type\":[\"string\",\"null\"]},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"billing_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"weight_unit\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_part_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_part_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"customer_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"sold_to_party\",\"type\":[\"string\",\"null\"]},{\"name\":\"customer_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_type\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"vendors_account_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"departure_loading_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"net_weight\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"bill_to_party\",\"type\":[\"string\",\"null\"]},{\"name\":\"payer\",\"type\":[\"string\",\"null\"]},{\"name\":\"forwarding_agent\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_employee\",\"type\":[\"string\",\"null\"]},{\"name\":\"shipment_route\",\"type\":[\"string\",\"null\"]},{\"name\":\"sd_document_category\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_organization\",\"type\":[\"string\",\"null\"]},{\"name\":\"volume_unit\",\"type\":[\"string\",\"null\"]},{\"name\":\"volume\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"shipping_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_goods_movement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"actual_goods_movement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"number_deliveries\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"number_packages\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"fiscal_year_variant\",\"type\":[\"string\",\"null\"]},{\"name\":\"goods_issue_delay\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"input_counts\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"odp_subscriber\",\"type\":\"string\"},{\"name\":\"dw_end_date_update\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                ],
+                "inputSchema": [
+                    {
+                        "name": "AddingAuditColumns",
+                        "schema": "{\"name\":\"etlSchemaBody\",\"type\":\"record\",\"fields\":[{\"name\":\"cancel_data_record\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_document\",\"type\":[\"string\",\"null\"]},{\"name\":\"unloading_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"total_weight\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_district\",\"type\":[\"string\",\"null\"]},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"billing_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"weight_unit\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_part_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_part_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"customer_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"sold_to_party\",\"type\":[\"string\",\"null\"]},{\"name\":\"customer_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_type\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"vendors_account_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"departure_loading_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"net_weight\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"bill_to_party\",\"type\":[\"string\",\"null\"]},{\"name\":\"payer\",\"type\":[\"string\",\"null\"]},{\"name\":\"forwarding_agent\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_employee\",\"type\":[\"string\",\"null\"]},{\"name\":\"shipment_route\",\"type\":[\"string\",\"null\"]},{\"name\":\"sd_document_category\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_organization\",\"type\":[\"string\",\"null\"]},{\"name\":\"volume_unit\",\"type\":[\"string\",\"null\"]},{\"name\":\"volume\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"shipping_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_goods_movement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"actual_goods_movement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"number_deliveries\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"number_packages\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"fiscal_year_variant\",\"type\":[\"string\",\"null\"]},{\"name\":\"goods_issue_delay\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"input_counts\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"odp_subscriber\",\"type\":\"string\"},{\"name\":\"dw_end_date_update\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                ],
+                "id": "CancelDeleteRecords",
+                "type": "transform",
+                "label": "CancelDeleteRecords",
+                "icon": "icon-javascript"
+            },
+            {
+                "name": "RemoveAuditColumns",
+                "plugin": {
+                    "name": "Projection",
+                    "type": "transform",
+                    "label": "RemoveAuditColumns",
+                    "artifact": {
+                        "name": "core-plugins",
+                        "version": "2.6.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "drop": "table_name,table_load_type,input_counts,last_update_date,odp_subscriber,dw_end_date_update"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typeprojected\",\"fields\":[{\"name\":\"cancel_data_record\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_document\",\"type\":[\"string\",\"null\"]},{\"name\":\"unloading_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"total_weight\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_district\",\"type\":[\"string\",\"null\"]},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"billing_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"weight_unit\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_part_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_part_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"customer_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"sold_to_party\",\"type\":[\"string\",\"null\"]},{\"name\":\"customer_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_type\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"vendors_account_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"departure_loading_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"net_weight\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"bill_to_party\",\"type\":[\"string\",\"null\"]},{\"name\":\"payer\",\"type\":[\"string\",\"null\"]},{\"name\":\"forwarding_agent\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_employee\",\"type\":[\"string\",\"null\"]},{\"name\":\"shipment_route\",\"type\":[\"string\",\"null\"]},{\"name\":\"sd_document_category\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_organization\",\"type\":[\"string\",\"null\"]},{\"name\":\"volume_unit\",\"type\":[\"string\",\"null\"]},{\"name\":\"volume\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"shipping_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_goods_movement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"actual_goods_movement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"number_deliveries\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"number_packages\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"fiscal_year_variant\",\"type\":[\"string\",\"null\"]},{\"name\":\"goods_issue_delay\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                ],
+                "inputSchema": [
+                    {
+                        "name": "CancelDeleteRecords",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody\",\"fields\":[{\"name\":\"cancel_data_record\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_document\",\"type\":[\"string\",\"null\"]},{\"name\":\"unloading_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"total_weight\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_district\",\"type\":[\"string\",\"null\"]},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"billing_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"weight_unit\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_part_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_part_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"customer_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"sold_to_party\",\"type\":[\"string\",\"null\"]},{\"name\":\"customer_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_type\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"vendors_account_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"departure_loading_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"net_weight\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"bill_to_party\",\"type\":[\"string\",\"null\"]},{\"name\":\"payer\",\"type\":[\"string\",\"null\"]},{\"name\":\"forwarding_agent\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_employee\",\"type\":[\"string\",\"null\"]},{\"name\":\"shipment_route\",\"type\":[\"string\",\"null\"]},{\"name\":\"sd_document_category\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_organization\",\"type\":[\"string\",\"null\"]},{\"name\":\"volume_unit\",\"type\":[\"string\",\"null\"]},{\"name\":\"volume\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"shipping_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_goods_movement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"actual_goods_movement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"number_deliveries\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"number_packages\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"fiscal_year_variant\",\"type\":[\"string\",\"null\"]},{\"name\":\"goods_issue_delay\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"input_counts\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"odp_subscriber\",\"type\":\"string\"},{\"name\":\"dw_end_date_update\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                ],
+                "id": "RemoveAuditColumns",
+                "type": "transform",
+                "label": "RemoveAuditColumns",
+                "icon": "icon-projection"
+            },
+            {
+                "name": "delivery_header",
+                "plugin": {
+                    "name": "BigQueryTable",
+                    "type": "batchsink",
+                    "label": "delivery_header",
+                    "artifact": {
+                        "name": "google-cloud",
+                        "version": "0.17.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "referenceName": "delivery_header",
+                        "project": "auto-detect",
+                        "dataset": "${Dataset}",
+                        "table": "delivery_header",
+                        "serviceAccountType": "filePath",
+                        "serviceFilePath": "auto-detect",
+                        "operation": "insert",
+                        "truncateTable": "true",
+                        "allowSchemaRelaxation": "false",
+                        "location": "US",
+                        "createPartitionedTable": "false",
+                        "partitioningType": "NONE",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typeprojected\",\"fields\":[{\"name\":\"cancel_data_record\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_document\",\"type\":[\"string\",\"null\"]},{\"name\":\"unloading_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"total_weight\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_district\",\"type\":[\"string\",\"null\"]},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"billing_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"weight_unit\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_part_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_part_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"customer_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"sold_to_party\",\"type\":[\"string\",\"null\"]},{\"name\":\"customer_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_type\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"vendors_account_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"departure_loading_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"net_weight\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"bill_to_party\",\"type\":[\"string\",\"null\"]},{\"name\":\"payer\",\"type\":[\"string\",\"null\"]},{\"name\":\"forwarding_agent\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_employee\",\"type\":[\"string\",\"null\"]},{\"name\":\"shipment_route\",\"type\":[\"string\",\"null\"]},{\"name\":\"sd_document_category\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_organization\",\"type\":[\"string\",\"null\"]},{\"name\":\"volume_unit\",\"type\":[\"string\",\"null\"]},{\"name\":\"volume\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"shipping_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_goods_movement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"actual_goods_movement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"number_deliveries\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"number_packages\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"fiscal_year_variant\",\"type\":[\"string\",\"null\"]},{\"name\":\"goods_issue_delay\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                },
+                "outputSchema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typeprojected\",\"fields\":[{\"name\":\"cancel_data_record\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_document\",\"type\":[\"string\",\"null\"]},{\"name\":\"unloading_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"total_weight\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_district\",\"type\":[\"string\",\"null\"]},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"billing_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"weight_unit\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_part_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_part_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"customer_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"sold_to_party\",\"type\":[\"string\",\"null\"]},{\"name\":\"customer_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_type\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"vendors_account_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"departure_loading_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"net_weight\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"bill_to_party\",\"type\":[\"string\",\"null\"]},{\"name\":\"payer\",\"type\":[\"string\",\"null\"]},{\"name\":\"forwarding_agent\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_employee\",\"type\":[\"string\",\"null\"]},{\"name\":\"shipment_route\",\"type\":[\"string\",\"null\"]},{\"name\":\"sd_document_category\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_organization\",\"type\":[\"string\",\"null\"]},{\"name\":\"volume_unit\",\"type\":[\"string\",\"null\"]},{\"name\":\"volume\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"shipping_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_goods_movement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"actual_goods_movement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"number_deliveries\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"number_packages\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"fiscal_year_variant\",\"type\":[\"string\",\"null\"]},{\"name\":\"goods_issue_delay\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}",
+                "inputSchema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typeprojected\",\"fields\":[{\"name\":\"cancel_data_record\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_document\",\"type\":[\"string\",\"null\"]},{\"name\":\"unloading_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"total_weight\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_district\",\"type\":[\"string\",\"null\"]},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"billing_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"weight_unit\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_part_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_part_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"customer_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"sold_to_party\",\"type\":[\"string\",\"null\"]},{\"name\":\"customer_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_type\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"vendors_account_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"departure_loading_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"net_weight\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"bill_to_party\",\"type\":[\"string\",\"null\"]},{\"name\":\"payer\",\"type\":[\"string\",\"null\"]},{\"name\":\"forwarding_agent\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_employee\",\"type\":[\"string\",\"null\"]},{\"name\":\"shipment_route\",\"type\":[\"string\",\"null\"]},{\"name\":\"sd_document_category\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_organization\",\"type\":[\"string\",\"null\"]},{\"name\":\"volume_unit\",\"type\":[\"string\",\"null\"]},{\"name\":\"volume\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"shipping_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_goods_movement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"actual_goods_movement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"number_deliveries\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"number_packages\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"fiscal_year_variant\",\"type\":[\"string\",\"null\"]},{\"name\":\"goods_issue_delay\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}",
+                "id": "delivery_header",
+                "type": "batchsink",
+                "label": "delivery_header",
+                "icon": "fa-plug"
+            },
+            {
+                "name": "KeepAuditColumns",
+                "plugin": {
+                    "name": "Projection",
+                    "type": "transform",
+                    "label": "KeepAuditColumns",
+                    "artifact": {
+                        "name": "core-plugins",
+                        "version": "2.6.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "keep": "table_name,table_load_type,input_counts,last_update_date,odp_subscriber"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typeprojected\",\"fields\":[{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"input_counts\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"odp_subscriber\",\"type\":\"string\"}]}"
+                    }
+                ],
+                "inputSchema": [
+                    {
+                        "name": "CancelDeleteRecords",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody\",\"fields\":[{\"name\":\"cancel_data_record\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_document\",\"type\":[\"string\",\"null\"]},{\"name\":\"unloading_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"total_weight\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_district\",\"type\":[\"string\",\"null\"]},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"billing_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"weight_unit\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_part_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_part_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"customer_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"sold_to_party\",\"type\":[\"string\",\"null\"]},{\"name\":\"customer_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_type\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"vendors_account_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"delivery_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"departure_loading_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"net_weight\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"bill_to_party\",\"type\":[\"string\",\"null\"]},{\"name\":\"payer\",\"type\":[\"string\",\"null\"]},{\"name\":\"forwarding_agent\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_employee\",\"type\":[\"string\",\"null\"]},{\"name\":\"shipment_route\",\"type\":[\"string\",\"null\"]},{\"name\":\"sd_document_category\",\"type\":[\"string\",\"null\"]},{\"name\":\"sales_organization\",\"type\":[\"string\",\"null\"]},{\"name\":\"volume_unit\",\"type\":[\"string\",\"null\"]},{\"name\":\"volume\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":18,\"scale\":3},\"null\"]},{\"name\":\"shipping_point\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_goods_movement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"actual_goods_movement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"number_deliveries\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"number_packages\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"fiscal_year_variant\",\"type\":[\"string\",\"null\"]},{\"name\":\"goods_issue_delay\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":9,\"scale\":0},\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"input_counts\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"odp_subscriber\",\"type\":\"string\"},{\"name\":\"dw_end_date_update\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                ],
+                "id": "KeepAuditColumns",
+                "type": "transform",
+                "label": "KeepAuditColumns",
+                "icon": "icon-projection"
+            },
+            {
+                "name": "CountInputRecords",
+                "plugin": {
+                    "name": "GroupByAggregate",
+                    "type": "batchaggregator",
+                    "label": "CountInputRecords",
+                    "artifact": {
+                        "name": "core-plugins",
+                        "version": "2.6.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "groupByFields": "table_name,table_load_type,odp_subscriber",
+                        "aggregates": "inserted_record_count:Sum(input_counts),last_update_date:Last(last_update_date)"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typetypeprojected.agg\",\"fields\":[{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"odp_subscriber\",\"type\":\"string\"},{\"name\":\"inserted_record_count\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                ],
+                "inputSchema": [
+                    {
+                        "name": "KeepAuditColumns",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typeprojected\",\"fields\":[{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"input_counts\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"odp_subscriber\",\"type\":\"string\"}]}"
+                    }
+                ],
+                "id": "CountInputRecords",
+                "type": "batchaggregator",
+                "label": "CountInputRecords",
+                "icon": "icon-groupbyaggregate"
+            },
+            {
+                "name": "staging_audit_table",
+                "plugin": {
+                    "name": "BigQueryTable",
+                    "type": "batchsink",
+                    "label": "staging_audit_table",
+                    "artifact": {
+                        "name": "google-cloud",
+                        "version": "0.17.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "referenceName": "staging_audit_table",
+                        "project": "auto-detect",
+                        "dataset": "${Dataset}",
+                        "table": "staging_audit_table",
+                        "serviceAccountType": "filePath",
+                        "serviceFilePath": "auto-detect",
+                        "operation": "upsert",
+                        "allowSchemaRelaxation": "false",
+                        "location": "US",
+                        "createPartitionedTable": "false",
+                        "partitioningType": "NONE",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typetypeprojected.agg\",\"fields\":[{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"odp_subscriber\",\"type\":\"string\"},{\"name\":\"inserted_record_count\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}",
+                        "relationTableKey": "table_name,table_load_type,odp_subscriber"
+                    }
+                },
+                "outputSchema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typetypeprojected.agg\",\"fields\":[{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"odp_subscriber\",\"type\":\"string\"},{\"name\":\"inserted_record_count\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}",
+                "inputSchema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typetypeprojected.agg\",\"fields\":[{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"odp_subscriber\",\"type\":\"string\"},{\"name\":\"inserted_record_count\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}",
+                "id": "staging_audit_table",
+                "type": "batchsink",
+                "label": "staging_audit_table",
+                "icon": "fa-plug"
+            }
+        ],
+        "schedule": "0 * * * *",
+        "engine": "spark",
+        "numOfRecordsPreview": 100,
+        "description": "delivery header",
+        "maxConcurrentRuns": 1
+    }
+}

@@ -1,0 +1,309 @@
+{
+    "name": "0ASSET_ATTR_TEXT_asset_subnumber",
+    "description": "asset master",
+    "artifact": {
+        "name": "cdap-data-pipeline",
+        "version": "6.5.0",
+        "scope": "SYSTEM"
+    },
+    "config": {
+        "resources": {
+            "memoryMB": 2048,
+            "virtualCores": 1
+        },
+        "driverResources": {
+            "memoryMB": 2048,
+            "virtualCores": 1
+        },
+        "connections": [
+            {
+                "from": "0ASSET_ATTR_TEXT",
+                "to": "ColumnsToEnglishName"
+            },
+            {
+                "from": "ColumnsToEnglishName",
+                "to": "AddingAuditColumns"
+            },
+            {
+                "from": "AddingAuditColumns",
+                "to": "RemoveAuditColumns"
+            },
+            {
+                "from": "RemoveAuditColumns",
+                "to": "asset_subnumber"
+            },
+            {
+                "from": "AddingAuditColumns",
+                "to": "KeepAuditColumns"
+            },
+            {
+                "from": "KeepAuditColumns",
+                "to": "CountInputRecords"
+            },
+            {
+                "from": "CountInputRecords",
+                "to": "staging_audit_table"
+            }
+        ],
+        "comments": [],
+        "postActions": [],
+        "properties": {},
+        "processTimingEnabled": true,
+        "stageLoggingEnabled": false,
+        "stages": [
+            {
+                "name": "0ASSET_ATTR_TEXT",
+                "plugin": {
+                    "name": "SapOdp",
+                    "type": "batchsource",
+                    "label": "0ASSET_ATTR_TEXT",
+                    "artifact": {
+                        "name": "sap-odp-plugins",
+                        "version": "0.2.0",
+                        "scope": "USER"
+                    },
+                    "properties": {
+                        "referenceName": "0ASSET_ATTR_TEXT",
+                        "jco.client.client": "${SAPClient}",
+                        "jco.client.lang": "${SAPLanguage}",
+                        "connType": "directClient",
+                        "jco.client.ashost": "${SAPApplicationServerHost}",
+                        "jco.client.sysnr": "${SAPSystemNumber}",
+                        "sapSourceObjName": "0ASSET_ATTR_TEXT",
+                        "extractType": "Full",
+                        "jco.client.user": "${secure(saplogonusername)}",
+                        "jco.client.passwd": "${secure(saplogonpassword)}",
+                        "gcpProjectId": "auto-detect",
+                        "gcsPath": "gs://cdf-sap-dependent-files",
+                        "subscriberName": "assetattrtext",
+                        "schema": "{\"type\":\"record\",\"name\":\"columnMetadata_0ASSET_ATTR_TEXT\",\"fields\":[{\"name\":\"BUKRS\",\"type\":[\"string\",\"null\"]},{\"name\":\"ANLN1\",\"type\":[\"string\",\"null\"]},{\"name\":\"ANLN2\",\"type\":[\"string\",\"null\"]},{\"name\":\"DATETO\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"DATEFROM\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"ANLKL\",\"type\":[\"string\",\"null\"]},{\"name\":\"KOKRS\",\"type\":[\"string\",\"null\"]},{\"name\":\"KOSTL\",\"type\":[\"string\",\"null\"]},{\"name\":\"WERKS\",\"type\":[\"string\",\"null\"]},{\"name\":\"GSBER\",\"type\":[\"string\",\"null\"]},{\"name\":\"CAUFN\",\"type\":[\"string\",\"null\"]},{\"name\":\"GPLAB\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"AKTIV\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"ZUPER\",\"type\":[\"string\",\"null\"]},{\"name\":\"ZUJHR\",\"type\":[\"string\",\"null\"]},{\"name\":\"ORD41\",\"type\":[\"string\",\"null\"]},{\"name\":\"ORD42\",\"type\":[\"string\",\"null\"]},{\"name\":\"ORD43\",\"type\":[\"string\",\"null\"]},{\"name\":\"ORD44\",\"type\":[\"string\",\"null\"]},{\"name\":\"ANLUE\",\"type\":[\"string\",\"null\"]},{\"name\":\"EAUFN\",\"type\":[\"string\",\"null\"]},{\"name\":\"GDLGRP\",\"type\":[\"string\",\"null\"]},{\"name\":\"POSID\",\"type\":[\"string\",\"null\"]},{\"name\":\"LSTAR\",\"type\":[\"string\",\"null\"]},{\"name\":\"STORT\",\"type\":[\"string\",\"null\"]},{\"name\":\"PERNR\",\"type\":[\"string\",\"null\"]},{\"name\":\"KOSTLV\",\"type\":[\"string\",\"null\"]},{\"name\":\"LANGU\",\"type\":[\"string\",\"null\"]},{\"name\":\"TXTLG\",\"type\":[\"string\",\"null\"]},{\"name\":\"GEBER\",\"type\":[\"string\",\"null\"]},{\"name\":\"FKBER\",\"type\":[\"string\",\"null\"]},{\"name\":\"GRANT_NBR\",\"type\":[\"string\",\"null\"]},{\"name\":\"BUDGET_PD\",\"type\":[\"string\",\"null\"]},{\"name\":\"SEGMENT\",\"type\":[\"string\",\"null\"]},{\"name\":\"PRCTR\",\"type\":[\"string\",\"null\"]},{\"name\":\"DEAKT\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"INKEN\",\"type\":[\"string\",\"null\"]},{\"name\":\"INVNR\",\"type\":[\"string\",\"null\"]},{\"name\":\"ZUGDT\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"ERDAT\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"ERNAM\",\"type\":[\"string\",\"null\"]},{\"name\":\"KTOGR\",\"type\":[\"string\",\"null\"]},{\"name\":\"MENGE\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":16,\"scale\":3},\"null\"]},{\"name\":\"MEINS\",\"type\":[\"string\",\"null\"]}]}"
+                    }
+                },
+                "outputSchema": "{\"type\":\"record\",\"name\":\"columnMetadata_0ASSET_ATTR_TEXT\",\"fields\":[{\"name\":\"BUKRS\",\"type\":[\"string\",\"null\"]},{\"name\":\"ANLN1\",\"type\":[\"string\",\"null\"]},{\"name\":\"ANLN2\",\"type\":[\"string\",\"null\"]},{\"name\":\"DATETO\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"DATEFROM\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"ANLKL\",\"type\":[\"string\",\"null\"]},{\"name\":\"KOKRS\",\"type\":[\"string\",\"null\"]},{\"name\":\"KOSTL\",\"type\":[\"string\",\"null\"]},{\"name\":\"WERKS\",\"type\":[\"string\",\"null\"]},{\"name\":\"GSBER\",\"type\":[\"string\",\"null\"]},{\"name\":\"CAUFN\",\"type\":[\"string\",\"null\"]},{\"name\":\"GPLAB\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"AKTIV\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"ZUPER\",\"type\":[\"string\",\"null\"]},{\"name\":\"ZUJHR\",\"type\":[\"string\",\"null\"]},{\"name\":\"ORD41\",\"type\":[\"string\",\"null\"]},{\"name\":\"ORD42\",\"type\":[\"string\",\"null\"]},{\"name\":\"ORD43\",\"type\":[\"string\",\"null\"]},{\"name\":\"ORD44\",\"type\":[\"string\",\"null\"]},{\"name\":\"ANLUE\",\"type\":[\"string\",\"null\"]},{\"name\":\"EAUFN\",\"type\":[\"string\",\"null\"]},{\"name\":\"GDLGRP\",\"type\":[\"string\",\"null\"]},{\"name\":\"POSID\",\"type\":[\"string\",\"null\"]},{\"name\":\"LSTAR\",\"type\":[\"string\",\"null\"]},{\"name\":\"STORT\",\"type\":[\"string\",\"null\"]},{\"name\":\"PERNR\",\"type\":[\"string\",\"null\"]},{\"name\":\"KOSTLV\",\"type\":[\"string\",\"null\"]},{\"name\":\"LANGU\",\"type\":[\"string\",\"null\"]},{\"name\":\"TXTLG\",\"type\":[\"string\",\"null\"]},{\"name\":\"GEBER\",\"type\":[\"string\",\"null\"]},{\"name\":\"FKBER\",\"type\":[\"string\",\"null\"]},{\"name\":\"GRANT_NBR\",\"type\":[\"string\",\"null\"]},{\"name\":\"BUDGET_PD\",\"type\":[\"string\",\"null\"]},{\"name\":\"SEGMENT\",\"type\":[\"string\",\"null\"]},{\"name\":\"PRCTR\",\"type\":[\"string\",\"null\"]},{\"name\":\"DEAKT\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"INKEN\",\"type\":[\"string\",\"null\"]},{\"name\":\"INVNR\",\"type\":[\"string\",\"null\"]},{\"name\":\"ZUGDT\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"ERDAT\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"ERNAM\",\"type\":[\"string\",\"null\"]},{\"name\":\"KTOGR\",\"type\":[\"string\",\"null\"]},{\"name\":\"MENGE\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":16,\"scale\":3},\"null\"]},{\"name\":\"MEINS\",\"type\":[\"string\",\"null\"]}]}",
+                "id": "0ASSET_ATTR_TEXT"
+            },
+            {
+                "name": "ColumnsToEnglishName",
+                "plugin": {
+                    "name": "Projection",
+                    "type": "transform",
+                    "label": "ColumnsToEnglishName",
+                    "artifact": {
+                        "name": "core-plugins",
+                        "version": "2.7.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "rename": "DATEFROM:valid_from,AKTIV:asset_capitallization_date,EAUFN:investment_order,MENGE:quantity,ANLKL:asset_class,ANLN1:main_asset_number,ANLN2:asset_subnumber,ANLUE:asset_super_number,DATETO:valid_to,GEBER:fund,BUKRS:company_code,CAUFN:internal_order,DEAKT:deactivation_date,ZUGDT:first_acquisition_on,ZUJHR:acquistion_year,ZUPER:first_acquisition_period,ERDAT:created_on,ERNAM:created_by,SEGMENT:segment,FKBER:functional_area,BUDGET_PD:buget_period,GDLGRP:evaluation_group_5,GRANT_NBR:grant,GPLAB:planned_retirement_date,GSBER:business_area,INKEN:inventory_indicator,INVNR:inventory_number,KOKRS:controlling_area,KOSTL:cost_center,KOSTLV:responsible_cost_Center,KTOGR:account_determination,LSTAR:activity_type,MEINS:base_unit_of_measure,ORD41:evaluation_group_1,ORD42:evaluation_group_2,ORD43:evaluation_group_3,ORD44:evaluation_group_4,PERNR:personnel_number,PRCTR:profit_center,POSID:wbs_element,LANGU:language_key,STORT:asset_location,TXTLG:asset_description,WERKS:plant"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": "{\"type\":\"record\",\"name\":\"columnMetadata_0ASSET_ATTR_TEXT.typeprojected\",\"fields\":[{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"main_asset_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_subnumber\",\"type\":[\"string\",\"null\"]},{\"name\":\"valid_to\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"valid_from\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"asset_class\",\"type\":[\"string\",\"null\"]},{\"name\":\"controlling_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"cost_center\",\"type\":[\"string\",\"null\"]},{\"name\":\"plant\",\"type\":[\"string\",\"null\"]},{\"name\":\"business_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"internal_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_retirement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"asset_capitallization_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"first_acquisition_period\",\"type\":[\"string\",\"null\"]},{\"name\":\"acquistion_year\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_3\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_4\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_super_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"investment_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_5\",\"type\":[\"string\",\"null\"]},{\"name\":\"wbs_element\",\"type\":[\"string\",\"null\"]},{\"name\":\"activity_type\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_location\",\"type\":[\"string\",\"null\"]},{\"name\":\"personnel_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"responsible_cost_Center\",\"type\":[\"string\",\"null\"]},{\"name\":\"language_key\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_description\",\"type\":[\"string\",\"null\"]},{\"name\":\"fund\",\"type\":[\"string\",\"null\"]},{\"name\":\"functional_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"grant\",\"type\":[\"string\",\"null\"]},{\"name\":\"buget_period\",\"type\":[\"string\",\"null\"]},{\"name\":\"segment\",\"type\":[\"string\",\"null\"]},{\"name\":\"profit_center\",\"type\":[\"string\",\"null\"]},{\"name\":\"deactivation_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"inventory_indicator\",\"type\":[\"string\",\"null\"]},{\"name\":\"inventory_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"first_acquisition_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_by\",\"type\":[\"string\",\"null\"]},{\"name\":\"account_determination\",\"type\":[\"string\",\"null\"]},{\"name\":\"quantity\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":16,\"scale\":3},\"null\"]},{\"name\":\"base_unit_of_measure\",\"type\":[\"string\",\"null\"]}]}"
+                    }
+                ],
+                "inputSchema": [
+                    {
+                        "name": "0ASSET_ATTR_TEXT",
+                        "schema": "{\"type\":\"record\",\"name\":\"columnMetadata_0ASSET_ATTR_TEXT\",\"fields\":[{\"name\":\"BUKRS\",\"type\":[\"string\",\"null\"]},{\"name\":\"ANLN1\",\"type\":[\"string\",\"null\"]},{\"name\":\"ANLN2\",\"type\":[\"string\",\"null\"]},{\"name\":\"DATETO\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"DATEFROM\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"ANLKL\",\"type\":[\"string\",\"null\"]},{\"name\":\"KOKRS\",\"type\":[\"string\",\"null\"]},{\"name\":\"KOSTL\",\"type\":[\"string\",\"null\"]},{\"name\":\"WERKS\",\"type\":[\"string\",\"null\"]},{\"name\":\"GSBER\",\"type\":[\"string\",\"null\"]},{\"name\":\"CAUFN\",\"type\":[\"string\",\"null\"]},{\"name\":\"GPLAB\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"AKTIV\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"ZUPER\",\"type\":[\"string\",\"null\"]},{\"name\":\"ZUJHR\",\"type\":[\"string\",\"null\"]},{\"name\":\"ORD41\",\"type\":[\"string\",\"null\"]},{\"name\":\"ORD42\",\"type\":[\"string\",\"null\"]},{\"name\":\"ORD43\",\"type\":[\"string\",\"null\"]},{\"name\":\"ORD44\",\"type\":[\"string\",\"null\"]},{\"name\":\"ANLUE\",\"type\":[\"string\",\"null\"]},{\"name\":\"EAUFN\",\"type\":[\"string\",\"null\"]},{\"name\":\"GDLGRP\",\"type\":[\"string\",\"null\"]},{\"name\":\"POSID\",\"type\":[\"string\",\"null\"]},{\"name\":\"LSTAR\",\"type\":[\"string\",\"null\"]},{\"name\":\"STORT\",\"type\":[\"string\",\"null\"]},{\"name\":\"PERNR\",\"type\":[\"string\",\"null\"]},{\"name\":\"KOSTLV\",\"type\":[\"string\",\"null\"]},{\"name\":\"LANGU\",\"type\":[\"string\",\"null\"]},{\"name\":\"TXTLG\",\"type\":[\"string\",\"null\"]},{\"name\":\"GEBER\",\"type\":[\"string\",\"null\"]},{\"name\":\"FKBER\",\"type\":[\"string\",\"null\"]},{\"name\":\"GRANT_NBR\",\"type\":[\"string\",\"null\"]},{\"name\":\"BUDGET_PD\",\"type\":[\"string\",\"null\"]},{\"name\":\"SEGMENT\",\"type\":[\"string\",\"null\"]},{\"name\":\"PRCTR\",\"type\":[\"string\",\"null\"]},{\"name\":\"DEAKT\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"INKEN\",\"type\":[\"string\",\"null\"]},{\"name\":\"INVNR\",\"type\":[\"string\",\"null\"]},{\"name\":\"ZUGDT\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"ERDAT\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"ERNAM\",\"type\":[\"string\",\"null\"]},{\"name\":\"KTOGR\",\"type\":[\"string\",\"null\"]},{\"name\":\"MENGE\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":16,\"scale\":3},\"null\"]},{\"name\":\"MEINS\",\"type\":[\"string\",\"null\"]}]}"
+                    }
+                ],
+                "id": "ColumnsToEnglishName"
+            },
+            {
+                "name": "AddingAuditColumns",
+                "plugin": {
+                    "name": "Wrangler",
+                    "type": "transform",
+                    "label": "AddingAuditColumns",
+                    "artifact": {
+                        "name": "wrangler-transform",
+                        "version": "4.5.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "field": "*",
+                        "precondition": "false",
+                        "directives": "set-column :dw_active_indicator \"Y\";\ncurrent-datetime :dw_start_date;\nset-column :dw_end_date \"9999-12-31 23:59:59\";\nparse-as-datetime :dw_end_date \"yyyy-MM-dd HH:mm:ss\";\ncurrent-datetime :dw_last_update_date;\nset-column :table_name \"0ASSET_ATTR_TEXT\";\nset-column :table_load_type \"FULLLOAD\";\nset-column :input_counts \"1\";\ncurrent-datetime :last_update_date;\nset-column :odp_subscriber \"assetattrtext\";",
+                        "on-error": "skip-error",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody\",\"fields\":[{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"main_asset_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_subnumber\",\"type\":[\"string\",\"null\"]},{\"name\":\"valid_to\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"valid_from\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"asset_class\",\"type\":[\"string\",\"null\"]},{\"name\":\"controlling_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"cost_center\",\"type\":[\"string\",\"null\"]},{\"name\":\"plant\",\"type\":[\"string\",\"null\"]},{\"name\":\"business_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"internal_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_retirement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"asset_capitallization_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"first_acquisition_period\",\"type\":[\"string\",\"null\"]},{\"name\":\"acquistion_year\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_3\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_4\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_super_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"investment_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_5\",\"type\":[\"string\",\"null\"]},{\"name\":\"wbs_element\",\"type\":[\"string\",\"null\"]},{\"name\":\"activity_type\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_location\",\"type\":[\"string\",\"null\"]},{\"name\":\"personnel_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"responsible_cost_Center\",\"type\":[\"string\",\"null\"]},{\"name\":\"language_key\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_description\",\"type\":[\"string\",\"null\"]},{\"name\":\"fund\",\"type\":[\"string\",\"null\"]},{\"name\":\"functional_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"grant\",\"type\":[\"string\",\"null\"]},{\"name\":\"buget_period\",\"type\":[\"string\",\"null\"]},{\"name\":\"segment\",\"type\":[\"string\",\"null\"]},{\"name\":\"profit_center\",\"type\":[\"string\",\"null\"]},{\"name\":\"deactivation_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"inventory_indicator\",\"type\":[\"string\",\"null\"]},{\"name\":\"inventory_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"first_acquisition_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_by\",\"type\":[\"string\",\"null\"]},{\"name\":\"account_determination\",\"type\":[\"string\",\"null\"]},{\"name\":\"quantity\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":16,\"scale\":3},\"null\"]},{\"name\":\"base_unit_of_measure\",\"type\":[\"string\",\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"input_counts\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"odp_subscriber\",\"type\":\"string\"}]}"
+                    }
+                },
+                "outputSchema": "{\"type\":\"record\",\"name\":\"etlSchemaBody\",\"fields\":[{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"main_asset_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_subnumber\",\"type\":[\"string\",\"null\"]},{\"name\":\"valid_to\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"valid_from\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"asset_class\",\"type\":[\"string\",\"null\"]},{\"name\":\"controlling_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"cost_center\",\"type\":[\"string\",\"null\"]},{\"name\":\"plant\",\"type\":[\"string\",\"null\"]},{\"name\":\"business_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"internal_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_retirement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"asset_capitallization_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"first_acquisition_period\",\"type\":[\"string\",\"null\"]},{\"name\":\"acquistion_year\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_3\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_4\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_super_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"investment_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_5\",\"type\":[\"string\",\"null\"]},{\"name\":\"wbs_element\",\"type\":[\"string\",\"null\"]},{\"name\":\"activity_type\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_location\",\"type\":[\"string\",\"null\"]},{\"name\":\"personnel_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"responsible_cost_Center\",\"type\":[\"string\",\"null\"]},{\"name\":\"language_key\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_description\",\"type\":[\"string\",\"null\"]},{\"name\":\"fund\",\"type\":[\"string\",\"null\"]},{\"name\":\"functional_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"grant\",\"type\":[\"string\",\"null\"]},{\"name\":\"buget_period\",\"type\":[\"string\",\"null\"]},{\"name\":\"segment\",\"type\":[\"string\",\"null\"]},{\"name\":\"profit_center\",\"type\":[\"string\",\"null\"]},{\"name\":\"deactivation_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"inventory_indicator\",\"type\":[\"string\",\"null\"]},{\"name\":\"inventory_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"first_acquisition_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_by\",\"type\":[\"string\",\"null\"]},{\"name\":\"account_determination\",\"type\":[\"string\",\"null\"]},{\"name\":\"quantity\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":16,\"scale\":3},\"null\"]},{\"name\":\"base_unit_of_measure\",\"type\":[\"string\",\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"input_counts\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"odp_subscriber\",\"type\":\"string\"}]}",
+                "inputSchema": [
+                    {
+                        "name": "ColumnsToEnglishName",
+                        "schema": "{\"type\":\"record\",\"name\":\"columnMetadata_0ASSET_ATTR_TEXT.typeprojected\",\"fields\":[{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"main_asset_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_subnumber\",\"type\":[\"string\",\"null\"]},{\"name\":\"valid_to\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"valid_from\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"asset_class\",\"type\":[\"string\",\"null\"]},{\"name\":\"controlling_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"cost_center\",\"type\":[\"string\",\"null\"]},{\"name\":\"plant\",\"type\":[\"string\",\"null\"]},{\"name\":\"business_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"internal_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_retirement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"asset_capitallization_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"first_acquisition_period\",\"type\":[\"string\",\"null\"]},{\"name\":\"acquistion_year\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_3\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_4\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_super_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"investment_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_5\",\"type\":[\"string\",\"null\"]},{\"name\":\"wbs_element\",\"type\":[\"string\",\"null\"]},{\"name\":\"activity_type\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_location\",\"type\":[\"string\",\"null\"]},{\"name\":\"personnel_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"responsible_cost_Center\",\"type\":[\"string\",\"null\"]},{\"name\":\"language_key\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_description\",\"type\":[\"string\",\"null\"]},{\"name\":\"fund\",\"type\":[\"string\",\"null\"]},{\"name\":\"functional_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"grant\",\"type\":[\"string\",\"null\"]},{\"name\":\"buget_period\",\"type\":[\"string\",\"null\"]},{\"name\":\"segment\",\"type\":[\"string\",\"null\"]},{\"name\":\"profit_center\",\"type\":[\"string\",\"null\"]},{\"name\":\"deactivation_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"inventory_indicator\",\"type\":[\"string\",\"null\"]},{\"name\":\"inventory_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"first_acquisition_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_by\",\"type\":[\"string\",\"null\"]},{\"name\":\"account_determination\",\"type\":[\"string\",\"null\"]},{\"name\":\"quantity\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":16,\"scale\":3},\"null\"]},{\"name\":\"base_unit_of_measure\",\"type\":[\"string\",\"null\"]}]}"
+                    }
+                ],
+                "id": "AddingAuditColumns"
+            },
+            {
+                "name": "RemoveAuditColumns",
+                "plugin": {
+                    "name": "Projection",
+                    "type": "transform",
+                    "label": "RemoveAuditColumns",
+                    "artifact": {
+                        "name": "core-plugins",
+                        "version": "2.7.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "drop": "table_name,table_load_type,input_counts,last_update_date,odp_subscriber"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typeprojected\",\"fields\":[{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"main_asset_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_subnumber\",\"type\":[\"string\",\"null\"]},{\"name\":\"valid_to\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"valid_from\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"asset_class\",\"type\":[\"string\",\"null\"]},{\"name\":\"controlling_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"cost_center\",\"type\":[\"string\",\"null\"]},{\"name\":\"plant\",\"type\":[\"string\",\"null\"]},{\"name\":\"business_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"internal_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_retirement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"asset_capitallization_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"first_acquisition_period\",\"type\":[\"string\",\"null\"]},{\"name\":\"acquistion_year\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_3\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_4\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_super_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"investment_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_5\",\"type\":[\"string\",\"null\"]},{\"name\":\"wbs_element\",\"type\":[\"string\",\"null\"]},{\"name\":\"activity_type\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_location\",\"type\":[\"string\",\"null\"]},{\"name\":\"personnel_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"responsible_cost_Center\",\"type\":[\"string\",\"null\"]},{\"name\":\"language_key\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_description\",\"type\":[\"string\",\"null\"]},{\"name\":\"fund\",\"type\":[\"string\",\"null\"]},{\"name\":\"functional_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"grant\",\"type\":[\"string\",\"null\"]},{\"name\":\"buget_period\",\"type\":[\"string\",\"null\"]},{\"name\":\"segment\",\"type\":[\"string\",\"null\"]},{\"name\":\"profit_center\",\"type\":[\"string\",\"null\"]},{\"name\":\"deactivation_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"inventory_indicator\",\"type\":[\"string\",\"null\"]},{\"name\":\"inventory_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"first_acquisition_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_by\",\"type\":[\"string\",\"null\"]},{\"name\":\"account_determination\",\"type\":[\"string\",\"null\"]},{\"name\":\"quantity\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":16,\"scale\":3},\"null\"]},{\"name\":\"base_unit_of_measure\",\"type\":[\"string\",\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                ],
+                "inputSchema": [
+                    {
+                        "name": "AddingAuditColumns",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody\",\"fields\":[{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"main_asset_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_subnumber\",\"type\":[\"string\",\"null\"]},{\"name\":\"valid_to\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"valid_from\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"asset_class\",\"type\":[\"string\",\"null\"]},{\"name\":\"controlling_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"cost_center\",\"type\":[\"string\",\"null\"]},{\"name\":\"plant\",\"type\":[\"string\",\"null\"]},{\"name\":\"business_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"internal_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_retirement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"asset_capitallization_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"first_acquisition_period\",\"type\":[\"string\",\"null\"]},{\"name\":\"acquistion_year\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_3\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_4\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_super_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"investment_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_5\",\"type\":[\"string\",\"null\"]},{\"name\":\"wbs_element\",\"type\":[\"string\",\"null\"]},{\"name\":\"activity_type\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_location\",\"type\":[\"string\",\"null\"]},{\"name\":\"personnel_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"responsible_cost_Center\",\"type\":[\"string\",\"null\"]},{\"name\":\"language_key\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_description\",\"type\":[\"string\",\"null\"]},{\"name\":\"fund\",\"type\":[\"string\",\"null\"]},{\"name\":\"functional_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"grant\",\"type\":[\"string\",\"null\"]},{\"name\":\"buget_period\",\"type\":[\"string\",\"null\"]},{\"name\":\"segment\",\"type\":[\"string\",\"null\"]},{\"name\":\"profit_center\",\"type\":[\"string\",\"null\"]},{\"name\":\"deactivation_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"inventory_indicator\",\"type\":[\"string\",\"null\"]},{\"name\":\"inventory_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"first_acquisition_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_by\",\"type\":[\"string\",\"null\"]},{\"name\":\"account_determination\",\"type\":[\"string\",\"null\"]},{\"name\":\"quantity\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":16,\"scale\":3},\"null\"]},{\"name\":\"base_unit_of_measure\",\"type\":[\"string\",\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"input_counts\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"odp_subscriber\",\"type\":\"string\"}]}"
+                    }
+                ],
+                "id": "RemoveAuditColumns"
+            },
+            {
+                "name": "asset_subnumber",
+                "plugin": {
+                    "name": "BigQueryTable",
+                    "type": "batchsink",
+                    "label": "asset_subnumber",
+                    "artifact": {
+                        "name": "google-cloud",
+                        "version": "0.18.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "referenceName": "asset_subnumber",
+                        "project": "auto-detect",
+                        "dataset": "${Dataset}",
+                        "table": "asset_subnumber",
+                        "serviceAccountType": "filePath",
+                        "serviceFilePath": "auto-detect",
+                        "operation": "insert",
+                        "truncateTable": "true",
+                        "allowSchemaRelaxation": "false",
+                        "location": "US",
+                        "createPartitionedTable": "false",
+                        "partitioningType": "NONE",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typeprojected\",\"fields\":[{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"main_asset_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_subnumber\",\"type\":[\"string\",\"null\"]},{\"name\":\"valid_to\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"valid_from\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"asset_class\",\"type\":[\"string\",\"null\"]},{\"name\":\"controlling_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"cost_center\",\"type\":[\"string\",\"null\"]},{\"name\":\"plant\",\"type\":[\"string\",\"null\"]},{\"name\":\"business_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"internal_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_retirement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"asset_capitallization_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"first_acquisition_period\",\"type\":[\"string\",\"null\"]},{\"name\":\"acquistion_year\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_3\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_4\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_super_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"investment_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_5\",\"type\":[\"string\",\"null\"]},{\"name\":\"wbs_element\",\"type\":[\"string\",\"null\"]},{\"name\":\"activity_type\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_location\",\"type\":[\"string\",\"null\"]},{\"name\":\"personnel_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"responsible_cost_Center\",\"type\":[\"string\",\"null\"]},{\"name\":\"language_key\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_description\",\"type\":[\"string\",\"null\"]},{\"name\":\"fund\",\"type\":[\"string\",\"null\"]},{\"name\":\"functional_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"grant\",\"type\":[\"string\",\"null\"]},{\"name\":\"buget_period\",\"type\":[\"string\",\"null\"]},{\"name\":\"segment\",\"type\":[\"string\",\"null\"]},{\"name\":\"profit_center\",\"type\":[\"string\",\"null\"]},{\"name\":\"deactivation_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"inventory_indicator\",\"type\":[\"string\",\"null\"]},{\"name\":\"inventory_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"first_acquisition_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_by\",\"type\":[\"string\",\"null\"]},{\"name\":\"account_determination\",\"type\":[\"string\",\"null\"]},{\"name\":\"quantity\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":16,\"scale\":3},\"null\"]},{\"name\":\"base_unit_of_measure\",\"type\":[\"string\",\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                },
+                "outputSchema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typeprojected\",\"fields\":[{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"main_asset_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_subnumber\",\"type\":[\"string\",\"null\"]},{\"name\":\"valid_to\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"valid_from\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"asset_class\",\"type\":[\"string\",\"null\"]},{\"name\":\"controlling_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"cost_center\",\"type\":[\"string\",\"null\"]},{\"name\":\"plant\",\"type\":[\"string\",\"null\"]},{\"name\":\"business_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"internal_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_retirement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"asset_capitallization_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"first_acquisition_period\",\"type\":[\"string\",\"null\"]},{\"name\":\"acquistion_year\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_3\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_4\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_super_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"investment_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_5\",\"type\":[\"string\",\"null\"]},{\"name\":\"wbs_element\",\"type\":[\"string\",\"null\"]},{\"name\":\"activity_type\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_location\",\"type\":[\"string\",\"null\"]},{\"name\":\"personnel_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"responsible_cost_Center\",\"type\":[\"string\",\"null\"]},{\"name\":\"language_key\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_description\",\"type\":[\"string\",\"null\"]},{\"name\":\"fund\",\"type\":[\"string\",\"null\"]},{\"name\":\"functional_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"grant\",\"type\":[\"string\",\"null\"]},{\"name\":\"buget_period\",\"type\":[\"string\",\"null\"]},{\"name\":\"segment\",\"type\":[\"string\",\"null\"]},{\"name\":\"profit_center\",\"type\":[\"string\",\"null\"]},{\"name\":\"deactivation_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"inventory_indicator\",\"type\":[\"string\",\"null\"]},{\"name\":\"inventory_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"first_acquisition_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_by\",\"type\":[\"string\",\"null\"]},{\"name\":\"account_determination\",\"type\":[\"string\",\"null\"]},{\"name\":\"quantity\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":16,\"scale\":3},\"null\"]},{\"name\":\"base_unit_of_measure\",\"type\":[\"string\",\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}",
+                "inputSchema": [
+                    {
+                        "name": "RemoveAuditColumns",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typeprojected\",\"fields\":[{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"main_asset_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_subnumber\",\"type\":[\"string\",\"null\"]},{\"name\":\"valid_to\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"valid_from\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"asset_class\",\"type\":[\"string\",\"null\"]},{\"name\":\"controlling_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"cost_center\",\"type\":[\"string\",\"null\"]},{\"name\":\"plant\",\"type\":[\"string\",\"null\"]},{\"name\":\"business_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"internal_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_retirement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"asset_capitallization_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"first_acquisition_period\",\"type\":[\"string\",\"null\"]},{\"name\":\"acquistion_year\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_3\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_4\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_super_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"investment_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_5\",\"type\":[\"string\",\"null\"]},{\"name\":\"wbs_element\",\"type\":[\"string\",\"null\"]},{\"name\":\"activity_type\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_location\",\"type\":[\"string\",\"null\"]},{\"name\":\"personnel_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"responsible_cost_Center\",\"type\":[\"string\",\"null\"]},{\"name\":\"language_key\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_description\",\"type\":[\"string\",\"null\"]},{\"name\":\"fund\",\"type\":[\"string\",\"null\"]},{\"name\":\"functional_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"grant\",\"type\":[\"string\",\"null\"]},{\"name\":\"buget_period\",\"type\":[\"string\",\"null\"]},{\"name\":\"segment\",\"type\":[\"string\",\"null\"]},{\"name\":\"profit_center\",\"type\":[\"string\",\"null\"]},{\"name\":\"deactivation_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"inventory_indicator\",\"type\":[\"string\",\"null\"]},{\"name\":\"inventory_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"first_acquisition_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_by\",\"type\":[\"string\",\"null\"]},{\"name\":\"account_determination\",\"type\":[\"string\",\"null\"]},{\"name\":\"quantity\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":16,\"scale\":3},\"null\"]},{\"name\":\"base_unit_of_measure\",\"type\":[\"string\",\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                ],
+                "id": "asset_subnumber"
+            },
+            {
+                "name": "KeepAuditColumns",
+                "plugin": {
+                    "name": "Projection",
+                    "type": "transform",
+                    "label": "KeepAuditColumns",
+                    "artifact": {
+                        "name": "core-plugins",
+                        "version": "2.7.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "keep": "table_name,table_load_type,input_counts,last_update_date,odp_subscriber"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typeprojected\",\"fields\":[{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"input_counts\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"odp_subscriber\",\"type\":\"string\"}]}"
+                    }
+                ],
+                "inputSchema": [
+                    {
+                        "name": "AddingAuditColumns",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody\",\"fields\":[{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"main_asset_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_subnumber\",\"type\":[\"string\",\"null\"]},{\"name\":\"valid_to\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"valid_from\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"asset_class\",\"type\":[\"string\",\"null\"]},{\"name\":\"controlling_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"cost_center\",\"type\":[\"string\",\"null\"]},{\"name\":\"plant\",\"type\":[\"string\",\"null\"]},{\"name\":\"business_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"internal_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_retirement_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"asset_capitallization_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"first_acquisition_period\",\"type\":[\"string\",\"null\"]},{\"name\":\"acquistion_year\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_3\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_4\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_super_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"investment_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluation_group_5\",\"type\":[\"string\",\"null\"]},{\"name\":\"wbs_element\",\"type\":[\"string\",\"null\"]},{\"name\":\"activity_type\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_location\",\"type\":[\"string\",\"null\"]},{\"name\":\"personnel_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"responsible_cost_Center\",\"type\":[\"string\",\"null\"]},{\"name\":\"language_key\",\"type\":[\"string\",\"null\"]},{\"name\":\"asset_description\",\"type\":[\"string\",\"null\"]},{\"name\":\"fund\",\"type\":[\"string\",\"null\"]},{\"name\":\"functional_area\",\"type\":[\"string\",\"null\"]},{\"name\":\"grant\",\"type\":[\"string\",\"null\"]},{\"name\":\"buget_period\",\"type\":[\"string\",\"null\"]},{\"name\":\"segment\",\"type\":[\"string\",\"null\"]},{\"name\":\"profit_center\",\"type\":[\"string\",\"null\"]},{\"name\":\"deactivation_date\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"inventory_indicator\",\"type\":[\"string\",\"null\"]},{\"name\":\"inventory_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"first_acquisition_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_by\",\"type\":[\"string\",\"null\"]},{\"name\":\"account_determination\",\"type\":[\"string\",\"null\"]},{\"name\":\"quantity\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":16,\"scale\":3},\"null\"]},{\"name\":\"base_unit_of_measure\",\"type\":[\"string\",\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"input_counts\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"odp_subscriber\",\"type\":\"string\"}]}"
+                    }
+                ],
+                "id": "KeepAuditColumns"
+            },
+            {
+                "name": "CountInputRecords",
+                "plugin": {
+                    "name": "GroupByAggregate",
+                    "type": "batchaggregator",
+                    "label": "CountInputRecords",
+                    "artifact": {
+                        "name": "core-plugins",
+                        "version": "2.7.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "groupByFields": "table_name,table_load_type,odp_subscriber",
+                        "aggregates": "inserted_record_count:Sum(input_counts),last_update_date:Last(last_update_date)"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typetypeprojected.agg\",\"fields\":[{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"odp_subscriber\",\"type\":\"string\"},{\"name\":\"inserted_record_count\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                ],
+                "inputSchema": [
+                    {
+                        "name": "KeepAuditColumns",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typeprojected\",\"fields\":[{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"input_counts\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"odp_subscriber\",\"type\":\"string\"}]}"
+                    }
+                ],
+                "id": "CountInputRecords"
+            },
+            {
+                "name": "staging_audit_table",
+                "plugin": {
+                    "name": "BigQueryTable",
+                    "type": "batchsink",
+                    "label": "staging_audit_table",
+                    "artifact": {
+                        "name": "google-cloud",
+                        "version": "0.18.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "referenceName": "staging_audit_table",
+                        "project": "auto-detect",
+                        "dataset": "${Dataset}",
+                        "table": "staging_audit_table",
+                        "serviceAccountType": "filePath",
+                        "serviceFilePath": "auto-detect",
+                        "operation": "upsert",
+                        "allowSchemaRelaxation": "false",
+                        "location": "US",
+                        "createPartitionedTable": "false",
+                        "partitioningType": "NONE",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typetypeprojected.agg\",\"fields\":[{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"odp_subscriber\",\"type\":\"string\"},{\"name\":\"inserted_record_count\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}",
+                        "relationTableKey": "table_name,table_load_type,odp_subscriber"
+                    }
+                },
+                "outputSchema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typetypeprojected.agg\",\"fields\":[{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"odp_subscriber\",\"type\":\"string\"},{\"name\":\"inserted_record_count\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}",
+                "inputSchema": [
+                    {
+                        "name": "CountInputRecords",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typetypeprojected.agg\",\"fields\":[{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"odp_subscriber\",\"type\":\"string\"},{\"name\":\"inserted_record_count\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                ],
+                "id": "staging_audit_table"
+            }
+        ],
+        "schedule": "0 * * * *",
+        "engine": "spark",
+        "numOfRecordsPreview": 100,
+        "description": "asset master",
+        "maxConcurrentRuns": 1
+    }
+}

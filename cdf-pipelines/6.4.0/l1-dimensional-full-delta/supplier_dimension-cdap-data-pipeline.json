@@ -1,0 +1,109 @@
+{
+    "name": "supplier_dimension",
+    "description": "supplier dimension",
+    "artifact": {
+        "name": "cdap-data-pipeline",
+        "version": "6.4.0",
+        "scope": "SYSTEM"
+    },
+    "config": {
+        "resources": {
+            "memoryMB": 2048,
+            "virtualCores": 1
+        },
+        "driverResources": {
+            "memoryMB": 2048,
+            "virtualCores": 1
+        },
+        "connections": [
+            {
+                "from": "Merge Statement",
+                "to": "Update Audit Table"
+            }
+        ],
+        "comments": [],
+        "postActions": [],
+        "properties": {},
+        "processTimingEnabled": true,
+        "stageLoggingEnabled": false,
+        "stages": [
+            {
+                "name": "Merge Statement",
+                "plugin": {
+                    "name": "BigQueryExecute",
+                    "type": "action",
+                    "label": "Merge Statement",
+                    "artifact": {
+                        "name": "google-cloud",
+                        "version": "0.17.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "project": "auto-detect",
+                        "sql": "MERGE INTO\n  `${ProjectID}.${TargetDatasetNames2}.supplier_dimension` tgt\nUSING\n  (\nWITH tmp_scr AS (SELECT\n    sm.vendors_account_number as supplier_key,\n    sm.vendors_account_number,\n    sm.vendor_account_group,\n    sm.industry_key,\n    sm.country_key,\n    sm.postal_code,\n    sm.region,\n    sm.plant,\n    sm.title,\n    sm.train_station,\n    sm.international_location_number_1,\n    sm.international_location_number_2,\n    sm.authorization_group,\n    sm.check_digit,\n    sm.data_line,\n    sm.date_medium_exchange_indicator,\n    sm.instruction_key,\n    sm.created_on,\n    sm.created_by,\n    sm.isr_subscriber_number,\n    sm.group_key,\n    sm.customer_number,\n    sm.alternative_payee,\n    sm.central_deletion_flag,\n    sm.name_1,\n    sm.name_2,\n    sm.name_3,\n    sm.name_4,\n    sm.city,\n    sm.district,\n    sm.post_office_box,\n    sm.po_box_postal_code,\n    sm.sort_field,\n    sm.central_posting_block,\n    sm.central_purchasing_block,\n    sm.language_key,\n    sm.tax_number_1,\n    sm.tax_number_2,\n    sm.tax_number_3,\n    sm.sales_equalization_tax,\n    sm.liable_for_vat,\n    sm.street_and_house_number,\n    sm.telebox_number,\n    sm.telephone_1,\n    sm.telephone_2,\n    sm.fax_number,\n    sm.teletex_number,\n    sm.telex_number,\n    sm.one_time_account,\n    sm.payee_in_document,\n    sm.trading_partner,\n    sm.fiscal_address,\n    sm.vat_registration_number,\n    sm.natural_person,\n    sm.block_function,\n    sm.matchcode_name_1,\n    sm.matchcode_name_2,\n    sm.matchcode_city,\n    sm.place_of_birth,\n    sm.date_of_birth,\n    sm.sex,\n    sm.credit_information_number,\n    sm.last_external_review,\n    sm.actual_qm_system,\n    sm.reference_account_group,\n    sm.post_office_box_city,\n    sm.vendor_sub_range_relevant,\n    sm.plant_level_relevant,\n    sm.factory_calendar,\n    sm.tax_jurisdiction,\n    sm.payment_block,\n    sm.address,\n    sm.tax_number_4,\n    sm.tax_number_5,\n    sm.dw_last_update_date as input_last_update_date,\n    sm.dw_active_indicator\n  FROM `${ProjectID}.${StagingDatasetName}.supply_master` sm\n       INNER JOIN `${ProjectID}.${StagingDatasetName}.layer1_audit_table` lat\n    ON 1 = 1\n   AND lat.table_name = 'supplier_dimension' \n WHERE sm.dw_active_indicator = 'Y'\n   AND (sm.dw_last_update_date >= CASE WHEN lat.full_delta_indicator = 'F' THEN lat.full_load_datetime\n                                       WHEN lat.full_delta_indicator <> 'F' THEN lat.delta_load_datetime\n                                       ELSE CAST('1900-01-01T00:00:00' AS DATETIME)\n                                  END)),\n  tmp_supp AS (SELECT ts.*,\n     TO_HEX(MD5((select string_agg(CAST(col as STRING), ', ' order by offset)\n    from unnest(split(trim(format('%t',(select as struct ts.* except(input_last_update_date))), '()'),', ')) col with offset \n    where not col IS NULL\n    ))) as finalmd5key      \n  from tmp_scr ts)\nSELECT t.supplier_key as supplier_join_key,t.*\n  from tmp_supp t\nUNION ALL \nSELECT NULL as supplier_join_key,t.*\n  from tmp_supp t\n       INNER JOIN `${ProjectID}.${TargetDatasetNames2}.supplier_dimension` sd \n    ON sd.supplier_key = t.supplier_key\n   AND sd.finalmd5key <> t.finalmd5key\nWHERE sd.dw_active_indicator = 'Y') scr \n    ON tgt.supplier_key = scr.supplier_join_key\nWHEN MATCHED AND tgt.finalmd5key <> scr.finalmd5key THEN\nUPDATE set tgt.dw_end_date = CURRENT_DATETIME()\n          ,tgt.dw_active_indicator = 'N'\nWHEN NOT MATCHED THEN \nINSERT (\nsupplier_uuid,\nsupplier_key,\nvendors_account_number,\nvendor_account_group,\nindustry_key,\ncountry_key,\npostal_code,\nregion,\nplant,\ntitle,\ntrain_station,\ninternational_location_number_1,\ninternational_location_number_2,\nauthorization_group,\ncheck_digit,\ndata_line,\ndate_medium_exchange_indicator,\ninstruction_key,\ncreated_on,\ncreated_by,\nisr_subscriber_number,\ngroup_key,\ncustomer_number,\nalternative_payee,\ncentral_deletion_flag,\nname_1,\nname_2,\nname_3,\nname_4,\ncity,\ndistrict,\npost_office_box,\npo_box_postal_code,\nsort_field,\ncentral_posting_block,\ncentral_purchasing_block,\nlanguage_key,\ntax_number_1,\ntax_number_2,\ntax_number_3,\nsales_equalization_tax,\nliable_for_vat,\nstreet_and_house_number,\ntelebox_number,\ntelephone_1,\ntelephone_2,\nfax_number,\nteletex_number,\ntelex_number,\none_time_account,\npayee_in_document,\ntrading_partner,\nfiscal_address,\nvat_registration_number,\nnatural_person,\nblock_function,\nmatchcode_name_1,\nmatchcode_name_2,\nmatchcode_city,\nplace_of_birth,\ndate_of_birth,\nsex,\ncredit_information_number,\nlast_external_review,\nactual_qm_system,\nreference_account_group,\npost_office_box_city,\nvendor_sub_range_relevant,\nplant_level_relevant,\nfactory_calendar,\ntax_jurisdiction,\npayment_block,\naddress,\ntax_number_4,\ntax_number_5,\ninput_last_update_date,\nfinalmd5key,\ndw_active_indicator,\ndw_start_date,\ndw_end_date,\ndw_last_update_date)\nVALUES \n(TO_HEX(MD5(supplier_key)),\nscr.supplier_key,\nscr.vendors_account_number,\nscr.vendor_account_group,\nscr.industry_key,\nscr.country_key,\nscr.postal_code,\nscr.region,\nscr.plant,\nscr.title,\nscr.train_station,\nscr.international_location_number_1,\nscr.international_location_number_2,\nscr.authorization_group,\nscr.check_digit,\nscr.data_line,\nscr.date_medium_exchange_indicator,\nscr.instruction_key,\nscr.created_on,\nscr.created_by,\nscr.isr_subscriber_number,\nscr.group_key,\nscr.customer_number,\nscr.alternative_payee,\nscr.central_deletion_flag,\nscr.name_1,\nscr.name_2,\nscr.name_3,\nscr.name_4,\nscr.city,\nscr.district,\nscr.post_office_box,\nscr.po_box_postal_code,\nscr.sort_field,\nscr.central_posting_block,\nscr.central_purchasing_block,\nscr.language_key,\nscr.tax_number_1,\nscr.tax_number_2,\nscr.tax_number_3,\nscr.sales_equalization_tax,\nscr.liable_for_vat,\nscr.street_and_house_number,\nscr.telebox_number,\nscr.telephone_1,\nscr.telephone_2,\nscr.fax_number,\nscr.teletex_number,\nscr.telex_number,\nscr.one_time_account,\nscr.payee_in_document,\nscr.trading_partner,\nscr.fiscal_address,\nscr.vat_registration_number,\nscr.natural_person,\nscr.block_function,\nscr.matchcode_name_1,\nscr.matchcode_name_2,\nscr.matchcode_city,\nscr.place_of_birth,\nscr.date_of_birth,\nscr.sex,\nscr.credit_information_number,\nscr.last_external_review,\nscr.actual_qm_system,\nscr.reference_account_group,\nscr.post_office_box_city,\nscr.vendor_sub_range_relevant,\nscr.plant_level_relevant,\nscr.factory_calendar,\nscr.tax_jurisdiction,\nscr.payment_block,\nscr.address,\nscr.tax_number_4,\nscr.tax_number_5,\nscr.input_last_update_date,\nscr.finalmd5key,\nscr.dw_active_indicator,\nCURRENT_DATETIME(),\nDATETIME(9999, 12, 31, 23, 59, 59),\nCURRENT_DATETIME());",
+                        "dialect": "standard",
+                        "mode": "batch",
+                        "dataset": "${TargetDatasetNames2}",
+                        "table": "supplier_dimension",
+                        "useCache": "false",
+                        "location": "US",
+                        "rowAsArguments": "false",
+                        "serviceAccountType": "filePath",
+                        "serviceFilePath": "auto-detect"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": ""
+                    }
+                ],
+                "id": "Merge-Statement",
+                "type": "action",
+                "label": "Merge Statement",
+                "icon": "fa-plug"
+            },
+            {
+                "name": "Update Audit Table",
+                "plugin": {
+                    "name": "BigQueryExecute",
+                    "type": "action",
+                    "label": "Update Audit Table",
+                    "artifact": {
+                        "name": "google-cloud",
+                        "version": "0.17.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "project": "auto-detect",
+                        "sql": "MERGE INTO\n`${ProjectID}.${StagingDatasetName}.layer1_audit_table` tgt\nUSING ( SELECT \n         'supplier_dimension' as table_name\n         ,CASE WHEN (select full_delta_indicator from `${ProjectID}.${StagingDatasetName}.layer1_audit_table` where table_name = 'supplier_dimension') IS NULL\n                    OR (select full_delta_indicator from `${ProjectID}.${StagingDatasetName}.layer1_audit_table` where table_name = 'supplier_dimension') = 'F'\n               THEN 'F'\n               ELSE 'D'\n          END AS full_delta_indicator\n        ,'0VENDOR_ATTR,0BP_DEF_ADDRESS_ATTR' as extractors_names\n        ,CAST('1900-01-01T00:00:00' AS DATETIME) as full_load_datetime\n        ,(select max(input_last_update_date) as delta_load_datatime from `${ProjectID}.${TargetDatasetNames2}.supplier_dimension`) as delta_load_datetime\n        ,(select COUNT(*) AS inserted_record_count from `${ProjectID}.${TargetDatasetNames2}.supplier_dimension` a inner join `${ProjectID}.${StagingDatasetName}.layer1_audit_table` b\n          on 1 = 1 where b.table_name = 'supplier_dimension' and  a.dw_last_update_date > CASE WHEN b.full_delta_indicator = 'F' \n                                                                                            THEN b.full_load_datetime\n                                                                                            WHEN b.full_delta_indicator <> 'F' THEN b.delta_load_datetime\n                                                                                            ELSE CAST('1900-01-01T00:00:00' AS DATETIME)\n                                                                                       END\n          and a.dw_active_indicator = 'Y') AS inserted_record_count\n        ,CURRENT_DATETIME() as last_update_date\n) scr\non tgt.table_name = scr.table_name\nWHEN MATCHED THEN \nUPDATE set tgt.full_load_datetime ='1900-01-01T00:00:00'\n          ,tgt.delta_load_datetime = scr.delta_load_datetime\n          ,tgt.inserted_record_count = scr.inserted_record_count\n          ,tgt.last_update_date = scr.last_update_date\n          ,tgt.extractors_names = scr.extractors_names\nWHEN NOT MATCHED THEN\nINSERT (table_name,\n        full_delta_indicator,\n        extractors_names,\n        full_load_datetime,\n        delta_load_datetime,\n        inserted_record_count,\n        last_update_date)\nVALUES(scr.table_name,\n       scr.full_delta_indicator,\n       scr.extractors_names,\n       scr.full_load_datetime,\n       scr.delta_load_datetime,\n       scr.inserted_record_count,\n       scr.last_update_date);\n",
+                        "dialect": "standard",
+                        "mode": "batch",
+                        "dataset": "${StagingDatasetName}",
+                        "table": "layer1_audit_table",
+                        "useCache": "false",
+                        "location": "US",
+                        "rowAsArguments": "false",
+                        "serviceAccountType": "filePath",
+                        "serviceFilePath": "auto-detect"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": ""
+                    }
+                ],
+                "id": "Update-Audit-Table",
+                "type": "action",
+                "label": "Update Audit Table",
+                "icon": "fa-plug"
+            }
+        ],
+        "schedule": "0 * * * *",
+        "engine": "spark",
+        "numOfRecordsPreview": 100,
+        "description": "supplier dimension",
+        "maxConcurrentRuns": 1
+    }
+}

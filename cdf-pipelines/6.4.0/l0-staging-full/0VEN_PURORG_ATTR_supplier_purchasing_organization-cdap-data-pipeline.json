@@ -1,0 +1,353 @@
+{
+    "name": "0VEN_PURORG_ATTR_supplier_purchasing_organization",
+    "description": "supplier purchasing organization",
+    "artifact": {
+        "name": "cdap-data-pipeline",
+        "version": "6.4.0",
+        "scope": "SYSTEM"
+    },
+    "config": {
+        "resources": {
+            "memoryMB": 2048,
+            "virtualCores": 1
+        },
+        "driverResources": {
+            "memoryMB": 2048,
+            "virtualCores": 1
+        },
+        "connections": [
+            {
+                "from": "0VEN_PURORG_ATTR",
+                "to": "ColumnsToEnglishName"
+            },
+            {
+                "from": "ColumnsToEnglishName",
+                "to": "AddingAuditColumns"
+            },
+            {
+                "from": "AddingAuditColumns",
+                "to": "RemoveAuditColumns"
+            },
+            {
+                "from": "RemoveAuditColumns",
+                "to": "supplier_purchasing_organization"
+            },
+            {
+                "from": "AddingAuditColumns",
+                "to": "KeepAuditColumns"
+            },
+            {
+                "from": "KeepAuditColumns",
+                "to": "CountInputRecords"
+            },
+            {
+                "from": "CountInputRecords",
+                "to": "staging_audit_table"
+            }
+        ],
+        "comments": [],
+        "postActions": [],
+        "properties": {},
+        "processTimingEnabled": true,
+        "stageLoggingEnabled": false,
+        "stages": [
+            {
+                "name": "0VEN_PURORG_ATTR",
+                "plugin": {
+                    "name": "SapOdp",
+                    "type": "batchsource",
+                    "label": "0VEN_PURORG_ATTR",
+                    "artifact": {
+                        "name": "sap-odp-plugins",
+                        "version": "0.0.12-SNAPSHOT",
+                        "scope": "USER"
+                    },
+                    "properties": {
+                        "referenceName": "0VEN_PURORG_ATTR",
+                        "jco.client.client": "${SAPClient}",
+                        "jco.client.lang": "${SAPLanguage}",
+                        "connType": "directClient",
+                        "jco.client.ashost": "${SAPApplicationServerHost}",
+                        "jco.client.sysnr": "${SAPSystemNumber}",
+                        "sapSourceObjName": "0VEN_PURORG_ATTR",
+                        "extractType": "Full",
+                        "jco.client.user": "${secure(saplogonusername)}",
+                        "jco.client.passwd": "${secure(saplogonpassword)}",
+                        "gcpProjectId": "auto-detect",
+                        "gcsPath": "gs://cdf-sap-dependent-files",
+                        "subscriberName": "venpurorgattr",
+                        "schema": "{\"type\":\"record\",\"name\":\"columnMetadata_0VEN_PURORG_ATTR\",\"fields\":[{\"name\":\"LIFNR\",\"type\":\"string\"},{\"name\":\"EKORG\",\"type\":\"string\"},{\"name\":\"ERDAT\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"ERNAM\",\"type\":[\"string\",\"null\"]},{\"name\":\"SPERM\",\"type\":[\"string\",\"null\"]},{\"name\":\"LOEVM\",\"type\":[\"string\",\"null\"]},{\"name\":\"LFABC\",\"type\":[\"string\",\"null\"]},{\"name\":\"WAERS\",\"type\":[\"string\",\"null\"]},{\"name\":\"VERKF\",\"type\":[\"string\",\"null\"]},{\"name\":\"TELF1\",\"type\":[\"string\",\"null\"]},{\"name\":\"MINBW\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":15,\"scale\":2},\"null\"]},{\"name\":\"ZTERM\",\"type\":[\"string\",\"null\"]},{\"name\":\"INCO1\",\"type\":[\"string\",\"null\"]},{\"name\":\"INCO2\",\"type\":[\"string\",\"null\"]},{\"name\":\"WEBRE\",\"type\":[\"string\",\"null\"]},{\"name\":\"KZABS\",\"type\":[\"string\",\"null\"]},{\"name\":\"KALSK\",\"type\":[\"string\",\"null\"]},{\"name\":\"KZAUT\",\"type\":[\"string\",\"null\"]},{\"name\":\"EXPVZ\",\"type\":[\"string\",\"null\"]},{\"name\":\"ZOLLA\",\"type\":[\"string\",\"null\"]},{\"name\":\"MEPRF\",\"type\":[\"string\",\"null\"]},{\"name\":\"EKGRP\",\"type\":[\"string\",\"null\"]},{\"name\":\"BOLRE\",\"type\":[\"string\",\"null\"]},{\"name\":\"UMSAE\",\"type\":[\"string\",\"null\"]},{\"name\":\"XERSY\",\"type\":[\"string\",\"null\"]},{\"name\":\"PLIFZ\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":3,\"scale\":0},\"null\"]},{\"name\":\"MRPPP\",\"type\":[\"string\",\"null\"]},{\"name\":\"LFRHY\",\"type\":[\"string\",\"null\"]},{\"name\":\"LIBES\",\"type\":[\"string\",\"null\"]},{\"name\":\"LIPRE\",\"type\":[\"string\",\"null\"]},{\"name\":\"LISER\",\"type\":[\"string\",\"null\"]},{\"name\":\"PRFRE\",\"type\":[\"string\",\"null\"]},{\"name\":\"NRGEW\",\"type\":[\"string\",\"null\"]},{\"name\":\"BOIND\",\"type\":[\"string\",\"null\"]},{\"name\":\"BLIND\",\"type\":[\"string\",\"null\"]},{\"name\":\"KZRET\",\"type\":[\"string\",\"null\"]},{\"name\":\"SKRIT\",\"type\":[\"string\",\"null\"]},{\"name\":\"BSTAE\",\"type\":[\"string\",\"null\"]},{\"name\":\"RDPRF\",\"type\":[\"string\",\"null\"]},{\"name\":\"MEGRU\",\"type\":[\"string\",\"null\"]},{\"name\":\"VENSL\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":5,\"scale\":1},\"null\"]},{\"name\":\"BOPNR\",\"type\":[\"string\",\"null\"]},{\"name\":\"XERSR\",\"type\":[\"string\",\"null\"]},{\"name\":\"EIKTO\",\"type\":[\"string\",\"null\"]},{\"name\":\"ABUEB\",\"type\":[\"string\",\"null\"]},{\"name\":\"PAPRF\",\"type\":[\"string\",\"null\"]},{\"name\":\"AGREL\",\"type\":[\"string\",\"null\"]},{\"name\":\"XNBWY\",\"type\":[\"string\",\"null\"]},{\"name\":\"VSBED\",\"type\":[\"string\",\"null\"]},{\"name\":\"LEBRE\",\"type\":[\"string\",\"null\"]}]}"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": "{\"type\":\"record\",\"name\":\"columnMetadata_0VEN_PURORG_ATTR\",\"fields\":[{\"name\":\"LIFNR\",\"type\":\"string\"},{\"name\":\"EKORG\",\"type\":\"string\"},{\"name\":\"ERDAT\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"ERNAM\",\"type\":[\"string\",\"null\"]},{\"name\":\"SPERM\",\"type\":[\"string\",\"null\"]},{\"name\":\"LOEVM\",\"type\":[\"string\",\"null\"]},{\"name\":\"LFABC\",\"type\":[\"string\",\"null\"]},{\"name\":\"WAERS\",\"type\":[\"string\",\"null\"]},{\"name\":\"VERKF\",\"type\":[\"string\",\"null\"]},{\"name\":\"TELF1\",\"type\":[\"string\",\"null\"]},{\"name\":\"MINBW\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":15,\"scale\":2},\"null\"]},{\"name\":\"ZTERM\",\"type\":[\"string\",\"null\"]},{\"name\":\"INCO1\",\"type\":[\"string\",\"null\"]},{\"name\":\"INCO2\",\"type\":[\"string\",\"null\"]},{\"name\":\"WEBRE\",\"type\":[\"string\",\"null\"]},{\"name\":\"KZABS\",\"type\":[\"string\",\"null\"]},{\"name\":\"KALSK\",\"type\":[\"string\",\"null\"]},{\"name\":\"KZAUT\",\"type\":[\"string\",\"null\"]},{\"name\":\"EXPVZ\",\"type\":[\"string\",\"null\"]},{\"name\":\"ZOLLA\",\"type\":[\"string\",\"null\"]},{\"name\":\"MEPRF\",\"type\":[\"string\",\"null\"]},{\"name\":\"EKGRP\",\"type\":[\"string\",\"null\"]},{\"name\":\"BOLRE\",\"type\":[\"string\",\"null\"]},{\"name\":\"UMSAE\",\"type\":[\"string\",\"null\"]},{\"name\":\"XERSY\",\"type\":[\"string\",\"null\"]},{\"name\":\"PLIFZ\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":3,\"scale\":0},\"null\"]},{\"name\":\"MRPPP\",\"type\":[\"string\",\"null\"]},{\"name\":\"LFRHY\",\"type\":[\"string\",\"null\"]},{\"name\":\"LIBES\",\"type\":[\"string\",\"null\"]},{\"name\":\"LIPRE\",\"type\":[\"string\",\"null\"]},{\"name\":\"LISER\",\"type\":[\"string\",\"null\"]},{\"name\":\"PRFRE\",\"type\":[\"string\",\"null\"]},{\"name\":\"NRGEW\",\"type\":[\"string\",\"null\"]},{\"name\":\"BOIND\",\"type\":[\"string\",\"null\"]},{\"name\":\"BLIND\",\"type\":[\"string\",\"null\"]},{\"name\":\"KZRET\",\"type\":[\"string\",\"null\"]},{\"name\":\"SKRIT\",\"type\":[\"string\",\"null\"]},{\"name\":\"BSTAE\",\"type\":[\"string\",\"null\"]},{\"name\":\"RDPRF\",\"type\":[\"string\",\"null\"]},{\"name\":\"MEGRU\",\"type\":[\"string\",\"null\"]},{\"name\":\"VENSL\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":5,\"scale\":1},\"null\"]},{\"name\":\"BOPNR\",\"type\":[\"string\",\"null\"]},{\"name\":\"XERSR\",\"type\":[\"string\",\"null\"]},{\"name\":\"EIKTO\",\"type\":[\"string\",\"null\"]},{\"name\":\"ABUEB\",\"type\":[\"string\",\"null\"]},{\"name\":\"PAPRF\",\"type\":[\"string\",\"null\"]},{\"name\":\"AGREL\",\"type\":[\"string\",\"null\"]},{\"name\":\"XNBWY\",\"type\":[\"string\",\"null\"]},{\"name\":\"VSBED\",\"type\":[\"string\",\"null\"]},{\"name\":\"LEBRE\",\"type\":[\"string\",\"null\"]}]}"
+                    }
+                ],
+                "id": "0VEN_PURORG_ATTR",
+                "type": "batchsource",
+                "label": "0VEN_PURORG_ATTR",
+                "icon": "fa-plug"
+            },
+            {
+                "name": "ColumnsToEnglishName",
+                "plugin": {
+                    "name": "Projection",
+                    "type": "transform",
+                    "label": "ColumnsToEnglishName",
+                    "artifact": {
+                        "name": "core-plugins",
+                        "version": "2.6.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "rename": "PLIFZ:planned_delivery_time,TELF1:telephone_number,ERDAT:created_on,ZTERM:payment_terms,BOPNR:load_building_restriction_profile,LOEVM:purchasing_organization_delete_flag,SPERM:purchasing_organization_block,LFABC:abc_indicator,WEBRE:gr_based_invoice,KZABS:acknowledgment_required,KZAUT:automatic_purchase_order,MEPRF:price_date_control,BOLRE:subsequient_settlement,UMSAE:business_volumn_comparison,XERSY:evaluated_receipt_settlement,LIBES:order_entry_supplier,LISER:rack_jobbing,NRGEW:qualifying_discount_kind_granted,PRFRE:price_determination,BOIND:subsequient_settlement_index,BLIND:document_index_active,KZRET:returns_supplier,SKRIT:sort_criterion,XERSR:automatic_evaluated_receipt,AGREL:settlement_management,XNBWY:revaluation_allowed,LEBRE:service_based_invoice_verification,ERNAM:created_by,EIKTO:account_supplier,VENSL:supplier_service_level,VERKF:responsible_salesperson,INCO2:incoterms_2,ZOLLA:customs_office,EKORG:purchasing_organization,ABUEB:release_creation_profile,BSTAE:confimration_control,MEGRU:unit_of_measure_group,RDPRF:rounding_profile,PAPRF:proact_control_profile,LIFNR:vendors_account_number,KALSK:schems_group_supplier,VSBED:shipping_conditions,LIPRE:supplier_price_marking,EKGRP:purchasing_group,INCO1:incoterms_1,LFRHY:planning_cycle,MRPPP:planning_calendar,EXPVZ:mode_of_transport,WAERS:order_currency,MINBW:minimum_order_value"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": "{\"type\":\"record\",\"name\":\"columnMetadata_0VEN_PURORG_ATTR.typeprojected\",\"fields\":[{\"name\":\"vendors_account_number\",\"type\":\"string\"},{\"name\":\"purchasing_organization\",\"type\":\"string\"},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_by\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_organization_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_organization_delete_flag\",\"type\":[\"string\",\"null\"]},{\"name\":\"abc_indicator\",\"type\":[\"string\",\"null\"]},{\"name\":\"order_currency\",\"type\":[\"string\",\"null\"]},{\"name\":\"responsible_salesperson\",\"type\":[\"string\",\"null\"]},{\"name\":\"telephone_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"minimum_order_value\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":15,\"scale\":2},\"null\"]},{\"name\":\"payment_terms\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"gr_based_invoice\",\"type\":[\"string\",\"null\"]},{\"name\":\"acknowledgment_required\",\"type\":[\"string\",\"null\"]},{\"name\":\"schems_group_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"automatic_purchase_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"mode_of_transport\",\"type\":[\"string\",\"null\"]},{\"name\":\"customs_office\",\"type\":[\"string\",\"null\"]},{\"name\":\"price_date_control\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"subsequient_settlement\",\"type\":[\"string\",\"null\"]},{\"name\":\"business_volumn_comparison\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluated_receipt_settlement\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_delivery_time\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":3,\"scale\":0},\"null\"]},{\"name\":\"planning_calendar\",\"type\":[\"string\",\"null\"]},{\"name\":\"planning_cycle\",\"type\":[\"string\",\"null\"]},{\"name\":\"order_entry_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"supplier_price_marking\",\"type\":[\"string\",\"null\"]},{\"name\":\"rack_jobbing\",\"type\":[\"string\",\"null\"]},{\"name\":\"price_determination\",\"type\":[\"string\",\"null\"]},{\"name\":\"qualifying_discount_kind_granted\",\"type\":[\"string\",\"null\"]},{\"name\":\"subsequient_settlement_index\",\"type\":[\"string\",\"null\"]},{\"name\":\"document_index_active\",\"type\":[\"string\",\"null\"]},{\"name\":\"returns_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"sort_criterion\",\"type\":[\"string\",\"null\"]},{\"name\":\"confimration_control\",\"type\":[\"string\",\"null\"]},{\"name\":\"rounding_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"unit_of_measure_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"supplier_service_level\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":5,\"scale\":1},\"null\"]},{\"name\":\"load_building_restriction_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"automatic_evaluated_receipt\",\"type\":[\"string\",\"null\"]},{\"name\":\"account_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"release_creation_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"proact_control_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"settlement_management\",\"type\":[\"string\",\"null\"]},{\"name\":\"revaluation_allowed\",\"type\":[\"string\",\"null\"]},{\"name\":\"shipping_conditions\",\"type\":[\"string\",\"null\"]},{\"name\":\"service_based_invoice_verification\",\"type\":[\"string\",\"null\"]}]}"
+                    }
+                ],
+                "inputSchema": [
+                    {
+                        "name": "0VEN_PURORG_ATTR",
+                        "schema": "{\"type\":\"record\",\"name\":\"columnMetadata_0VEN_PURORG_ATTR\",\"fields\":[{\"name\":\"LIFNR\",\"type\":\"string\"},{\"name\":\"EKORG\",\"type\":\"string\"},{\"name\":\"ERDAT\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"ERNAM\",\"type\":[\"string\",\"null\"]},{\"name\":\"SPERM\",\"type\":[\"string\",\"null\"]},{\"name\":\"LOEVM\",\"type\":[\"string\",\"null\"]},{\"name\":\"LFABC\",\"type\":[\"string\",\"null\"]},{\"name\":\"WAERS\",\"type\":[\"string\",\"null\"]},{\"name\":\"VERKF\",\"type\":[\"string\",\"null\"]},{\"name\":\"TELF1\",\"type\":[\"string\",\"null\"]},{\"name\":\"MINBW\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":15,\"scale\":2},\"null\"]},{\"name\":\"ZTERM\",\"type\":[\"string\",\"null\"]},{\"name\":\"INCO1\",\"type\":[\"string\",\"null\"]},{\"name\":\"INCO2\",\"type\":[\"string\",\"null\"]},{\"name\":\"WEBRE\",\"type\":[\"string\",\"null\"]},{\"name\":\"KZABS\",\"type\":[\"string\",\"null\"]},{\"name\":\"KALSK\",\"type\":[\"string\",\"null\"]},{\"name\":\"KZAUT\",\"type\":[\"string\",\"null\"]},{\"name\":\"EXPVZ\",\"type\":[\"string\",\"null\"]},{\"name\":\"ZOLLA\",\"type\":[\"string\",\"null\"]},{\"name\":\"MEPRF\",\"type\":[\"string\",\"null\"]},{\"name\":\"EKGRP\",\"type\":[\"string\",\"null\"]},{\"name\":\"BOLRE\",\"type\":[\"string\",\"null\"]},{\"name\":\"UMSAE\",\"type\":[\"string\",\"null\"]},{\"name\":\"XERSY\",\"type\":[\"string\",\"null\"]},{\"name\":\"PLIFZ\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":3,\"scale\":0},\"null\"]},{\"name\":\"MRPPP\",\"type\":[\"string\",\"null\"]},{\"name\":\"LFRHY\",\"type\":[\"string\",\"null\"]},{\"name\":\"LIBES\",\"type\":[\"string\",\"null\"]},{\"name\":\"LIPRE\",\"type\":[\"string\",\"null\"]},{\"name\":\"LISER\",\"type\":[\"string\",\"null\"]},{\"name\":\"PRFRE\",\"type\":[\"string\",\"null\"]},{\"name\":\"NRGEW\",\"type\":[\"string\",\"null\"]},{\"name\":\"BOIND\",\"type\":[\"string\",\"null\"]},{\"name\":\"BLIND\",\"type\":[\"string\",\"null\"]},{\"name\":\"KZRET\",\"type\":[\"string\",\"null\"]},{\"name\":\"SKRIT\",\"type\":[\"string\",\"null\"]},{\"name\":\"BSTAE\",\"type\":[\"string\",\"null\"]},{\"name\":\"RDPRF\",\"type\":[\"string\",\"null\"]},{\"name\":\"MEGRU\",\"type\":[\"string\",\"null\"]},{\"name\":\"VENSL\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":5,\"scale\":1},\"null\"]},{\"name\":\"BOPNR\",\"type\":[\"string\",\"null\"]},{\"name\":\"XERSR\",\"type\":[\"string\",\"null\"]},{\"name\":\"EIKTO\",\"type\":[\"string\",\"null\"]},{\"name\":\"ABUEB\",\"type\":[\"string\",\"null\"]},{\"name\":\"PAPRF\",\"type\":[\"string\",\"null\"]},{\"name\":\"AGREL\",\"type\":[\"string\",\"null\"]},{\"name\":\"XNBWY\",\"type\":[\"string\",\"null\"]},{\"name\":\"VSBED\",\"type\":[\"string\",\"null\"]},{\"name\":\"LEBRE\",\"type\":[\"string\",\"null\"]}]}"
+                    }
+                ],
+                "id": "ColumnsToEnglishName",
+                "type": "transform",
+                "label": "ColumnsToEnglishName",
+                "icon": "icon-projection"
+            },
+            {
+                "name": "AddingAuditColumns",
+                "plugin": {
+                    "name": "Wrangler",
+                    "type": "transform",
+                    "label": "AddingAuditColumns",
+                    "artifact": {
+                        "name": "wrangler-transform",
+                        "version": "4.4.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "field": "*",
+                        "precondition": "false",
+                        "directives": "set-column :dw_active_indicator \"Y\";\ncurrent-datetime :dw_start_date;\nset-column :dw_end_date \"9999-12-31 23:59:59\";\nparse-as-datetime :dw_end_date \"yyyy-MM-dd HH:mm:ss\";\ncurrent-datetime :dw_last_update_date;\nset-column :table_name \"0VEN_PURORG_ATTR\";\nset-column :table_load_type \"FULLLOAD\";\nset-column :input_counts \"1\";\ncurrent-datetime :last_update_date;\nset-column :odp_subscriber \"venpurorgattr\";",
+                        "on-error": "skip-error",
+                        "schema": "{\"name\":\"etlSchemaBody\",\"type\":\"record\",\"fields\":[{\"name\":\"vendors_account_number\",\"type\":\"string\"},{\"name\":\"purchasing_organization\",\"type\":\"string\"},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_by\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_organization_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_organization_delete_flag\",\"type\":[\"string\",\"null\"]},{\"name\":\"abc_indicator\",\"type\":[\"string\",\"null\"]},{\"name\":\"order_currency\",\"type\":[\"string\",\"null\"]},{\"name\":\"responsible_salesperson\",\"type\":[\"string\",\"null\"]},{\"name\":\"telephone_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"minimum_order_value\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":15,\"scale\":2},\"null\"]},{\"name\":\"payment_terms\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"gr_based_invoice\",\"type\":[\"string\",\"null\"]},{\"name\":\"acknowledgment_required\",\"type\":[\"string\",\"null\"]},{\"name\":\"schems_group_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"automatic_purchase_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"mode_of_transport\",\"type\":[\"string\",\"null\"]},{\"name\":\"customs_office\",\"type\":[\"string\",\"null\"]},{\"name\":\"price_date_control\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"subsequient_settlement\",\"type\":[\"string\",\"null\"]},{\"name\":\"business_volumn_comparison\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluated_receipt_settlement\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_delivery_time\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":3,\"scale\":0},\"null\"]},{\"name\":\"planning_calendar\",\"type\":[\"string\",\"null\"]},{\"name\":\"planning_cycle\",\"type\":[\"string\",\"null\"]},{\"name\":\"order_entry_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"supplier_price_marking\",\"type\":[\"string\",\"null\"]},{\"name\":\"rack_jobbing\",\"type\":[\"string\",\"null\"]},{\"name\":\"price_determination\",\"type\":[\"string\",\"null\"]},{\"name\":\"qualifying_discount_kind_granted\",\"type\":[\"string\",\"null\"]},{\"name\":\"subsequient_settlement_index\",\"type\":[\"string\",\"null\"]},{\"name\":\"document_index_active\",\"type\":[\"string\",\"null\"]},{\"name\":\"returns_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"sort_criterion\",\"type\":[\"string\",\"null\"]},{\"name\":\"confimration_control\",\"type\":[\"string\",\"null\"]},{\"name\":\"rounding_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"unit_of_measure_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"supplier_service_level\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":5,\"scale\":1},\"null\"]},{\"name\":\"load_building_restriction_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"automatic_evaluated_receipt\",\"type\":[\"string\",\"null\"]},{\"name\":\"account_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"release_creation_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"proact_control_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"settlement_management\",\"type\":[\"string\",\"null\"]},{\"name\":\"revaluation_allowed\",\"type\":[\"string\",\"null\"]},{\"name\":\"shipping_conditions\",\"type\":[\"string\",\"null\"]},{\"name\":\"service_based_invoice_verification\",\"type\":[\"string\",\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"input_counts\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"odp_subscriber\",\"type\":\"string\"}]}"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": "{\"name\":\"etlSchemaBody\",\"type\":\"record\",\"fields\":[{\"name\":\"vendors_account_number\",\"type\":\"string\"},{\"name\":\"purchasing_organization\",\"type\":\"string\"},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_by\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_organization_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_organization_delete_flag\",\"type\":[\"string\",\"null\"]},{\"name\":\"abc_indicator\",\"type\":[\"string\",\"null\"]},{\"name\":\"order_currency\",\"type\":[\"string\",\"null\"]},{\"name\":\"responsible_salesperson\",\"type\":[\"string\",\"null\"]},{\"name\":\"telephone_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"minimum_order_value\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":15,\"scale\":2},\"null\"]},{\"name\":\"payment_terms\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"gr_based_invoice\",\"type\":[\"string\",\"null\"]},{\"name\":\"acknowledgment_required\",\"type\":[\"string\",\"null\"]},{\"name\":\"schems_group_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"automatic_purchase_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"mode_of_transport\",\"type\":[\"string\",\"null\"]},{\"name\":\"customs_office\",\"type\":[\"string\",\"null\"]},{\"name\":\"price_date_control\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"subsequient_settlement\",\"type\":[\"string\",\"null\"]},{\"name\":\"business_volumn_comparison\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluated_receipt_settlement\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_delivery_time\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":3,\"scale\":0},\"null\"]},{\"name\":\"planning_calendar\",\"type\":[\"string\",\"null\"]},{\"name\":\"planning_cycle\",\"type\":[\"string\",\"null\"]},{\"name\":\"order_entry_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"supplier_price_marking\",\"type\":[\"string\",\"null\"]},{\"name\":\"rack_jobbing\",\"type\":[\"string\",\"null\"]},{\"name\":\"price_determination\",\"type\":[\"string\",\"null\"]},{\"name\":\"qualifying_discount_kind_granted\",\"type\":[\"string\",\"null\"]},{\"name\":\"subsequient_settlement_index\",\"type\":[\"string\",\"null\"]},{\"name\":\"document_index_active\",\"type\":[\"string\",\"null\"]},{\"name\":\"returns_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"sort_criterion\",\"type\":[\"string\",\"null\"]},{\"name\":\"confimration_control\",\"type\":[\"string\",\"null\"]},{\"name\":\"rounding_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"unit_of_measure_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"supplier_service_level\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":5,\"scale\":1},\"null\"]},{\"name\":\"load_building_restriction_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"automatic_evaluated_receipt\",\"type\":[\"string\",\"null\"]},{\"name\":\"account_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"release_creation_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"proact_control_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"settlement_management\",\"type\":[\"string\",\"null\"]},{\"name\":\"revaluation_allowed\",\"type\":[\"string\",\"null\"]},{\"name\":\"shipping_conditions\",\"type\":[\"string\",\"null\"]},{\"name\":\"service_based_invoice_verification\",\"type\":[\"string\",\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"input_counts\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"odp_subscriber\",\"type\":\"string\"}]}"
+                    }
+                ],
+                "inputSchema": [
+                    {
+                        "name": "ColumnsToEnglishName",
+                        "schema": "{\"type\":\"record\",\"name\":\"columnMetadata_0VEN_PURORG_ATTR.typeprojected\",\"fields\":[{\"name\":\"vendors_account_number\",\"type\":\"string\"},{\"name\":\"purchasing_organization\",\"type\":\"string\"},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_by\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_organization_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_organization_delete_flag\",\"type\":[\"string\",\"null\"]},{\"name\":\"abc_indicator\",\"type\":[\"string\",\"null\"]},{\"name\":\"order_currency\",\"type\":[\"string\",\"null\"]},{\"name\":\"responsible_salesperson\",\"type\":[\"string\",\"null\"]},{\"name\":\"telephone_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"minimum_order_value\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":15,\"scale\":2},\"null\"]},{\"name\":\"payment_terms\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"gr_based_invoice\",\"type\":[\"string\",\"null\"]},{\"name\":\"acknowledgment_required\",\"type\":[\"string\",\"null\"]},{\"name\":\"schems_group_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"automatic_purchase_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"mode_of_transport\",\"type\":[\"string\",\"null\"]},{\"name\":\"customs_office\",\"type\":[\"string\",\"null\"]},{\"name\":\"price_date_control\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"subsequient_settlement\",\"type\":[\"string\",\"null\"]},{\"name\":\"business_volumn_comparison\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluated_receipt_settlement\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_delivery_time\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":3,\"scale\":0},\"null\"]},{\"name\":\"planning_calendar\",\"type\":[\"string\",\"null\"]},{\"name\":\"planning_cycle\",\"type\":[\"string\",\"null\"]},{\"name\":\"order_entry_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"supplier_price_marking\",\"type\":[\"string\",\"null\"]},{\"name\":\"rack_jobbing\",\"type\":[\"string\",\"null\"]},{\"name\":\"price_determination\",\"type\":[\"string\",\"null\"]},{\"name\":\"qualifying_discount_kind_granted\",\"type\":[\"string\",\"null\"]},{\"name\":\"subsequient_settlement_index\",\"type\":[\"string\",\"null\"]},{\"name\":\"document_index_active\",\"type\":[\"string\",\"null\"]},{\"name\":\"returns_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"sort_criterion\",\"type\":[\"string\",\"null\"]},{\"name\":\"confimration_control\",\"type\":[\"string\",\"null\"]},{\"name\":\"rounding_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"unit_of_measure_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"supplier_service_level\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":5,\"scale\":1},\"null\"]},{\"name\":\"load_building_restriction_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"automatic_evaluated_receipt\",\"type\":[\"string\",\"null\"]},{\"name\":\"account_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"release_creation_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"proact_control_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"settlement_management\",\"type\":[\"string\",\"null\"]},{\"name\":\"revaluation_allowed\",\"type\":[\"string\",\"null\"]},{\"name\":\"shipping_conditions\",\"type\":[\"string\",\"null\"]},{\"name\":\"service_based_invoice_verification\",\"type\":[\"string\",\"null\"]}]}"
+                    }
+                ],
+                "id": "AddingAuditColumns",
+                "type": "transform",
+                "label": "AddingAuditColumns",
+                "icon": "icon-DataPreparation"
+            },
+            {
+                "name": "RemoveAuditColumns",
+                "plugin": {
+                    "name": "Projection",
+                    "type": "transform",
+                    "label": "RemoveAuditColumns",
+                    "artifact": {
+                        "name": "core-plugins",
+                        "version": "2.6.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "drop": "table_name,table_load_type,input_counts,last_update_date,odp_subscriber"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typeprojected\",\"fields\":[{\"name\":\"vendors_account_number\",\"type\":\"string\"},{\"name\":\"purchasing_organization\",\"type\":\"string\"},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_by\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_organization_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_organization_delete_flag\",\"type\":[\"string\",\"null\"]},{\"name\":\"abc_indicator\",\"type\":[\"string\",\"null\"]},{\"name\":\"order_currency\",\"type\":[\"string\",\"null\"]},{\"name\":\"responsible_salesperson\",\"type\":[\"string\",\"null\"]},{\"name\":\"telephone_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"minimum_order_value\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":15,\"scale\":2},\"null\"]},{\"name\":\"payment_terms\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"gr_based_invoice\",\"type\":[\"string\",\"null\"]},{\"name\":\"acknowledgment_required\",\"type\":[\"string\",\"null\"]},{\"name\":\"schems_group_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"automatic_purchase_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"mode_of_transport\",\"type\":[\"string\",\"null\"]},{\"name\":\"customs_office\",\"type\":[\"string\",\"null\"]},{\"name\":\"price_date_control\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"subsequient_settlement\",\"type\":[\"string\",\"null\"]},{\"name\":\"business_volumn_comparison\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluated_receipt_settlement\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_delivery_time\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":3,\"scale\":0},\"null\"]},{\"name\":\"planning_calendar\",\"type\":[\"string\",\"null\"]},{\"name\":\"planning_cycle\",\"type\":[\"string\",\"null\"]},{\"name\":\"order_entry_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"supplier_price_marking\",\"type\":[\"string\",\"null\"]},{\"name\":\"rack_jobbing\",\"type\":[\"string\",\"null\"]},{\"name\":\"price_determination\",\"type\":[\"string\",\"null\"]},{\"name\":\"qualifying_discount_kind_granted\",\"type\":[\"string\",\"null\"]},{\"name\":\"subsequient_settlement_index\",\"type\":[\"string\",\"null\"]},{\"name\":\"document_index_active\",\"type\":[\"string\",\"null\"]},{\"name\":\"returns_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"sort_criterion\",\"type\":[\"string\",\"null\"]},{\"name\":\"confimration_control\",\"type\":[\"string\",\"null\"]},{\"name\":\"rounding_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"unit_of_measure_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"supplier_service_level\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":5,\"scale\":1},\"null\"]},{\"name\":\"load_building_restriction_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"automatic_evaluated_receipt\",\"type\":[\"string\",\"null\"]},{\"name\":\"account_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"release_creation_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"proact_control_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"settlement_management\",\"type\":[\"string\",\"null\"]},{\"name\":\"revaluation_allowed\",\"type\":[\"string\",\"null\"]},{\"name\":\"shipping_conditions\",\"type\":[\"string\",\"null\"]},{\"name\":\"service_based_invoice_verification\",\"type\":[\"string\",\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                ],
+                "inputSchema": [
+                    {
+                        "name": "AddingAuditColumns",
+                        "schema": "{\"name\":\"etlSchemaBody\",\"type\":\"record\",\"fields\":[{\"name\":\"vendors_account_number\",\"type\":\"string\"},{\"name\":\"purchasing_organization\",\"type\":\"string\"},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_by\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_organization_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_organization_delete_flag\",\"type\":[\"string\",\"null\"]},{\"name\":\"abc_indicator\",\"type\":[\"string\",\"null\"]},{\"name\":\"order_currency\",\"type\":[\"string\",\"null\"]},{\"name\":\"responsible_salesperson\",\"type\":[\"string\",\"null\"]},{\"name\":\"telephone_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"minimum_order_value\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":15,\"scale\":2},\"null\"]},{\"name\":\"payment_terms\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"gr_based_invoice\",\"type\":[\"string\",\"null\"]},{\"name\":\"acknowledgment_required\",\"type\":[\"string\",\"null\"]},{\"name\":\"schems_group_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"automatic_purchase_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"mode_of_transport\",\"type\":[\"string\",\"null\"]},{\"name\":\"customs_office\",\"type\":[\"string\",\"null\"]},{\"name\":\"price_date_control\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"subsequient_settlement\",\"type\":[\"string\",\"null\"]},{\"name\":\"business_volumn_comparison\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluated_receipt_settlement\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_delivery_time\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":3,\"scale\":0},\"null\"]},{\"name\":\"planning_calendar\",\"type\":[\"string\",\"null\"]},{\"name\":\"planning_cycle\",\"type\":[\"string\",\"null\"]},{\"name\":\"order_entry_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"supplier_price_marking\",\"type\":[\"string\",\"null\"]},{\"name\":\"rack_jobbing\",\"type\":[\"string\",\"null\"]},{\"name\":\"price_determination\",\"type\":[\"string\",\"null\"]},{\"name\":\"qualifying_discount_kind_granted\",\"type\":[\"string\",\"null\"]},{\"name\":\"subsequient_settlement_index\",\"type\":[\"string\",\"null\"]},{\"name\":\"document_index_active\",\"type\":[\"string\",\"null\"]},{\"name\":\"returns_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"sort_criterion\",\"type\":[\"string\",\"null\"]},{\"name\":\"confimration_control\",\"type\":[\"string\",\"null\"]},{\"name\":\"rounding_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"unit_of_measure_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"supplier_service_level\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":5,\"scale\":1},\"null\"]},{\"name\":\"load_building_restriction_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"automatic_evaluated_receipt\",\"type\":[\"string\",\"null\"]},{\"name\":\"account_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"release_creation_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"proact_control_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"settlement_management\",\"type\":[\"string\",\"null\"]},{\"name\":\"revaluation_allowed\",\"type\":[\"string\",\"null\"]},{\"name\":\"shipping_conditions\",\"type\":[\"string\",\"null\"]},{\"name\":\"service_based_invoice_verification\",\"type\":[\"string\",\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"input_counts\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"odp_subscriber\",\"type\":\"string\"}]}"
+                    }
+                ],
+                "id": "RemoveAuditColumns",
+                "type": "transform",
+                "label": "RemoveAuditColumns",
+                "icon": "icon-projection"
+            },
+            {
+                "name": "supplier_purchasing_organization",
+                "plugin": {
+                    "name": "BigQueryTable",
+                    "type": "batchsink",
+                    "label": "supplier_purchasing_organization",
+                    "artifact": {
+                        "name": "google-cloud",
+                        "version": "0.17.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "referenceName": "supplier_purchasing_organization",
+                        "project": "auto-detect",
+                        "dataset": "${Dataset}",
+                        "table": "supplier_purchasing_organization",
+                        "serviceAccountType": "filePath",
+                        "serviceFilePath": "auto-detect",
+                        "operation": "insert",
+                        "truncateTable": "true",
+                        "allowSchemaRelaxation": "false",
+                        "location": "US",
+                        "createPartitionedTable": "false",
+                        "partitioningType": "NONE",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typeprojected\",\"fields\":[{\"name\":\"vendors_account_number\",\"type\":\"string\"},{\"name\":\"purchasing_organization\",\"type\":\"string\"},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_by\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_organization_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_organization_delete_flag\",\"type\":[\"string\",\"null\"]},{\"name\":\"abc_indicator\",\"type\":[\"string\",\"null\"]},{\"name\":\"order_currency\",\"type\":[\"string\",\"null\"]},{\"name\":\"responsible_salesperson\",\"type\":[\"string\",\"null\"]},{\"name\":\"telephone_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"minimum_order_value\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":15,\"scale\":2},\"null\"]},{\"name\":\"payment_terms\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"gr_based_invoice\",\"type\":[\"string\",\"null\"]},{\"name\":\"acknowledgment_required\",\"type\":[\"string\",\"null\"]},{\"name\":\"schems_group_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"automatic_purchase_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"mode_of_transport\",\"type\":[\"string\",\"null\"]},{\"name\":\"customs_office\",\"type\":[\"string\",\"null\"]},{\"name\":\"price_date_control\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"subsequient_settlement\",\"type\":[\"string\",\"null\"]},{\"name\":\"business_volumn_comparison\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluated_receipt_settlement\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_delivery_time\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":3,\"scale\":0},\"null\"]},{\"name\":\"planning_calendar\",\"type\":[\"string\",\"null\"]},{\"name\":\"planning_cycle\",\"type\":[\"string\",\"null\"]},{\"name\":\"order_entry_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"supplier_price_marking\",\"type\":[\"string\",\"null\"]},{\"name\":\"rack_jobbing\",\"type\":[\"string\",\"null\"]},{\"name\":\"price_determination\",\"type\":[\"string\",\"null\"]},{\"name\":\"qualifying_discount_kind_granted\",\"type\":[\"string\",\"null\"]},{\"name\":\"subsequient_settlement_index\",\"type\":[\"string\",\"null\"]},{\"name\":\"document_index_active\",\"type\":[\"string\",\"null\"]},{\"name\":\"returns_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"sort_criterion\",\"type\":[\"string\",\"null\"]},{\"name\":\"confimration_control\",\"type\":[\"string\",\"null\"]},{\"name\":\"rounding_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"unit_of_measure_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"supplier_service_level\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":5,\"scale\":1},\"null\"]},{\"name\":\"load_building_restriction_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"automatic_evaluated_receipt\",\"type\":[\"string\",\"null\"]},{\"name\":\"account_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"release_creation_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"proact_control_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"settlement_management\",\"type\":[\"string\",\"null\"]},{\"name\":\"revaluation_allowed\",\"type\":[\"string\",\"null\"]},{\"name\":\"shipping_conditions\",\"type\":[\"string\",\"null\"]},{\"name\":\"service_based_invoice_verification\",\"type\":[\"string\",\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typeprojected\",\"fields\":[{\"name\":\"vendors_account_number\",\"type\":\"string\"},{\"name\":\"purchasing_organization\",\"type\":\"string\"},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_by\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_organization_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_organization_delete_flag\",\"type\":[\"string\",\"null\"]},{\"name\":\"abc_indicator\",\"type\":[\"string\",\"null\"]},{\"name\":\"order_currency\",\"type\":[\"string\",\"null\"]},{\"name\":\"responsible_salesperson\",\"type\":[\"string\",\"null\"]},{\"name\":\"telephone_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"minimum_order_value\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":15,\"scale\":2},\"null\"]},{\"name\":\"payment_terms\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"gr_based_invoice\",\"type\":[\"string\",\"null\"]},{\"name\":\"acknowledgment_required\",\"type\":[\"string\",\"null\"]},{\"name\":\"schems_group_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"automatic_purchase_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"mode_of_transport\",\"type\":[\"string\",\"null\"]},{\"name\":\"customs_office\",\"type\":[\"string\",\"null\"]},{\"name\":\"price_date_control\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"subsequient_settlement\",\"type\":[\"string\",\"null\"]},{\"name\":\"business_volumn_comparison\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluated_receipt_settlement\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_delivery_time\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":3,\"scale\":0},\"null\"]},{\"name\":\"planning_calendar\",\"type\":[\"string\",\"null\"]},{\"name\":\"planning_cycle\",\"type\":[\"string\",\"null\"]},{\"name\":\"order_entry_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"supplier_price_marking\",\"type\":[\"string\",\"null\"]},{\"name\":\"rack_jobbing\",\"type\":[\"string\",\"null\"]},{\"name\":\"price_determination\",\"type\":[\"string\",\"null\"]},{\"name\":\"qualifying_discount_kind_granted\",\"type\":[\"string\",\"null\"]},{\"name\":\"subsequient_settlement_index\",\"type\":[\"string\",\"null\"]},{\"name\":\"document_index_active\",\"type\":[\"string\",\"null\"]},{\"name\":\"returns_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"sort_criterion\",\"type\":[\"string\",\"null\"]},{\"name\":\"confimration_control\",\"type\":[\"string\",\"null\"]},{\"name\":\"rounding_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"unit_of_measure_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"supplier_service_level\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":5,\"scale\":1},\"null\"]},{\"name\":\"load_building_restriction_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"automatic_evaluated_receipt\",\"type\":[\"string\",\"null\"]},{\"name\":\"account_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"release_creation_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"proact_control_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"settlement_management\",\"type\":[\"string\",\"null\"]},{\"name\":\"revaluation_allowed\",\"type\":[\"string\",\"null\"]},{\"name\":\"shipping_conditions\",\"type\":[\"string\",\"null\"]},{\"name\":\"service_based_invoice_verification\",\"type\":[\"string\",\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                ],
+                "inputSchema": [
+                    {
+                        "name": "RemoveAuditColumns",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typeprojected\",\"fields\":[{\"name\":\"vendors_account_number\",\"type\":\"string\"},{\"name\":\"purchasing_organization\",\"type\":\"string\"},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_by\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_organization_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_organization_delete_flag\",\"type\":[\"string\",\"null\"]},{\"name\":\"abc_indicator\",\"type\":[\"string\",\"null\"]},{\"name\":\"order_currency\",\"type\":[\"string\",\"null\"]},{\"name\":\"responsible_salesperson\",\"type\":[\"string\",\"null\"]},{\"name\":\"telephone_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"minimum_order_value\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":15,\"scale\":2},\"null\"]},{\"name\":\"payment_terms\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"gr_based_invoice\",\"type\":[\"string\",\"null\"]},{\"name\":\"acknowledgment_required\",\"type\":[\"string\",\"null\"]},{\"name\":\"schems_group_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"automatic_purchase_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"mode_of_transport\",\"type\":[\"string\",\"null\"]},{\"name\":\"customs_office\",\"type\":[\"string\",\"null\"]},{\"name\":\"price_date_control\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"subsequient_settlement\",\"type\":[\"string\",\"null\"]},{\"name\":\"business_volumn_comparison\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluated_receipt_settlement\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_delivery_time\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":3,\"scale\":0},\"null\"]},{\"name\":\"planning_calendar\",\"type\":[\"string\",\"null\"]},{\"name\":\"planning_cycle\",\"type\":[\"string\",\"null\"]},{\"name\":\"order_entry_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"supplier_price_marking\",\"type\":[\"string\",\"null\"]},{\"name\":\"rack_jobbing\",\"type\":[\"string\",\"null\"]},{\"name\":\"price_determination\",\"type\":[\"string\",\"null\"]},{\"name\":\"qualifying_discount_kind_granted\",\"type\":[\"string\",\"null\"]},{\"name\":\"subsequient_settlement_index\",\"type\":[\"string\",\"null\"]},{\"name\":\"document_index_active\",\"type\":[\"string\",\"null\"]},{\"name\":\"returns_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"sort_criterion\",\"type\":[\"string\",\"null\"]},{\"name\":\"confimration_control\",\"type\":[\"string\",\"null\"]},{\"name\":\"rounding_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"unit_of_measure_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"supplier_service_level\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":5,\"scale\":1},\"null\"]},{\"name\":\"load_building_restriction_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"automatic_evaluated_receipt\",\"type\":[\"string\",\"null\"]},{\"name\":\"account_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"release_creation_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"proact_control_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"settlement_management\",\"type\":[\"string\",\"null\"]},{\"name\":\"revaluation_allowed\",\"type\":[\"string\",\"null\"]},{\"name\":\"shipping_conditions\",\"type\":[\"string\",\"null\"]},{\"name\":\"service_based_invoice_verification\",\"type\":[\"string\",\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                ],
+                "id": "supplier_purchasing_organization",
+                "type": "batchsink",
+                "label": "supplier_purchasing_organization",
+                "icon": "fa-plug"
+            },
+            {
+                "name": "KeepAuditColumns",
+                "plugin": {
+                    "name": "Projection",
+                    "type": "transform",
+                    "label": "KeepAuditColumns",
+                    "artifact": {
+                        "name": "core-plugins",
+                        "version": "2.6.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "keep": "table_name,table_load_type,input_counts,last_update_date,odp_subscriber"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typeprojected\",\"fields\":[{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"input_counts\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"odp_subscriber\",\"type\":\"string\"}]}"
+                    }
+                ],
+                "inputSchema": [
+                    {
+                        "name": "AddingAuditColumns",
+                        "schema": "{\"name\":\"etlSchemaBody\",\"type\":\"record\",\"fields\":[{\"name\":\"vendors_account_number\",\"type\":\"string\"},{\"name\":\"purchasing_organization\",\"type\":\"string\"},{\"name\":\"created_on\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"created_by\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_organization_block\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_organization_delete_flag\",\"type\":[\"string\",\"null\"]},{\"name\":\"abc_indicator\",\"type\":[\"string\",\"null\"]},{\"name\":\"order_currency\",\"type\":[\"string\",\"null\"]},{\"name\":\"responsible_salesperson\",\"type\":[\"string\",\"null\"]},{\"name\":\"telephone_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"minimum_order_value\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":15,\"scale\":2},\"null\"]},{\"name\":\"payment_terms\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"incoterms_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"gr_based_invoice\",\"type\":[\"string\",\"null\"]},{\"name\":\"acknowledgment_required\",\"type\":[\"string\",\"null\"]},{\"name\":\"schems_group_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"automatic_purchase_order\",\"type\":[\"string\",\"null\"]},{\"name\":\"mode_of_transport\",\"type\":[\"string\",\"null\"]},{\"name\":\"customs_office\",\"type\":[\"string\",\"null\"]},{\"name\":\"price_date_control\",\"type\":[\"string\",\"null\"]},{\"name\":\"purchasing_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"subsequient_settlement\",\"type\":[\"string\",\"null\"]},{\"name\":\"business_volumn_comparison\",\"type\":[\"string\",\"null\"]},{\"name\":\"evaluated_receipt_settlement\",\"type\":[\"string\",\"null\"]},{\"name\":\"planned_delivery_time\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":3,\"scale\":0},\"null\"]},{\"name\":\"planning_calendar\",\"type\":[\"string\",\"null\"]},{\"name\":\"planning_cycle\",\"type\":[\"string\",\"null\"]},{\"name\":\"order_entry_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"supplier_price_marking\",\"type\":[\"string\",\"null\"]},{\"name\":\"rack_jobbing\",\"type\":[\"string\",\"null\"]},{\"name\":\"price_determination\",\"type\":[\"string\",\"null\"]},{\"name\":\"qualifying_discount_kind_granted\",\"type\":[\"string\",\"null\"]},{\"name\":\"subsequient_settlement_index\",\"type\":[\"string\",\"null\"]},{\"name\":\"document_index_active\",\"type\":[\"string\",\"null\"]},{\"name\":\"returns_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"sort_criterion\",\"type\":[\"string\",\"null\"]},{\"name\":\"confimration_control\",\"type\":[\"string\",\"null\"]},{\"name\":\"rounding_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"unit_of_measure_group\",\"type\":[\"string\",\"null\"]},{\"name\":\"supplier_service_level\",\"type\":[{\"type\":\"bytes\",\"logicalType\":\"decimal\",\"precision\":5,\"scale\":1},\"null\"]},{\"name\":\"load_building_restriction_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"automatic_evaluated_receipt\",\"type\":[\"string\",\"null\"]},{\"name\":\"account_supplier\",\"type\":[\"string\",\"null\"]},{\"name\":\"release_creation_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"proact_control_profile\",\"type\":[\"string\",\"null\"]},{\"name\":\"settlement_management\",\"type\":[\"string\",\"null\"]},{\"name\":\"revaluation_allowed\",\"type\":[\"string\",\"null\"]},{\"name\":\"shipping_conditions\",\"type\":[\"string\",\"null\"]},{\"name\":\"service_based_invoice_verification\",\"type\":[\"string\",\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"input_counts\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"odp_subscriber\",\"type\":\"string\"}]}"
+                    }
+                ],
+                "id": "KeepAuditColumns",
+                "type": "transform",
+                "label": "KeepAuditColumns",
+                "icon": "icon-projection"
+            },
+            {
+                "name": "CountInputRecords",
+                "plugin": {
+                    "name": "GroupByAggregate",
+                    "type": "batchaggregator",
+                    "label": "CountInputRecords",
+                    "artifact": {
+                        "name": "core-plugins",
+                        "version": "2.6.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "groupByFields": "table_name,table_load_type,odp_subscriber",
+                        "aggregates": "inserted_record_count:Sum(input_counts),last_update_date:Last(last_update_date)"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typetypeprojected.agg\",\"fields\":[{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"odp_subscriber\",\"type\":\"string\"},{\"name\":\"inserted_record_count\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                ],
+                "inputSchema": [
+                    {
+                        "name": "KeepAuditColumns",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typeprojected\",\"fields\":[{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"input_counts\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"odp_subscriber\",\"type\":\"string\"}]}"
+                    }
+                ],
+                "id": "CountInputRecords",
+                "type": "batchaggregator",
+                "label": "CountInputRecords",
+                "icon": "icon-groupbyaggregate"
+            },
+            {
+                "name": "staging_audit_table",
+                "plugin": {
+                    "name": "BigQueryTable",
+                    "type": "batchsink",
+                    "label": "staging_audit_table",
+                    "artifact": {
+                        "name": "google-cloud",
+                        "version": "0.17.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "referenceName": "staging_audit_table",
+                        "project": "auto-detect",
+                        "dataset": "${Dataset}",
+                        "table": "staging_audit_table",
+                        "serviceAccountType": "filePath",
+                        "serviceFilePath": "auto-detect",
+                        "operation": "upsert",
+                        "allowSchemaRelaxation": "false",
+                        "location": "US",
+                        "createPartitionedTable": "false",
+                        "partitioningType": "NONE",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typetypeprojected.agg\",\"fields\":[{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"odp_subscriber\",\"type\":\"string\"},{\"name\":\"inserted_record_count\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}",
+                        "relationTableKey": "table_name,table_load_type,odp_subscriber"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typetypeprojected.agg\",\"fields\":[{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"odp_subscriber\",\"type\":\"string\"},{\"name\":\"inserted_record_count\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                ],
+                "inputSchema": [
+                    {
+                        "name": "CountInputRecords",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typetypeprojected.agg\",\"fields\":[{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"odp_subscriber\",\"type\":\"string\"},{\"name\":\"inserted_record_count\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                ],
+                "id": "staging_audit_table",
+                "type": "batchsink",
+                "label": "staging_audit_table",
+                "icon": "fa-plug"
+            }
+        ],
+        "schedule": "0 * * * *",
+        "engine": "spark",
+        "numOfRecordsPreview": 100,
+        "description": "supplier purchasing organization",
+        "maxConcurrentRuns": 1
+    }
+}

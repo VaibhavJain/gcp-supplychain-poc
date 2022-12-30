@@ -1,0 +1,310 @@
+{
+    "name": "0COMP_CODE_ADDRESS_company_code_details",
+    "description": "company code details",
+    "artifact": {
+        "name": "cdap-data-pipeline",
+        "version": "6.4.0",
+        "scope": "SYSTEM"
+    },
+    "config": {
+        "resources": {
+            "memoryMB": 2048,
+            "virtualCores": 1
+        },
+        "driverResources": {
+            "memoryMB": 2048,
+            "virtualCores": 1
+        },
+        "connections": [
+            {
+                "from": "0COMP_CODE_ADDRESS",
+                "to": "ColumnsToEnglishName"
+            },
+            {
+                "from": "ColumnsToEnglishName",
+                "to": "AddingAuditColumns"
+            },
+            {
+                "from": "AddingAuditColumns",
+                "to": "KeepAuditColumns"
+            },
+            {
+                "from": "KeepAuditColumns",
+                "to": "CountInputRecords"
+            },
+            {
+                "from": "CountInputRecords",
+                "to": "staging_audit_table"
+            },
+            {
+                "from": "AddingAuditColumns",
+                "to": "RemoveAuditColumns"
+            },
+            {
+                "from": "RemoveAuditColumns",
+                "to": "company_code_details"
+            }
+        ],
+        "comments": [],
+        "postActions": [],
+        "properties": {},
+        "processTimingEnabled": true,
+        "stageLoggingEnabled": false,
+        "stages": [
+            {
+                "name": "0COMP_CODE_ADDRESS",
+                "plugin": {
+                    "name": "SapOdp",
+                    "type": "batchsource",
+                    "label": "0COMP_CODE_ADDRESS",
+                    "artifact": {
+                        "name": "sap-odp-plugins",
+                        "version": "0.0.12-SNAPSHOT",
+                        "scope": "USER"
+                    },
+                    "properties": {
+                        "referenceName": "0COMP_CODE_ADDRESS",
+                        "jco.client.client": "${SAPClient}",
+                        "jco.client.lang": "${SAPLanguage}",
+                        "connType": "directClient",
+                        "jco.client.ashost": "${SAPApplicationServerHost}",
+                        "jco.client.sysnr": "${SAPSystemNumber}",
+                        "sapSourceObjName": "0COMP_CODE_ADDRESS",
+                        "extractType": "Full",
+                        "jco.client.user": "${secure(saplogonusername)}",
+                        "jco.client.passwd": "${secure(saplogonpassword)}",
+                        "gcpProjectId": "auto-detect",
+                        "gcsPath": "gs://cdf-sap-dependent-files",
+                        "subscriberName": "compcodeaddress",
+                        "schema": "{\"type\":\"record\",\"name\":\"columnMetadata_0COMP_CODE_ADDRESS\",\"fields\":[{\"name\":\"MANDT\",\"type\":[\"string\",\"null\"]},{\"name\":\"BUKRS\",\"type\":[\"string\",\"null\"]},{\"name\":\"ADRNR\",\"type\":[\"string\",\"null\"]},{\"name\":\"DATE_FROM\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"NATION\",\"type\":[\"string\",\"null\"]},{\"name\":\"NAME1\",\"type\":[\"string\",\"null\"]},{\"name\":\"NAME2\",\"type\":[\"string\",\"null\"]},{\"name\":\"NAME3\",\"type\":[\"string\",\"null\"]},{\"name\":\"NAME4\",\"type\":[\"string\",\"null\"]},{\"name\":\"CITY1\",\"type\":[\"string\",\"null\"]},{\"name\":\"PO_BOX\",\"type\":[\"string\",\"null\"]},{\"name\":\"STREET\",\"type\":[\"string\",\"null\"]},{\"name\":\"HOUSE_NUM1\",\"type\":[\"string\",\"null\"]},{\"name\":\"COUNTRY\",\"type\":[\"string\",\"null\"]},{\"name\":\"TEL_NUMBER\",\"type\":[\"string\",\"null\"]},{\"name\":\"CONSNUMBER\",\"type\":[\"string\",\"null\"]},{\"name\":\"HOME_FLAG\",\"type\":[\"string\",\"null\"]},{\"name\":\"SMTP_ADDR\",\"type\":[\"string\",\"null\"]}]}"
+                    }
+                },
+                "outputSchema": "{\"type\":\"record\",\"name\":\"columnMetadata_0COMP_CODE_ADDRESS\",\"fields\":[{\"name\":\"MANDT\",\"type\":[\"string\",\"null\"]},{\"name\":\"BUKRS\",\"type\":[\"string\",\"null\"]},{\"name\":\"ADRNR\",\"type\":[\"string\",\"null\"]},{\"name\":\"DATE_FROM\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"NATION\",\"type\":[\"string\",\"null\"]},{\"name\":\"NAME1\",\"type\":[\"string\",\"null\"]},{\"name\":\"NAME2\",\"type\":[\"string\",\"null\"]},{\"name\":\"NAME3\",\"type\":[\"string\",\"null\"]},{\"name\":\"NAME4\",\"type\":[\"string\",\"null\"]},{\"name\":\"CITY1\",\"type\":[\"string\",\"null\"]},{\"name\":\"PO_BOX\",\"type\":[\"string\",\"null\"]},{\"name\":\"STREET\",\"type\":[\"string\",\"null\"]},{\"name\":\"HOUSE_NUM1\",\"type\":[\"string\",\"null\"]},{\"name\":\"COUNTRY\",\"type\":[\"string\",\"null\"]},{\"name\":\"TEL_NUMBER\",\"type\":[\"string\",\"null\"]},{\"name\":\"CONSNUMBER\",\"type\":[\"string\",\"null\"]},{\"name\":\"HOME_FLAG\",\"type\":[\"string\",\"null\"]},{\"name\":\"SMTP_ADDR\",\"type\":[\"string\",\"null\"]}]}",
+                "id": "0COMP_CODE_ADDRESS"
+            },
+            {
+                "name": "ColumnsToEnglishName",
+                "plugin": {
+                    "name": "Projection",
+                    "type": "transform",
+                    "label": "ColumnsToEnglishName",
+                    "artifact": {
+                        "name": "core-plugins",
+                        "version": "2.6.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "rename": "HOME_FLAG:home_address,NATION:address_version,DATE_FROM:valid_from,BUKRS:company_code,MANDT:client,COUNTRY:country_key,CONSNUMBER:sequence_number,HOUSE_NUM1:house_number,PO_BOX:po_box,ADRNR:address,NAME2:name_2,CITY1:city,NAME1:name_1,NAME3:name_3,NAME4:name_4,TEL_NUMBER:telephone_number,STREET:street,SMTP_ADDR:email_address"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": "{\"type\":\"record\",\"name\":\"columnMetadata_0COMP_CODE_ADDRESS.typeprojected\",\"fields\":[{\"name\":\"client\",\"type\":[\"string\",\"null\"]},{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"address\",\"type\":[\"string\",\"null\"]},{\"name\":\"valid_from\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"address_version\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_3\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_4\",\"type\":[\"string\",\"null\"]},{\"name\":\"city\",\"type\":[\"string\",\"null\"]},{\"name\":\"po_box\",\"type\":[\"string\",\"null\"]},{\"name\":\"street\",\"type\":[\"string\",\"null\"]},{\"name\":\"house_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"country_key\",\"type\":[\"string\",\"null\"]},{\"name\":\"telephone_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"sequence_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"home_address\",\"type\":[\"string\",\"null\"]},{\"name\":\"email_address\",\"type\":[\"string\",\"null\"]}]}"
+                    }
+                ],
+                "inputSchema": [
+                    {
+                        "name": "0COMP_CODE_ADDRESS",
+                        "schema": "{\"type\":\"record\",\"name\":\"columnMetadata_0COMP_CODE_ADDRESS\",\"fields\":[{\"name\":\"MANDT\",\"type\":[\"string\",\"null\"]},{\"name\":\"BUKRS\",\"type\":[\"string\",\"null\"]},{\"name\":\"ADRNR\",\"type\":[\"string\",\"null\"]},{\"name\":\"DATE_FROM\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"NATION\",\"type\":[\"string\",\"null\"]},{\"name\":\"NAME1\",\"type\":[\"string\",\"null\"]},{\"name\":\"NAME2\",\"type\":[\"string\",\"null\"]},{\"name\":\"NAME3\",\"type\":[\"string\",\"null\"]},{\"name\":\"NAME4\",\"type\":[\"string\",\"null\"]},{\"name\":\"CITY1\",\"type\":[\"string\",\"null\"]},{\"name\":\"PO_BOX\",\"type\":[\"string\",\"null\"]},{\"name\":\"STREET\",\"type\":[\"string\",\"null\"]},{\"name\":\"HOUSE_NUM1\",\"type\":[\"string\",\"null\"]},{\"name\":\"COUNTRY\",\"type\":[\"string\",\"null\"]},{\"name\":\"TEL_NUMBER\",\"type\":[\"string\",\"null\"]},{\"name\":\"CONSNUMBER\",\"type\":[\"string\",\"null\"]},{\"name\":\"HOME_FLAG\",\"type\":[\"string\",\"null\"]},{\"name\":\"SMTP_ADDR\",\"type\":[\"string\",\"null\"]}]}"
+                    }
+                ],
+                "id": "ColumnsToEnglishName"
+            },
+            {
+                "name": "AddingAuditColumns",
+                "plugin": {
+                    "name": "Wrangler",
+                    "type": "transform",
+                    "label": "AddingAuditColumns",
+                    "artifact": {
+                        "name": "wrangler-transform",
+                        "version": "4.4.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "field": "*",
+                        "precondition": "false",
+                        "directives": "set-column :dw_active_indicator \"Y\";\ncurrent-datetime :dw_start_date;\nset-column :dw_end_date \"9999-12-31 23:59:59\";\nparse-as-datetime :dw_end_date \"yyyy-MM-dd HH:mm:ss\";\ncurrent-datetime :dw_last_update_date;\nset-column :table_name \"0COMP_CODE_ADDRESS\";\nset-column :table_load_type \"FULLLOAD\";\nset-column :input_counts \"1\";\ncurrent-datetime :last_update_date;\nset-column :odp_subscriber \"compcodeaddress\";",
+                        "on-error": "skip-error",
+                        "schema": "{\"name\":\"etlSchemaBody\",\"type\":\"record\",\"fields\":[{\"name\":\"client\",\"type\":[\"string\",\"null\"]},{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"address\",\"type\":[\"string\",\"null\"]},{\"name\":\"valid_from\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"address_version\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_3\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_4\",\"type\":[\"string\",\"null\"]},{\"name\":\"city\",\"type\":[\"string\",\"null\"]},{\"name\":\"po_box\",\"type\":[\"string\",\"null\"]},{\"name\":\"street\",\"type\":[\"string\",\"null\"]},{\"name\":\"house_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"country_key\",\"type\":[\"string\",\"null\"]},{\"name\":\"telephone_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"sequence_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"home_address\",\"type\":[\"string\",\"null\"]},{\"name\":\"email_address\",\"type\":[\"string\",\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"input_counts\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"odp_subscriber\",\"type\":\"string\"}]}"
+                    }
+                },
+                "outputSchema": "{\"name\":\"etlSchemaBody\",\"type\":\"record\",\"fields\":[{\"name\":\"client\",\"type\":[\"string\",\"null\"]},{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"address\",\"type\":[\"string\",\"null\"]},{\"name\":\"valid_from\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"address_version\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_3\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_4\",\"type\":[\"string\",\"null\"]},{\"name\":\"city\",\"type\":[\"string\",\"null\"]},{\"name\":\"po_box\",\"type\":[\"string\",\"null\"]},{\"name\":\"street\",\"type\":[\"string\",\"null\"]},{\"name\":\"house_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"country_key\",\"type\":[\"string\",\"null\"]},{\"name\":\"telephone_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"sequence_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"home_address\",\"type\":[\"string\",\"null\"]},{\"name\":\"email_address\",\"type\":[\"string\",\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"input_counts\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"odp_subscriber\",\"type\":\"string\"}]}",
+                "inputSchema": [
+                    {
+                        "name": "ColumnsToEnglishName",
+                        "schema": "{\"type\":\"record\",\"name\":\"columnMetadata_0COMP_CODE_ADDRESS.typeprojected\",\"fields\":[{\"name\":\"client\",\"type\":[\"string\",\"null\"]},{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"address\",\"type\":[\"string\",\"null\"]},{\"name\":\"valid_from\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"address_version\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_3\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_4\",\"type\":[\"string\",\"null\"]},{\"name\":\"city\",\"type\":[\"string\",\"null\"]},{\"name\":\"po_box\",\"type\":[\"string\",\"null\"]},{\"name\":\"street\",\"type\":[\"string\",\"null\"]},{\"name\":\"house_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"country_key\",\"type\":[\"string\",\"null\"]},{\"name\":\"telephone_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"sequence_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"home_address\",\"type\":[\"string\",\"null\"]},{\"name\":\"email_address\",\"type\":[\"string\",\"null\"]}]}"
+                    }
+                ],
+                "id": "AddingAuditColumns"
+            },
+            {
+                "name": "KeepAuditColumns",
+                "plugin": {
+                    "name": "Projection",
+                    "type": "transform",
+                    "label": "KeepAuditColumns",
+                    "artifact": {
+                        "name": "core-plugins",
+                        "version": "2.6.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "keep": "table_name,table_load_type,input_counts,last_update_date,odp_subscriber"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typeprojected\",\"fields\":[{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"input_counts\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"odp_subscriber\",\"type\":\"string\"}]}"
+                    }
+                ],
+                "inputSchema": [
+                    {
+                        "name": "AddingAuditColumns",
+                        "schema": "{\"name\":\"etlSchemaBody\",\"type\":\"record\",\"fields\":[{\"name\":\"client\",\"type\":[\"string\",\"null\"]},{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"address\",\"type\":[\"string\",\"null\"]},{\"name\":\"valid_from\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"address_version\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_3\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_4\",\"type\":[\"string\",\"null\"]},{\"name\":\"city\",\"type\":[\"string\",\"null\"]},{\"name\":\"po_box\",\"type\":[\"string\",\"null\"]},{\"name\":\"street\",\"type\":[\"string\",\"null\"]},{\"name\":\"house_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"country_key\",\"type\":[\"string\",\"null\"]},{\"name\":\"telephone_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"sequence_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"home_address\",\"type\":[\"string\",\"null\"]},{\"name\":\"email_address\",\"type\":[\"string\",\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"input_counts\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"odp_subscriber\",\"type\":\"string\"}]}"
+                    }
+                ],
+                "id": "KeepAuditColumns"
+            },
+            {
+                "name": "CountInputRecords",
+                "plugin": {
+                    "name": "GroupByAggregate",
+                    "type": "batchaggregator",
+                    "label": "CountInputRecords",
+                    "artifact": {
+                        "name": "core-plugins",
+                        "version": "2.6.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "groupByFields": "table_name,table_load_type,odp_subscriber",
+                        "aggregates": "inserted_record_count:Sum(input_counts),last_update_date:Last(last_update_date)"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typetypeprojected.agg\",\"fields\":[{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"odp_subscriber\",\"type\":\"string\"},{\"name\":\"inserted_record_count\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                ],
+                "inputSchema": [
+                    {
+                        "name": "KeepAuditColumns",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typeprojected\",\"fields\":[{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"input_counts\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"odp_subscriber\",\"type\":\"string\"}]}"
+                    }
+                ],
+                "id": "CountInputRecords"
+            },
+            {
+                "name": "staging_audit_table",
+                "plugin": {
+                    "name": "BigQueryTable",
+                    "type": "batchsink",
+                    "label": "staging_audit_table",
+                    "artifact": {
+                        "name": "google-cloud",
+                        "version": "0.17.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "referenceName": "staging_audit_table",
+                        "project": "auto-detect",
+                        "dataset": "${Dataset}",
+                        "table": "staging_audit_table",
+                        "serviceAccountType": "filePath",
+                        "serviceFilePath": "auto-detect",
+                        "operation": "upsert",
+                        "relationTableKey": "table_name,table_load_type,odp_subscriber",
+                        "allowSchemaRelaxation": "false",
+                        "location": "US",
+                        "createPartitionedTable": "false",
+                        "partitioningType": "TIME",
+                        "partitionFilterRequired": "false",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typetypeprojected.agg\",\"fields\":[{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"odp_subscriber\",\"type\":\"string\"},{\"name\":\"inserted_record_count\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                },
+                "outputSchema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typetypeprojected.agg\",\"fields\":[{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"odp_subscriber\",\"type\":\"string\"},{\"name\":\"inserted_record_count\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}",
+                "inputSchema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typetypeprojected.agg\",\"fields\":[{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"odp_subscriber\",\"type\":\"string\"},{\"name\":\"inserted_record_count\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}",
+                "id": "staging_audit_table"
+            },
+            {
+                "name": "RemoveAuditColumns",
+                "plugin": {
+                    "name": "Projection",
+                    "type": "transform",
+                    "label": "RemoveAuditColumns",
+                    "artifact": {
+                        "name": "core-plugins",
+                        "version": "2.6.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "drop": "table_name,table_load_type,input_counts,last_update_date,odp_subscriber"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typeprojected\",\"fields\":[{\"name\":\"client\",\"type\":[\"string\",\"null\"]},{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"address\",\"type\":[\"string\",\"null\"]},{\"name\":\"valid_from\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"address_version\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_3\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_4\",\"type\":[\"string\",\"null\"]},{\"name\":\"city\",\"type\":[\"string\",\"null\"]},{\"name\":\"po_box\",\"type\":[\"string\",\"null\"]},{\"name\":\"street\",\"type\":[\"string\",\"null\"]},{\"name\":\"house_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"country_key\",\"type\":[\"string\",\"null\"]},{\"name\":\"telephone_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"sequence_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"home_address\",\"type\":[\"string\",\"null\"]},{\"name\":\"email_address\",\"type\":[\"string\",\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                ],
+                "inputSchema": [
+                    {
+                        "name": "AddingAuditColumns",
+                        "schema": "{\"name\":\"etlSchemaBody\",\"type\":\"record\",\"fields\":[{\"name\":\"client\",\"type\":[\"string\",\"null\"]},{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"address\",\"type\":[\"string\",\"null\"]},{\"name\":\"valid_from\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"address_version\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_3\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_4\",\"type\":[\"string\",\"null\"]},{\"name\":\"city\",\"type\":[\"string\",\"null\"]},{\"name\":\"po_box\",\"type\":[\"string\",\"null\"]},{\"name\":\"street\",\"type\":[\"string\",\"null\"]},{\"name\":\"house_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"country_key\",\"type\":[\"string\",\"null\"]},{\"name\":\"telephone_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"sequence_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"home_address\",\"type\":[\"string\",\"null\"]},{\"name\":\"email_address\",\"type\":[\"string\",\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"table_name\",\"type\":\"string\"},{\"name\":\"table_load_type\",\"type\":\"string\"},{\"name\":\"input_counts\",\"type\":\"int\"},{\"name\":\"last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"odp_subscriber\",\"type\":\"string\"}]}"
+                    }
+                ],
+                "id": "RemoveAuditColumns"
+            },
+            {
+                "name": "company_code_details",
+                "plugin": {
+                    "name": "BigQueryTable",
+                    "type": "batchsink",
+                    "label": "company_code_details",
+                    "artifact": {
+                        "name": "google-cloud",
+                        "version": "0.17.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "referenceName": "company_code_details",
+                        "project": "auto-detect",
+                        "dataset": "${Dataset}",
+                        "table": "company_code_details",
+                        "serviceAccountType": "filePath",
+                        "serviceFilePath": "auto-detect",
+                        "operation": "insert",
+                        "truncateTable": "true",
+                        "allowSchemaRelaxation": "false",
+                        "location": "US",
+                        "createPartitionedTable": "false",
+                        "partitioningType": "NONE",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typeprojected\",\"fields\":[{\"name\":\"client\",\"type\":[\"string\",\"null\"]},{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"address\",\"type\":[\"string\",\"null\"]},{\"name\":\"valid_from\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"address_version\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_3\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_4\",\"type\":[\"string\",\"null\"]},{\"name\":\"city\",\"type\":[\"string\",\"null\"]},{\"name\":\"po_box\",\"type\":[\"string\",\"null\"]},{\"name\":\"street\",\"type\":[\"string\",\"null\"]},{\"name\":\"house_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"country_key\",\"type\":[\"string\",\"null\"]},{\"name\":\"telephone_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"sequence_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"home_address\",\"type\":[\"string\",\"null\"]},{\"name\":\"email_address\",\"type\":[\"string\",\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typeprojected\",\"fields\":[{\"name\":\"client\",\"type\":[\"string\",\"null\"]},{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"address\",\"type\":[\"string\",\"null\"]},{\"name\":\"valid_from\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"address_version\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_3\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_4\",\"type\":[\"string\",\"null\"]},{\"name\":\"city\",\"type\":[\"string\",\"null\"]},{\"name\":\"po_box\",\"type\":[\"string\",\"null\"]},{\"name\":\"street\",\"type\":[\"string\",\"null\"]},{\"name\":\"house_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"country_key\",\"type\":[\"string\",\"null\"]},{\"name\":\"telephone_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"sequence_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"home_address\",\"type\":[\"string\",\"null\"]},{\"name\":\"email_address\",\"type\":[\"string\",\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                ],
+                "inputSchema": [
+                    {
+                        "name": "RemoveAuditColumns",
+                        "schema": "{\"type\":\"record\",\"name\":\"etlSchemaBody.typeprojected\",\"fields\":[{\"name\":\"client\",\"type\":[\"string\",\"null\"]},{\"name\":\"company_code\",\"type\":[\"string\",\"null\"]},{\"name\":\"address\",\"type\":[\"string\",\"null\"]},{\"name\":\"valid_from\",\"type\":[{\"type\":\"int\",\"logicalType\":\"date\"},\"null\"]},{\"name\":\"address_version\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_1\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_2\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_3\",\"type\":[\"string\",\"null\"]},{\"name\":\"name_4\",\"type\":[\"string\",\"null\"]},{\"name\":\"city\",\"type\":[\"string\",\"null\"]},{\"name\":\"po_box\",\"type\":[\"string\",\"null\"]},{\"name\":\"street\",\"type\":[\"string\",\"null\"]},{\"name\":\"house_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"country_key\",\"type\":[\"string\",\"null\"]},{\"name\":\"telephone_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"sequence_number\",\"type\":[\"string\",\"null\"]},{\"name\":\"home_address\",\"type\":[\"string\",\"null\"]},{\"name\":\"email_address\",\"type\":[\"string\",\"null\"]},{\"name\":\"dw_active_indicator\",\"type\":\"string\"},{\"name\":\"dw_start_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_end_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}},{\"name\":\"dw_last_update_date\",\"type\":{\"type\":\"string\",\"logicalType\":\"datetime\"}}]}"
+                    }
+                ],
+                "id": "company_code_details"
+            }
+        ],
+        "schedule": "0 * * * *",
+        "engine": "spark",
+        "numOfRecordsPreview": 100,
+        "description": "company code details",
+        "maxConcurrentRuns": 1
+    }
+}

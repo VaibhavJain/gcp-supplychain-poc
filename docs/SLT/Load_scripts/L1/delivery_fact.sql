@@ -1,0 +1,2050 @@
+MERGE INTO `{{ projectid }}.{{ slt_l1_facts }}.delivery_fact` tgt
+USING (
+with tmp_scr AS(
+SELECT   CONCAT(dh.client,'-',dh.delivery,'-',di.item) as delivery_key
+        ,dh.client
+        ,dh.delivery
+        ,dh.created_by
+        ,dh.entry_time
+        ,dh.created_on
+        ,dh.sales_district
+        ,dh.shipping_point
+        ,dh.sales_org
+        ,dh.delivery_type
+        ,dh.complete_dlv
+        ,dh.order_combinat
+        ,dh.planned_gds_mvmt
+        ,dh.loading_date
+        ,dh.transpplngdate
+        ,dh.delivery_date
+        ,dh.pick_date
+        ,dh.unloading_point
+        ,dh.incoterms
+        ,dh.incoterms_2
+        ,dh.export_indicator
+        ,dh.route
+        ,dh.billing_block
+        ,dh.delivery_block
+        ,dh.document_cat
+        ,dh.factorycalendar
+        ,dh.means_transp_qual
+        ,dh.means_of_transp_grp
+        ,dh.delivery_prior
+        ,dh.shp_cond
+        ,dh.ship_to_party
+        ,dh.sold_to_party
+        ,dh.customer_group
+        ,dh.wait_time_class
+        ,dh.wait_time_surcharge
+        ,dh.total_weight
+        ,dh.net_weight
+        ,dh.weight_unit
+        ,dh.volume
+        ,dh.volume_unit
+        ,dh.no_of_packages
+        ,dh.pickeditmlocat
+        ,dh.timeofdelivery
+        ,dh.weight_group
+        ,dh.loading_point
+        ,dh.trans_group
+        ,dh.dlvbillingtype
+        ,dh.billing_date
+        ,dh.invoicing_dates
+        ,dh.route_1
+        ,dh.update_group
+        ,dh.procedure_pricing
+        ,dh.doc_condition
+        ,dh.doc_currency
+        ,dh.sales_office
+        ,dh.total_proc_time
+        ,dh.comb_criteria
+        ,dh.original_doc
+        ,dh.communicationno
+        ,dh.stats_currency
+        ,dh.exch_rate_stats
+        ,dh.foreign_trade_datanr
+        ,dh.changed_by
+        ,dh.changed_on
+        ,dh.warehouse_no
+        ,dh.id_delivery_split
+        ,dh.sales_org_icb
+        ,dh.distrib_channel
+        ,dh.div_iv
+        ,dh.intercobilltype
+        ,dh.billing_date_1
+        ,dh.billing_date_2
+        ,dh.cust_inter_co
+        ,dh.cred_contr_area
+        ,dh.credit_account
+        ,dh.cust_cred_group
+        ,dh.cred_rep_grp
+        ,dh.risk_category
+        ,dh.currency
+        ,dh.credit_value
+        ,dh.bill_of_lading
+        ,dh.vendor
+        ,dh.mnsoftrns_type
+        ,dh.mns_of_trans_id
+        ,dh.release_date
+        ,dh.next_date
+        ,dh.gr_gi_slip_no
+        ,dh.document_date
+        ,dh.actual_gi_date
+        ,dh.shpmtblreason
+        ,dh.id_transp_syst
+        ,dh.ext_delivery
+        ,dh.order_number
+        ,dh.search_proced
+        ,dh.corr_delivery
+        ,dh.procedure_1
+        ,dh.doc_condition_1
+        ,dh.net_value
+        ,dh.route_schedule
+        ,dh.receiving_plant
+        ,dh.financ_doc_no
+        ,dh.paym_guar_proc
+        ,dh.picking_time
+        ,dh.tr_plan_time
+        ,dh.loading_time
+        ,dh.gi_time
+        ,dh.door_for_whse
+        ,dh.staging_area
+        ,dh.lettofcredcrcy
+        ,dh.lettofcredrate
+        ,dh.depreciation
+        ,dh.dg_mgmt_profile
+        ,dh.reference
+        ,dh.key
+        ,dh.tsegment_exists
+        ,dh.template
+        ,dh.del_loc_tzone
+        ,dh.rec_time_zone
+        ,dh.contains_dg
+        ,dh.original_system
+        ,dh.ind_gds_mvmnt
+        ,dh.transaction_code
+        ,dh.shipping_type
+        ,dh.meanstransp
+        ,dh.spec_processing
+        ,dh.company_id
+        ,dh.calcn_of_val_open
+        ,dh.immed_to
+        ,dh.supply_area
+        ,dh.delivery_type_1
+        ,dh.pod_date
+        ,dh.confirm_time
+        ,dh.no_itms_pred_sys
+        ,dh.in_plant
+        ,dh.doc_delet_id
+        ,dh.location_seq
+        ,dh.del_conf_stat
+        ,dh.ship_info_stat
+        ,dh.ret_asn_canc
+        ,dh.gi_time_1
+        ,dh.time_zone
+        ,dh.statdecntrlwhse
+        ,dh.scenario_logistic_ex
+        ,dh.original_system_type
+        ,dh.changer_s_sys_type
+        ,dh.georoute
+        ,dh.chg_ind_route
+        ,dh.change_ind
+        ,dh.gds_traffic_ty
+        ,dh.gtsroutecode
+        ,dh.rls_time_stamp
+        ,dh.msrmnt_unit_sys
+        ,dh.inv_bf_gi
+        ,dh.qi_status
+        ,dh.redirected
+        ,dh.storage_status
+        ,dh.type_ext_ident
+        ,dh.means_of_trans
+        ,dh.pro_number
+        ,dh.akkreditiv
+        ,dh.billing_indicator
+        ,dh.print_profile
+        ,dh.adv_returns
+        ,dh.document_log
+        ,dh.stor_loc_change
+        ,dh.control_key
+        ,dh.spl_iinitiator
+        ,dh.dlv_version
+        ,dh.data_filter_value_for_data_agi
+        ,dh.type_of_previous_doc
+        ,dh.no_of_previous_doc
+        ,dh.mode_of_trans
+        ,dh.port_airport
+        ,dh.mode_of_transport
+        ,dh.ctry_meanstr_border
+        ,dh.id_means_transp_bord
+        ,dh.conveyancerefidn
+        ,dh.mode_transp_inland
+        ,dh.ctry_meanstr_inland
+        ,dh.id_means_transp_inl
+        ,dh.handover_location
+        ,dh.handover_date
+        ,dh.handover_time
+        ,dh.handoverloc_timezone
+        ,dh.confirmed
+        ,dh.value
+        ,dh.termsofpayment
+        ,dh.financial_doc
+        ,dh.exptcreditinsur
+        ,dh.payment_card
+        ,dh.sap_cred_mgmt
+        ,dh.crma_te_status
+        ,dh.overallcredstat
+        ,dh.totals_status
+        ,dh.billing_status
+        ,dh.overall_status
+        ,dh.hold
+        ,dh.phold
+        ,dh.confirmation
+        ,dh.ovr_pick_status
+        ,dh.overallwmstatus
+        ,dh.pod_status
+        ,dh.packing_status
+        ,dh.temporary_inbound_delivery
+        ,dh.overall_blk_st
+        ,dh.trns_plan_stat
+        ,dh.header_data
+        ,dh.item_data
+        ,dh.header_bill_dat
+        ,dh.item_bill_data
+        ,dh.head_data_pckg
+        ,dh.it_data_packag
+        ,dh.head_data_pck_putawy
+        ,dh.it_data_pck_putaway
+        ,dh.header_dlv_data
+        ,dh.item_deliv_data
+        ,dh.head_data_gm
+        ,dh.item_data_gm
+        ,dh.hu_in_stock
+        ,dh.statdecntrlwhse_1
+        ,dh.ovrlgdsmvtstat
+        ,dh.hdr_reserves_1
+        ,dh.hdr_reserves_2
+        ,dh.hdr_reserves_3
+        ,dh.hdr_reserves_4
+        ,dh.hdr_reserves_5
+        ,dh.total_reserves1
+        ,dh.totalreserves2
+        ,dh.total_reserves3
+        ,dh.total_reserves4
+        ,dh.total_reserves5
+        ,dh.prod_marktablty_sts
+        ,dh.dangerous_goods_sts
+        ,dh.sfty_data_sheet_sts
+        ,dh.dtucsta
+        ,dh.inco_version
+        ,dh.inco_location1
+        ,dh.inco_location2
+        ,dh.extern_bol_no
+        ,dh.miscell_del_no
+        ,dh.ext_bus_syst_id
+        ,dh.spec_iss_val_sit
+        ,dh.dummy_function_in_length_1
+        ,dh.loading_units
+        ,dh.no_cat_1
+        ,dh.no_cat_2
+        ,dh.no_cat_3
+        ,dh.no_cat_4
+        ,dh.sequence_number
+        ,dh.current_point
+        ,dh.arrival_departure
+        ,dh.curr_tme_stamp
+        ,dh.base_point
+        ,dh.arrival_departure_1
+        ,dh.time_estim_stamp
+        ,dh.event_estimation
+        ,dh.prior_point
+        ,dh.arrival_departure_2
+        ,dh.prior_tme_stamp
+        ,dh.prior_base_pt
+        ,dh.arrival_departure_3
+        ,dh.time_estim_stamp_1
+        ,dh.event_estimation_1
+        ,dh.base_point_1
+        ,dh.arrival_departure_4
+        ,dh.time_estim_stamp_2
+        ,dh.delivery_date_fixed
+        ,dh.idoc_number
+        ,dh.inb_dly_group
+        ,dh.kanban_indicat
+        ,dh.transaction_number
+        ,dh.last_vas_item_number
+        ,dh.vas_cust_group
+        ,dh.psst_group
+        ,dh.jit_relevant
+        ,di.delivery as delivery_lips
+        ,di.item
+        ,di.item_category
+        ,di.created_by as created_by_lips
+        ,di.entry_time as entry_time_lips
+        ,di.created_on as created_on_lips
+        ,di.material
+        ,di.materialentered
+        ,di.material_group
+        ,di.plant
+        ,di.stor_loc
+        ,di.batch
+        ,di.supplier_batch
+        ,di.customer_mat
+        ,di.prod_hierarchy
+        ,di.delivery_qty
+        ,di.base_unit
+        ,di.sales_unit
+        ,di.numerator
+        ,di.denominat
+        ,di.net_weight as net_weight_lips
+        ,di.gross_weight
+        ,di.weight_unit as weight_unit_lips
+        ,di.volume as volume_lips
+        ,di.volume_unit as volume_unit_lips
+        ,di.part_dlv_item
+        ,di.unlimited
+        ,di.overdeliv_tol
+        ,di.underdel_tol
+        ,di.batch_split
+        ,di.billing_block as billing_block_lips
+        ,di.mat_avail_date
+        ,di.qty_stckp_unt
+        ,di.item_descr
+        ,di.storage_bin
+        ,di.originating_doc
+        ,di.item_1
+        ,di.document_cat as document_cat_lips
+        ,di.prdoclogsys
+        ,di.reference_doc
+        ,di.reference_item
+        ,di.update_doc_flow
+        ,di.higher_lev_item
+        ,di.relev_for_bill
+        ,di.loading_group
+        ,di.trans_group as trans_group_lips
+        ,di.picking_id
+        ,di.warehouse_no as warehouse_no_lips
+        ,di.whse_no_split
+        ,di.storage_type
+        ,di.storage_bin_1
+        ,di.separate_val
+        ,di.movement_type
+        ,di.movement_type_1
+        ,di.ind_dynamic_bin
+        ,di.requirementtype
+        ,di.planning_type
+        ,di.material_type
+        ,di.batch_mgmt_rqt
+        ,di.batches
+        ,di.preced_with_ref
+        ,di.item_type
+        ,di.valuation_type
+        ,di.req_mt_totals
+        ,di.avail_check
+        ,di.ean_number
+        ,di.business_area
+        ,di.sales_office as sales_office_lips
+        ,di.sales_group
+        ,di.distr_channel
+        ,di.division
+        ,di.delivery_group
+        ,di.qty_is_fixed
+        ,di.max_part_deliv
+        ,di.fixed_proc_time
+        ,di.var_proc_time
+        ,di.update_group as update_group_lips
+        ,di.cost
+        ,di.subtotal_1
+        ,di.subtotal_2
+        ,di.subtotal_3
+        ,di.subtotal_4
+        ,di.subtotal_5
+        ,di.subtotal_6
+        ,di.special_stock
+        ,di.changed_on as changed_on_lips
+        ,di.ean_upc
+        ,di.customer_grp_1
+        ,di.customer_grp_2
+        ,di.customer_grp_3
+        ,di.customer_grp_4
+        ,di.customer_grp_5
+        ,di.materialgroup_1
+        ,di.materialgroup_2
+        ,di.materialgroup_3
+        ,di.materialgroup_4
+        ,di.materialgroup_5
+        ,di.allocation_ind
+        ,di.prec_doc_categ
+        ,di.preceddoccentrl
+        ,di.cost_center
+        ,di.co_area
+        ,di.profit_segment
+        ,di.profit_center
+        ,di.wbs_element
+        ,di.order_number as order_number_lips
+        ,di.order_item_no
+        ,di.sales_order
+        ,di.sales_ord_item
+        ,di.plng_material
+        ,di.planning_plant
+        ,di.prod_grp_unit
+        ,di.conversion
+        ,di.acct_assgmt_cat
+        ,di.consumption
+        ,di.commitment_item
+        ,di.funds_center
+        ,di.fund
+        ,di.packing_control
+        ,di.reqmts_class
+        ,di.credit_active
+        ,di.cumul_batch_qty
+        ,di.cum_gross_wght
+        ,di.cumul_net_wght
+        ,di.cumul_volume
+        ,di.hghlevitmbatch
+        ,di.configuration
+        ,di.int_object_no
+        ,di.no_serial_no
+        ,di.serialnoprofile
+        ,di.weight_unit_1
+        ,di.volume_unit_1
+        ,di.bom_expl_number
+        ,di.int_dlv_scd_no
+        ,di.release_type
+        ,di.usage
+        ,di.inspection_lot
+        ,di.partial_lot
+        ,di.no_gr_posted
+        ,di.matl_grp_pckmat
+        ,di.object_no_hdr
+        ,di.objno_item
+        ,di.engin_change
+        ,di.returns_item
+        ,di.matdetermactive
+        ,di.usage_hl_item
+        ,di.recv_point
+        ,di.department
+        ,di.confirmation as confirmation_lips
+        ,di.statistics_date
+        ,di.promotion
+        ,di.nocondrec_batch
+        ,di.cus_preference
+        ,di.bus_trans_type
+        ,di.int_class_no
+        ,di.qty_proposal
+        ,di.alloc_table
+        ,di.item_2
+        ,di.internal_field_do_not_use
+        ,di.internal_field_do_not_use_1
+        ,di.internal_field_do_not_use_2
+        ,di.envt_relevant
+        ,di.quantity
+        ,di.at_relevant
+        ,di.pricing_unit
+        ,di.unit_of_measure
+        ,di.net_price
+        ,di.net_value as net_value_lips
+        ,di.stat_value
+        ,di.movement_ind
+        ,di.mat_freight_grp
+        ,di.pack_acc_batch
+        ,di.paytguarantform
+        ,di.guaranteed
+        ,di.matl_staging_tme
+        ,di.value_contract_no
+        ,di.val_cont_item
+        ,di.cfop
+        ,di.icms_law
+        ,di.ipi_law
+        ,di.tax_code
+        ,di.situation
+        ,di.reservation_number
+        ,di.item_no
+        ,di.record_type
+        ,di.sequence_number as sequence_number_lips
+        ,di.leading_uom
+        ,di.dgindprofile
+        ,di.cumul_batch_qty_1
+        ,di.cumulated_batch_split_quantity
+        ,di.valuation
+        ,di.project_def
+        ,di.withdr_seq_grp
+        ,di.stk_determ_rule
+        ,di.inv_mgmt_active
+        ,di.mfr_part_profile
+        ,di.mpn_material
+        ,di.staging_area as staging_area_lips
+        ,di.key as key_lips
+        ,di.orig_item
+        ,di.ext_item
+        ,di.no_avail_check
+        ,di.not_rel_picking
+        ,di.refmvttype_wm
+        ,di.mrp_area
+        ,di.stock_category
+        ,di.stock_category_1
+        ,di.receiving_mat
+        ,di.receiving_plant as receiving_plant_lips
+        ,di.receiving_sloc
+        ,di.receiving_batch
+        ,di.val_type_tfr
+        ,di.sp_ind_st_tfr
+        ,di.spec_stock_no
+        ,di.spec_stock_no_1
+        ,di.lettofcredrate as lettofcredrate_lips
+        ,di.current_qty
+        ,di.class_of_items
+        ,di.main_posting_id
+        ,di.stock_type
+        ,di.enter_batch
+        ,di.indicator_copy_dest_storage
+        ,di.staging_ind
+        ,di.indicator_delivery_item_is_a
+        ,di.no_gds_movement
+        ,di.g_l_account
+        ,di.final_issue
+        ,di.date_of_manuf
+        ,di.sled_bbd
+        ,di.year_cur_period
+        ,di.reference_doc_1
+        ,di.ref_doc_item
+        ,di.reason_for_mvt
+        ,di.sub_movmnt_type
+        ,di.delivery_cat
+        ,di.ext_amount_lc
+        ,di.qty_in_opun
+        ,di.sales_value
+        ,di.credit_price
+        ,di.pod_indicator
+        ,di.not_wms_relevnt
+        ,di.conversionfactr
+        ,di.pod_rel_rc_sc
+        ,di.st_tfr_tfr_pst
+        ,di.functional_area
+        ,di.grants
+        ,di.units_meas_use
+        ,di.gds_mvmt_contrl
+        ,di.wbwkz
+        ,di.trsfr_wbs_elmnt
+        ,di.sequential_no
+        ,di.deliv_compl
+        ,di.scrap_indicator
+        ,di.rma_number
+        ,di.inspection_guid
+        ,di.follow_up_code
+        ,di.end_validity_period
+        ,di.end_internal_val
+        ,di.rma_no_completed
+        ,di.delivery_qty_1
+        ,di.atp_time_stamp
+        ,di.original_system_type as original_system_type_lips
+        ,di.cq_vendor
+        ,di.in_plant as in_plant_lips
+        ,di.ext_ident
+        ,di.except_code_wh
+        ,di.retention_qty
+        ,di.alt_prodnr
+        ,di.reasn
+        ,di.structure
+        ,di.numerator_1
+        ,di.denominator
+        ,di.ctry_of_origin
+        ,di.begin_valid_period
+        ,di.deliveryvsn
+        ,di.gm_completion
+        ,di.cofins_law
+        ,di.pis_law
+        ,di.iss_law
+        ,di.budget_period
+        ,di.kanban_indicat as kanban_indicat_lips
+        ,di.type
+        ,di.spec_iss_val_sit as spec_iss_val_sit_lips
+        ,di.reqmnt_segment
+        ,di.stock_segment
+        ,di.confirmed as confirmed_lips
+        ,di.financial_doc as financial_doc_lips
+        ,di.exptcreditinsur as exptcreditinsur_lips
+        ,di.interco_billst
+        ,di.billing_status as billing_status_lips
+        ,di.overall_status as overall_status_lips
+        ,di.dlyitemnotcomp
+        ,di.confirmation_1
+        ,di.picking_status
+        ,di.wm_activ_status
+        ,di.pod_status as pod_status_lips
+        ,di.packing_status as packing_status_lips
+        ,di.item_3
+        ,di.item_bill_data as item_bill_data_lips
+        ,di.it_data_pckgng
+        ,di.item_data_pck_putawy
+        ,di.item_deliv_data as item_deliv_data_lips
+        ,di.item_data_gm as item_data_gm_lips
+        ,di.decentr_whse
+        ,di.goodsmovementst
+        ,di.item_reserves_1
+        ,di.item_reserves_2
+        ,di.item_reserves_3
+        ,di.item_reserves_4
+        ,di.item_reserves_5
+        ,di.embargo_status
+        ,di.wls_status
+        ,di.ovr_status
+        ,di.prod_marktablty_sts as prod_marktablty_sts_lips
+        ,di.prod_marktablty_sts_1
+        ,di.sfty_data_sheet_sts as sfty_data_sheet_sts_lips
+        ,di.dtucsta as dtucsta_lips
+        ,di.data_filter_value_for_data_agi as data_filter_value_for_data_agi_lips
+        ,di.deliv_qty_puom
+        ,di.cwm_duom
+        ,di.picked_qty_puom
+        ,di.puom_qty_picked
+        ,di.pq_entered
+        ,di.to_entry
+        ,di.cum_cw_batch_qty
+        ,di.qty_to_post_in_puom
+        ,di.dummy_function_in_length_1 as dummy_function_in_length_1_lips
+        ,di.inverted
+        ,di.dtuc
+        ,di.prov_conv_fact
+        ,di.door_for_whse as door_for_whse_lips
+        ,di.season_year
+        ,di.season
+        ,di.collection
+        ,di.theme
+        ,di.customer_grp_6
+        ,di.customer_grp_7
+        ,di.customer_grp_8
+        ,di.customer_grp_5_1
+        ,di.customer_grp_10
+        ,di.vas_relevant
+        ,di.item_4
+        ,di.transaction_number as transaction_number_lips
+        ,di.item_group
+        ,di.item_number
+        ,di.reservation_1
+        ,di.item_no_1
+        ,di.ob_purity
+        ,di.consignment
+        ,di.characteristic_1
+        ,di.characteristic_2
+        ,di.characteristic_3
+        ,CASE WHEN dh.dw_last_update_date > di.dw_last_update_date 
+             THEN dh.dw_last_update_date
+             ELSE di.dw_last_update_date
+         END as input_last_update_date
+        ,dh.dw_active_indicator
+        ,md.material_uuid
+        ,md.material_key
+        ,sd.supplier_uuid
+        ,sd.supplier_key
+        ,pd.plant_uuid
+        ,pd.plant_key
+        ,cd.customer_uuid
+        ,cd.customer_key
+        ,csod.customer_sales_org_uuid
+        ,csod.customer_sales_org_key
+        ,sld.storage_location_uuid
+        ,sld.storage_location_key
+        ,spd.shipping_point_uuid
+        ,spd.shipping_point_key
+   from `{{ projectid }}.{{ slt_l0_staging }}.delivery_header` dh 
+        inner join `{{ projectid }}.{{ slt_l0_staging }}.delivery_item` di 
+     on dh.client = di.client
+    and dh.delivery = di.delivery
+    and dh.dw_active_indicator = di.dw_active_indicator
+       left join `{{ projectid }}.{{ slt_l1_dimension }}.material_dimension` md
+    on md.material_key = CONCAT(dh.client,'-',di.material,'-',di.plant)
+   and md.dw_active_indicator = 'Y'
+       left join `{{ projectid }}.{{ slt_l1_dimension }}.plant_dimension` pd
+    on pd.plant_key = CONCAT(di.client,'-',di.plant)
+   and pd.dw_active_indicator = 'Y'
+       left join `{{ projectid }}.{{ slt_l1_dimension }}.supplier_dimension` sd
+    on sd.supplier_key = CONCAT(dh.client,'-',dh.vendor)
+   and sd.dw_active_indicator = 'Y'
+       left join `{{ projectid }}.{{ slt_l1_dimension }}.customer_dimension` cd
+    on cd.customer_key = CONCAT(dh.client,'-',dh.sold_to_party) 
+   and cd.dw_active_indicator = 'Y'
+       left join `{{ projectid }}.{{ slt_l1_dimension }}.customer_sales_org_dimension` csod
+    on csod.customer_sales_org_key = CONCAT(dh.client,'-',dh.sold_to_party,'-',dh.sales_org,'-',di.distr_channel,'-',di.division) 
+   and csod.dw_active_indicator = 'Y'
+       left join `{{ projectid }}.{{ slt_l1_dimension }}.storage_location_dimension` sld
+    on sld.storage_location_key = CONCAT(di.client,'-',di.plant,'-',di.stor_loc)
+   and sld.dw_active_indicator = 'Y'
+       left join `{{ projectid }}.{{ slt_l1_dimension }}.shipping_point_dimension` spd
+    on spd.shipping_point_key = CONCAT(dh.client,'-',dh.shipping_point)
+   and spd.dw_active_indicator = 'Y'
+  where dh.dw_active_indicator = 'Y'
+  and (dh.dw_last_update_date >= coalesce((SELECT CASE WHEN lat.full_delta_indicator = 'F' THEN lat.full_load_datetime
+                                             WHEN lat.full_delta_indicator <> 'F' THEN lat.delta_load_datetime
+                                             ELSE CAST('1900-01-01T00:00:00' AS DATETIME)
+                                        END FROM `{{ projectid }}.{{ slt_l0_staging }}.layer1_audit_table` lat
+                                WHERE lat.table_name = 'delivery_fact'),CAST('1900-01-01T00:00:00' AS DATETIME))
+   or di.dw_last_update_date >= coalesce((SELECT CASE WHEN lat.full_delta_indicator = 'F' THEN lat.full_load_datetime
+                                             WHEN lat.full_delta_indicator <> 'F' THEN lat.delta_load_datetime
+                                             ELSE CAST('1900-01-01T00:00:00' AS DATETIME)
+                                        END FROM `{{ projectid }}.{{ slt_l0_staging }}.layer1_audit_table` lat
+                                WHERE lat.table_name = 'delivery_fact'),CAST('1900-01-01T00:00:00' AS DATETIME)))),
+tmp_df AS (SELECT ts.*,
+     TO_HEX(MD5((select string_agg(CAST(col as STRING), ', ' order by offset)
+    from unnest(split(trim(format('%t',(select as struct ts.* except(input_last_update_date))), '()'),', ')) col with offset 
+    where not col IS NULL
+    ))) as finalmd5key 
+  from tmp_scr ts)
+SELECT t.delivery_key as delivery_join_key,t.*
+  from tmp_df t
+UNION ALL 
+SELECT NULL as delivery_join_key,t.*
+  from tmp_df t
+       INNER JOIN `{{ projectid }}.{{ slt_l1_facts }}.delivery_fact` df
+    on df.delivery_key = t.delivery_key
+   AND df.finalmd5key <> t.finalmd5key
+ WHERE df.dw_active_indicator = 'Y') scr
+ON tgt.delivery_key = scr.delivery_join_key
+WHEN MATCHED AND tgt.finalmd5key <> scr.finalmd5key THEN 
+UPDATE set tgt.dw_end_date = CURRENT_DATETIME()
+          ,tgt.dw_active_indicator = 'N'
+WHEN NOT MATCHED THEN 
+INSERT(
+ delivery_uuid
+,delivery_key
+,client
+,delivery
+,item
+,material_uuid
+,material_key
+,supplier_uuid
+,supplier_key
+,plant_uuid
+,plant_key
+,customer_uuid
+,customer_key
+,customer_sales_org_uuid
+,customer_sales_org_key
+,storage_location_uuid
+,storage_location_key
+,shipping_point_uuid
+,shipping_point_key
+,created_by
+,entry_time
+,created_on
+,sales_district
+,shipping_point
+,sales_org
+,delivery_type
+,complete_dlv
+,order_combinat
+,planned_gds_mvmt
+,loading_date
+,transpplngdate
+,delivery_date
+,pick_date
+,unloading_point
+,incoterms
+,incoterms_2
+,export_indicator
+,route
+,billing_block
+,delivery_block
+,document_cat
+,factorycalendar
+,means_transp_qual
+,means_of_transp_grp
+,delivery_prior
+,shp_cond
+,ship_to_party
+,sold_to_party
+,customer_group
+,wait_time_class
+,wait_time_surcharge
+,total_weight
+,net_weight
+,weight_unit
+,volume
+,volume_unit
+,no_of_packages
+,pickeditmlocat
+,timeofdelivery
+,weight_group
+,loading_point
+,trans_group
+,dlvbillingtype
+,billing_date
+,invoicing_dates
+,route_1
+,update_group
+,procedure_pricing
+,doc_condition
+,doc_currency
+,sales_office
+,total_proc_time
+,comb_criteria
+,original_doc
+,communicationno
+,stats_currency
+,exch_rate_stats
+,foreign_trade_datanr
+,changed_by
+,changed_on
+,warehouse_no
+,id_delivery_split
+,sales_org_icb
+,distrib_channel
+,div_iv
+,intercobilltype
+,billing_date_1
+,billing_date_2
+,cust_inter_co
+,cred_contr_area
+,credit_account
+,cust_cred_group
+,cred_rep_grp
+,risk_category
+,currency
+,credit_value
+,bill_of_lading
+,vendor
+,mnsoftrns_type
+,mns_of_trans_id
+,release_date
+,next_date
+,gr_gi_slip_no
+,document_date
+,actual_gi_date
+,shpmtblreason
+,id_transp_syst
+,ext_delivery
+,order_number
+,search_proced
+,corr_delivery
+,procedure_1
+,doc_condition_1
+,net_value
+,route_schedule
+,receiving_plant
+,financ_doc_no
+,paym_guar_proc
+,picking_time
+,tr_plan_time
+,loading_time
+,gi_time
+,door_for_whse
+,staging_area
+,lettofcredcrcy
+,lettofcredrate
+,depreciation
+,dg_mgmt_profile
+,reference
+,key
+,tsegment_exists
+,template
+,del_loc_tzone
+,rec_time_zone
+,contains_dg
+,original_system
+,ind_gds_mvmnt
+,transaction_code
+,shipping_type
+,meanstransp
+,spec_processing
+,company_id
+,calcn_of_val_open
+,immed_to
+,supply_area
+,delivery_type_1
+,pod_date
+,confirm_time
+,no_itms_pred_sys
+,in_plant
+,doc_delet_id
+,location_seq
+,del_conf_stat
+,ship_info_stat
+,ret_asn_canc
+,gi_time_1
+,time_zone
+,statdecntrlwhse
+,scenario_logistic_ex
+,original_system_type
+,changer_s_sys_type
+,georoute
+,chg_ind_route
+,change_ind
+,gds_traffic_ty
+,gtsroutecode
+,rls_time_stamp
+,msrmnt_unit_sys
+,inv_bf_gi
+,qi_status
+,redirected
+,storage_status
+,type_ext_ident
+,means_of_trans
+,pro_number
+,akkreditiv
+,billing_indicator
+,print_profile
+,adv_returns
+,document_log
+,stor_loc_change
+,control_key
+,spl_iinitiator
+,dlv_version
+,data_filter_value_for_data_agi
+,type_of_previous_doc
+,no_of_previous_doc
+,mode_of_trans
+,port_airport
+,mode_of_transport
+,ctry_meanstr_border
+,id_means_transp_bord
+,conveyancerefidn
+,mode_transp_inland
+,ctry_meanstr_inland
+,id_means_transp_inl
+,handover_location
+,handover_date
+,handover_time
+,handoverloc_timezone
+,confirmed
+,value
+,termsofpayment
+,financial_doc
+,exptcreditinsur
+,payment_card
+,sap_cred_mgmt
+,crma_te_status
+,overallcredstat
+,totals_status
+,billing_status
+,overall_status
+,hold
+,phold
+,confirmation
+,ovr_pick_status
+,overallwmstatus
+,pod_status
+,packing_status
+,temporary_inbound_delivery
+,overall_blk_st
+,trns_plan_stat
+,header_data
+,item_data
+,header_bill_dat
+,item_bill_data
+,head_data_pckg
+,it_data_packag
+,head_data_pck_putawy
+,it_data_pck_putaway
+,header_dlv_data
+,item_deliv_data
+,head_data_gm
+,item_data_gm
+,hu_in_stock
+,statdecntrlwhse_1
+,ovrlgdsmvtstat
+,hdr_reserves_1
+,hdr_reserves_2
+,hdr_reserves_3
+,hdr_reserves_4
+,hdr_reserves_5
+,total_reserves1
+,totalreserves2
+,total_reserves3
+,total_reserves4
+,total_reserves5
+,prod_marktablty_sts
+,dangerous_goods_sts
+,sfty_data_sheet_sts
+,dtucsta
+,inco_version
+,inco_location1
+,inco_location2
+,extern_bol_no
+,miscell_del_no
+,ext_bus_syst_id
+,spec_iss_val_sit
+,dummy_function_in_length_1
+,loading_units
+,no_cat_1
+,no_cat_2
+,no_cat_3
+,no_cat_4
+,sequence_number
+,current_point
+,arrival_departure
+,curr_tme_stamp
+,base_point
+,arrival_departure_1
+,time_estim_stamp
+,event_estimation
+,prior_point
+,arrival_departure_2
+,prior_tme_stamp
+,prior_base_pt
+,arrival_departure_3
+,time_estim_stamp_1
+,event_estimation_1
+,base_point_1
+,arrival_departure_4
+,time_estim_stamp_2
+,delivery_date_fixed
+,idoc_number
+,inb_dly_group
+,kanban_indicat
+,transaction_number
+,last_vas_item_number
+,vas_cust_group
+,psst_group
+,jit_relevant
+,delivery_lips
+,item_category
+,created_by_lips
+,entry_time_lips
+,created_on_lips
+,material
+,materialentered
+,material_group
+,plant
+,stor_loc
+,batch
+,supplier_batch
+,customer_mat
+,prod_hierarchy
+,delivery_qty
+,base_unit
+,sales_unit
+,numerator
+,denominat
+,net_weight_lips
+,gross_weight
+,weight_unit_lips
+,volume_lips
+,volume_unit_lips
+,part_dlv_item
+,unlimited
+,overdeliv_tol
+,underdel_tol
+,batch_split
+,billing_block_lips
+,mat_avail_date
+,qty_stckp_unt
+,item_descr
+,storage_bin
+,originating_doc
+,item_1
+,document_cat_lips
+,prdoclogsys
+,reference_doc
+,reference_item
+,update_doc_flow
+,higher_lev_item
+,relev_for_bill
+,loading_group
+,trans_group_lips
+,picking_id
+,warehouse_no_lips
+,whse_no_split
+,storage_type
+,storage_bin_1
+,separate_val
+,movement_type
+,movement_type_1
+,ind_dynamic_bin
+,requirementtype
+,planning_type
+,material_type
+,batch_mgmt_rqt
+,batches
+,preced_with_ref
+,item_type
+,valuation_type
+,req_mt_totals
+,avail_check
+,ean_number
+,business_area
+,sales_office_lips
+,sales_group
+,distr_channel
+,division
+,delivery_group
+,qty_is_fixed
+,max_part_deliv
+,fixed_proc_time
+,var_proc_time
+,update_group_lips
+,cost
+,subtotal_1
+,subtotal_2
+,subtotal_3
+,subtotal_4
+,subtotal_5
+,subtotal_6
+,special_stock
+,changed_on_lips
+,ean_upc
+,customer_grp_1
+,customer_grp_2
+,customer_grp_3
+,customer_grp_4
+,customer_grp_5
+,materialgroup_1
+,materialgroup_2
+,materialgroup_3
+,materialgroup_4
+,materialgroup_5
+,allocation_ind
+,prec_doc_categ
+,preceddoccentrl
+,cost_center
+,co_area
+,profit_segment
+,profit_center
+,wbs_element
+,order_number_lips
+,order_item_no
+,sales_order
+,sales_ord_item
+,plng_material
+,planning_plant
+,prod_grp_unit
+,conversion
+,acct_assgmt_cat
+,consumption
+,commitment_item
+,funds_center
+,fund
+,packing_control
+,reqmts_class
+,credit_active
+,cumul_batch_qty
+,cum_gross_wght
+,cumul_net_wght
+,cumul_volume
+,hghlevitmbatch
+,configuration
+,int_object_no
+,no_serial_no
+,serialnoprofile
+,weight_unit_1
+,volume_unit_1
+,bom_expl_number
+,int_dlv_scd_no
+,release_type
+,usage
+,inspection_lot
+,partial_lot
+,no_gr_posted
+,matl_grp_pckmat
+,object_no_hdr
+,objno_item
+,engin_change
+,returns_item
+,matdetermactive
+,usage_hl_item
+,recv_point
+,department
+,confirmation_lips
+,statistics_date
+,promotion
+,nocondrec_batch
+,cus_preference
+,bus_trans_type
+,int_class_no
+,qty_proposal
+,alloc_table
+,item_2
+,internal_field_do_not_use
+,internal_field_do_not_use_1
+,internal_field_do_not_use_2
+,envt_relevant
+,quantity
+,at_relevant
+,pricing_unit
+,unit_of_measure
+,net_price
+,net_value_lips
+,stat_value
+,movement_ind
+,mat_freight_grp
+,pack_acc_batch
+,paytguarantform
+,guaranteed
+,matl_staging_tme
+,value_contract_no
+,val_cont_item
+,cfop
+,icms_law
+,ipi_law
+,tax_code
+,situation
+,reservation_number
+,item_no
+,record_type
+,sequence_number_lips
+,leading_uom
+,dgindprofile
+,cumul_batch_qty_1
+,cumulated_batch_split_quantity
+,valuation
+,project_def
+,withdr_seq_grp
+,stk_determ_rule
+,inv_mgmt_active
+,mfr_part_profile
+,mpn_material
+,staging_area_lips
+,key_lips
+,orig_item
+,ext_item
+,no_avail_check
+,not_rel_picking
+,refmvttype_wm
+,mrp_area
+,stock_category
+,stock_category_1
+,receiving_mat
+,receiving_plant_lips
+,receiving_sloc
+,receiving_batch
+,val_type_tfr
+,sp_ind_st_tfr
+,spec_stock_no
+,spec_stock_no_1
+,lettofcredrate_lips
+,current_qty
+,class_of_items
+,main_posting_id
+,stock_type
+,enter_batch
+,indicator_copy_dest_storage
+,staging_ind
+,indicator_delivery_item_is_a
+,no_gds_movement
+,g_l_account
+,final_issue
+,date_of_manuf
+,sled_bbd
+,year_cur_period
+,reference_doc_1
+,ref_doc_item
+,reason_for_mvt
+,sub_movmnt_type
+,delivery_cat
+,ext_amount_lc
+,qty_in_opun
+,sales_value
+,credit_price
+,pod_indicator
+,not_wms_relevnt
+,conversionfactr
+,pod_rel_rc_sc
+,st_tfr_tfr_pst
+,functional_area
+,grants
+,units_meas_use
+,gds_mvmt_contrl
+,wbwkz
+,trsfr_wbs_elmnt
+,sequential_no
+,deliv_compl
+,scrap_indicator
+,rma_number
+,inspection_guid
+,follow_up_code
+,end_validity_period
+,end_internal_val
+,rma_no_completed
+,delivery_qty_1
+,atp_time_stamp
+,original_system_type_lips
+,cq_vendor
+,in_plant_lips
+,ext_ident
+,except_code_wh
+,retention_qty
+,alt_prodnr
+,reasn
+,structure
+,numerator_1
+,denominator
+,ctry_of_origin
+,begin_valid_period
+,deliveryvsn
+,gm_completion
+,cofins_law
+,pis_law
+,iss_law
+,budget_period
+,kanban_indicat_lips
+,type
+,spec_iss_val_sit_lips
+,reqmnt_segment
+,stock_segment
+,confirmed_lips
+,financial_doc_lips
+,exptcreditinsur_lips
+,interco_billst
+,billing_status_lips
+,overall_status_lips
+,dlyitemnotcomp
+,confirmation_1
+,picking_status
+,wm_activ_status
+,pod_status_lips
+,packing_status_lips
+,item_3
+,item_bill_data_lips
+,it_data_pckgng
+,item_data_pck_putawy
+,item_deliv_data_lips
+,item_data_gm_lips
+,decentr_whse
+,goodsmovementst
+,item_reserves_1
+,item_reserves_2
+,item_reserves_3
+,item_reserves_4
+,item_reserves_5
+,embargo_status
+,wls_status
+,ovr_status
+,prod_marktablty_sts_lips
+,prod_marktablty_sts_1
+,sfty_data_sheet_sts_lips
+,dtucsta_lips
+,data_filter_value_for_data_agi_lips
+,deliv_qty_puom
+,cwm_duom
+,picked_qty_puom
+,puom_qty_picked
+,pq_entered
+,to_entry
+,cum_cw_batch_qty
+,qty_to_post_in_puom
+,dummy_function_in_length_1_lips
+,inverted
+,dtuc
+,prov_conv_fact
+,door_for_whse_lips
+,season_year
+,season
+,collection
+,theme
+,customer_grp_6
+,customer_grp_7
+,customer_grp_8
+,customer_grp_5_1
+,customer_grp_10
+,vas_relevant
+,item_4
+,transaction_number_lips
+,item_group
+,item_number
+,reservation_1
+,item_no_1
+,ob_purity
+,consignment
+,characteristic_1
+,characteristic_2
+,characteristic_3
+,finalmd5key
+,input_last_update_date
+,dw_active_indicator
+,dw_start_date
+,dw_end_date
+,dw_last_update_date
+)
+VALUES
+(
+ TO_HEX(MD5(CONCAT(scr.delivery_key,scr.finalmd5key)))
+,scr.delivery_key
+,scr.client
+,scr.delivery
+,scr.item
+,scr.material_uuid
+,scr.material_key
+,scr.supplier_uuid
+,scr.supplier_key
+,scr.plant_uuid
+,scr.plant_key
+,scr.customer_uuid
+,scr.customer_key
+,scr.customer_sales_org_uuid
+,scr.customer_sales_org_key
+,scr.storage_location_uuid
+,scr.storage_location_key
+,scr.shipping_point_uuid
+,scr.shipping_point_key
+,scr.created_by
+,scr.entry_time
+,scr.created_on
+,scr.sales_district
+,scr.shipping_point
+,scr.sales_org
+,scr.delivery_type
+,scr.complete_dlv
+,scr.order_combinat
+,scr.planned_gds_mvmt
+,scr.loading_date
+,scr.transpplngdate
+,scr.delivery_date
+,scr.pick_date
+,scr.unloading_point
+,scr.incoterms
+,scr.incoterms_2
+,scr.export_indicator
+,scr.route
+,scr.billing_block
+,scr.delivery_block
+,scr.document_cat
+,scr.factorycalendar
+,scr.means_transp_qual
+,scr.means_of_transp_grp
+,scr.delivery_prior
+,scr.shp_cond
+,scr.ship_to_party
+,scr.sold_to_party
+,scr.customer_group
+,scr.wait_time_class
+,scr.wait_time_surcharge
+,scr.total_weight
+,scr.net_weight
+,scr.weight_unit
+,scr.volume
+,scr.volume_unit
+,scr.no_of_packages
+,scr.pickeditmlocat
+,scr.timeofdelivery
+,scr.weight_group
+,scr.loading_point
+,scr.trans_group
+,scr.dlvbillingtype
+,scr.billing_date
+,scr.invoicing_dates
+,scr.route_1
+,scr.update_group
+,scr.procedure_pricing
+,scr.doc_condition
+,scr.doc_currency
+,scr.sales_office
+,scr.total_proc_time
+,scr.comb_criteria
+,scr.original_doc
+,scr.communicationno
+,scr.stats_currency
+,scr.exch_rate_stats
+,scr.foreign_trade_datanr
+,scr.changed_by
+,scr.changed_on
+,scr.warehouse_no
+,scr.id_delivery_split
+,scr.sales_org_icb
+,scr.distrib_channel
+,scr.div_iv
+,scr.intercobilltype
+,scr.billing_date_1
+,scr.billing_date_2
+,scr.cust_inter_co
+,scr.cred_contr_area
+,scr.credit_account
+,scr.cust_cred_group
+,scr.cred_rep_grp
+,scr.risk_category
+,scr.currency
+,scr.credit_value
+,scr.bill_of_lading
+,scr.vendor
+,scr.mnsoftrns_type
+,scr.mns_of_trans_id
+,scr.release_date
+,scr.next_date
+,scr.gr_gi_slip_no
+,scr.document_date
+,scr.actual_gi_date
+,scr.shpmtblreason
+,scr.id_transp_syst
+,scr.ext_delivery
+,scr.order_number
+,scr.search_proced
+,scr.corr_delivery
+,scr.procedure_1
+,scr.doc_condition_1
+,scr.net_value
+,scr.route_schedule
+,scr.receiving_plant
+,scr.financ_doc_no
+,scr.paym_guar_proc
+,scr.picking_time
+,scr.tr_plan_time
+,scr.loading_time
+,scr.gi_time
+,scr.door_for_whse
+,scr.staging_area
+,scr.lettofcredcrcy
+,scr.lettofcredrate
+,scr.depreciation
+,scr.dg_mgmt_profile
+,scr.reference
+,scr.key
+,scr.tsegment_exists
+,scr.template
+,scr.del_loc_tzone
+,scr.rec_time_zone
+,scr.contains_dg
+,scr.original_system
+,scr.ind_gds_mvmnt
+,scr.transaction_code
+,scr.shipping_type
+,scr.meanstransp
+,scr.spec_processing
+,scr.company_id
+,scr.calcn_of_val_open
+,scr.immed_to
+,scr.supply_area
+,scr.delivery_type_1
+,scr.pod_date
+,scr.confirm_time
+,scr.no_itms_pred_sys
+,scr.in_plant
+,scr.doc_delet_id
+,scr.location_seq
+,scr.del_conf_stat
+,scr.ship_info_stat
+,scr.ret_asn_canc
+,scr.gi_time_1
+,scr.time_zone
+,scr.statdecntrlwhse
+,scr.scenario_logistic_ex
+,scr.original_system_type
+,scr.changer_s_sys_type
+,scr.georoute
+,scr.chg_ind_route
+,scr.change_ind
+,scr.gds_traffic_ty
+,scr.gtsroutecode
+,scr.rls_time_stamp
+,scr.msrmnt_unit_sys
+,scr.inv_bf_gi
+,scr.qi_status
+,scr.redirected
+,scr.storage_status
+,scr.type_ext_ident
+,scr.means_of_trans
+,scr.pro_number
+,scr.akkreditiv
+,scr.billing_indicator
+,scr.print_profile
+,scr.adv_returns
+,scr.document_log
+,scr.stor_loc_change
+,scr.control_key
+,scr.spl_iinitiator
+,scr.dlv_version
+,scr.data_filter_value_for_data_agi
+,scr.type_of_previous_doc
+,scr.no_of_previous_doc
+,scr.mode_of_trans
+,scr.port_airport
+,scr.mode_of_transport
+,scr.ctry_meanstr_border
+,scr.id_means_transp_bord
+,scr.conveyancerefidn
+,scr.mode_transp_inland
+,scr.ctry_meanstr_inland
+,scr.id_means_transp_inl
+,scr.handover_location
+,scr.handover_date
+,scr.handover_time
+,scr.handoverloc_timezone
+,scr.confirmed
+,scr.value
+,scr.termsofpayment
+,scr.financial_doc
+,scr.exptcreditinsur
+,scr.payment_card
+,scr.sap_cred_mgmt
+,scr.crma_te_status
+,scr.overallcredstat
+,scr.totals_status
+,scr.billing_status
+,scr.overall_status
+,scr.hold
+,scr.phold
+,scr.confirmation
+,scr.ovr_pick_status
+,scr.overallwmstatus
+,scr.pod_status
+,scr.packing_status
+,scr.temporary_inbound_delivery
+,scr.overall_blk_st
+,scr.trns_plan_stat
+,scr.header_data
+,scr.item_data
+,scr.header_bill_dat
+,scr.item_bill_data
+,scr.head_data_pckg
+,scr.it_data_packag
+,scr.head_data_pck_putawy
+,scr.it_data_pck_putaway
+,scr.header_dlv_data
+,scr.item_deliv_data
+,scr.head_data_gm
+,scr.item_data_gm
+,scr.hu_in_stock
+,scr.statdecntrlwhse_1
+,scr.ovrlgdsmvtstat
+,scr.hdr_reserves_1
+,scr.hdr_reserves_2
+,scr.hdr_reserves_3
+,scr.hdr_reserves_4
+,scr.hdr_reserves_5
+,scr.total_reserves1
+,scr.totalreserves2
+,scr.total_reserves3
+,scr.total_reserves4
+,scr.total_reserves5
+,scr.prod_marktablty_sts
+,scr.dangerous_goods_sts
+,scr.sfty_data_sheet_sts
+,scr.dtucsta
+,scr.inco_version
+,scr.inco_location1
+,scr.inco_location2
+,scr.extern_bol_no
+,scr.miscell_del_no
+,scr.ext_bus_syst_id
+,scr.spec_iss_val_sit
+,scr.dummy_function_in_length_1
+,scr.loading_units
+,scr.no_cat_1
+,scr.no_cat_2
+,scr.no_cat_3
+,scr.no_cat_4
+,scr.sequence_number
+,scr.current_point
+,scr.arrival_departure
+,scr.curr_tme_stamp
+,scr.base_point
+,scr.arrival_departure_1
+,scr.time_estim_stamp
+,scr.event_estimation
+,scr.prior_point
+,scr.arrival_departure_2
+,scr.prior_tme_stamp
+,scr.prior_base_pt
+,scr.arrival_departure_3
+,scr.time_estim_stamp_1
+,scr.event_estimation_1
+,scr.base_point_1
+,scr.arrival_departure_4
+,scr.time_estim_stamp_2
+,scr.delivery_date_fixed
+,scr.idoc_number
+,scr.inb_dly_group
+,scr.kanban_indicat
+,scr.transaction_number
+,scr.last_vas_item_number
+,scr.vas_cust_group
+,scr.psst_group
+,scr.jit_relevant
+,scr.delivery_lips
+,scr.item_category
+,scr.created_by_lips
+,scr.entry_time_lips
+,scr.created_on_lips
+,scr.material
+,scr.materialentered
+,scr.material_group
+,scr.plant
+,scr.stor_loc
+,scr.batch
+,scr.supplier_batch
+,scr.customer_mat
+,scr.prod_hierarchy
+,scr.delivery_qty
+,scr.base_unit
+,scr.sales_unit
+,scr.numerator
+,scr.denominat
+,scr.net_weight_lips
+,scr.gross_weight
+,scr.weight_unit_lips
+,scr.volume_lips
+,scr.volume_unit_lips
+,scr.part_dlv_item
+,scr.unlimited
+,scr.overdeliv_tol
+,scr.underdel_tol
+,scr.batch_split
+,scr.billing_block_lips
+,scr.mat_avail_date
+,scr.qty_stckp_unt
+,scr.item_descr
+,scr.storage_bin
+,scr.originating_doc
+,scr.item_1
+,scr.document_cat_lips
+,scr.prdoclogsys
+,scr.reference_doc
+,scr.reference_item
+,scr.update_doc_flow
+,scr.higher_lev_item
+,scr.relev_for_bill
+,scr.loading_group
+,scr.trans_group_lips
+,scr.picking_id
+,scr.warehouse_no_lips
+,scr.whse_no_split
+,scr.storage_type
+,scr.storage_bin_1
+,scr.separate_val
+,scr.movement_type
+,scr.movement_type_1
+,scr.ind_dynamic_bin
+,scr.requirementtype
+,scr.planning_type
+,scr.material_type
+,scr.batch_mgmt_rqt
+,scr.batches
+,scr.preced_with_ref
+,scr.item_type
+,scr.valuation_type
+,scr.req_mt_totals
+,scr.avail_check
+,scr.ean_number
+,scr.business_area
+,scr.sales_office_lips
+,scr.sales_group
+,scr.distr_channel
+,scr.division
+,scr.delivery_group
+,scr.qty_is_fixed
+,scr.max_part_deliv
+,scr.fixed_proc_time
+,scr.var_proc_time
+,scr.update_group_lips
+,scr.cost
+,scr.subtotal_1
+,scr.subtotal_2
+,scr.subtotal_3
+,scr.subtotal_4
+,scr.subtotal_5
+,scr.subtotal_6
+,scr.special_stock
+,scr.changed_on_lips
+,scr.ean_upc
+,scr.customer_grp_1
+,scr.customer_grp_2
+,scr.customer_grp_3
+,scr.customer_grp_4
+,scr.customer_grp_5
+,scr.materialgroup_1
+,scr.materialgroup_2
+,scr.materialgroup_3
+,scr.materialgroup_4
+,scr.materialgroup_5
+,scr.allocation_ind
+,scr.prec_doc_categ
+,scr.preceddoccentrl
+,scr.cost_center
+,scr.co_area
+,scr.profit_segment
+,scr.profit_center
+,scr.wbs_element
+,scr.order_number_lips
+,scr.order_item_no
+,scr.sales_order
+,scr.sales_ord_item
+,scr.plng_material
+,scr.planning_plant
+,scr.prod_grp_unit
+,scr.conversion
+,scr.acct_assgmt_cat
+,scr.consumption
+,scr.commitment_item
+,scr.funds_center
+,scr.fund
+,scr.packing_control
+,scr.reqmts_class
+,scr.credit_active
+,scr.cumul_batch_qty
+,scr.cum_gross_wght
+,scr.cumul_net_wght
+,scr.cumul_volume
+,scr.hghlevitmbatch
+,scr.configuration
+,scr.int_object_no
+,scr.no_serial_no
+,scr.serialnoprofile
+,scr.weight_unit_1
+,scr.volume_unit_1
+,scr.bom_expl_number
+,scr.int_dlv_scd_no
+,scr.release_type
+,scr.usage
+,scr.inspection_lot
+,scr.partial_lot
+,scr.no_gr_posted
+,scr.matl_grp_pckmat
+,scr.object_no_hdr
+,scr.objno_item
+,scr.engin_change
+,scr.returns_item
+,scr.matdetermactive
+,scr.usage_hl_item
+,scr.recv_point
+,scr.department
+,scr.confirmation_lips
+,scr.statistics_date
+,scr.promotion
+,scr.nocondrec_batch
+,scr.cus_preference
+,scr.bus_trans_type
+,scr.int_class_no
+,scr.qty_proposal
+,scr.alloc_table
+,scr.item_2
+,scr.internal_field_do_not_use
+,scr.internal_field_do_not_use_1
+,scr.internal_field_do_not_use_2
+,scr.envt_relevant
+,scr.quantity
+,scr.at_relevant
+,scr.pricing_unit
+,scr.unit_of_measure
+,scr.net_price
+,scr.net_value_lips
+,scr.stat_value
+,scr.movement_ind
+,scr.mat_freight_grp
+,scr.pack_acc_batch
+,scr.paytguarantform
+,scr.guaranteed
+,scr.matl_staging_tme
+,scr.value_contract_no
+,scr.val_cont_item
+,scr.cfop
+,scr.icms_law
+,scr.ipi_law
+,scr.tax_code
+,scr.situation
+,scr.reservation_number
+,scr.item_no
+,scr.record_type
+,scr.sequence_number_lips
+,scr.leading_uom
+,scr.dgindprofile
+,scr.cumul_batch_qty_1
+,scr.cumulated_batch_split_quantity
+,scr.valuation
+,scr.project_def
+,scr.withdr_seq_grp
+,scr.stk_determ_rule
+,scr.inv_mgmt_active
+,scr.mfr_part_profile
+,scr.mpn_material
+,scr.staging_area_lips
+,scr.key_lips
+,scr.orig_item
+,scr.ext_item
+,scr.no_avail_check
+,scr.not_rel_picking
+,scr.refmvttype_wm
+,scr.mrp_area
+,scr.stock_category
+,scr.stock_category_1
+,scr.receiving_mat
+,scr.receiving_plant_lips
+,scr.receiving_sloc
+,scr.receiving_batch
+,scr.val_type_tfr
+,scr.sp_ind_st_tfr
+,scr.spec_stock_no
+,scr.spec_stock_no_1
+,scr.lettofcredrate_lips
+,scr.current_qty
+,scr.class_of_items
+,scr.main_posting_id
+,scr.stock_type
+,scr.enter_batch
+,scr.indicator_copy_dest_storage
+,scr.staging_ind
+,scr.indicator_delivery_item_is_a
+,scr.no_gds_movement
+,scr.g_l_account
+,scr.final_issue
+,scr.date_of_manuf
+,scr.sled_bbd
+,scr.year_cur_period
+,scr.reference_doc_1
+,scr.ref_doc_item
+,scr.reason_for_mvt
+,scr.sub_movmnt_type
+,scr.delivery_cat
+,scr.ext_amount_lc
+,scr.qty_in_opun
+,scr.sales_value
+,scr.credit_price
+,scr.pod_indicator
+,scr.not_wms_relevnt
+,scr.conversionfactr
+,scr.pod_rel_rc_sc
+,scr.st_tfr_tfr_pst
+,scr.functional_area
+,scr.grants
+,scr.units_meas_use
+,scr.gds_mvmt_contrl
+,scr.wbwkz
+,scr.trsfr_wbs_elmnt
+,scr.sequential_no
+,scr.deliv_compl
+,scr.scrap_indicator
+,scr.rma_number
+,scr.inspection_guid
+,scr.follow_up_code
+,scr.end_validity_period
+,scr.end_internal_val
+,scr.rma_no_completed
+,scr.delivery_qty_1
+,scr.atp_time_stamp
+,scr.original_system_type_lips
+,scr.cq_vendor
+,scr.in_plant_lips
+,scr.ext_ident
+,scr.except_code_wh
+,scr.retention_qty
+,scr.alt_prodnr
+,scr.reasn
+,scr.structure
+,scr.numerator_1
+,scr.denominator
+,scr.ctry_of_origin
+,scr.begin_valid_period
+,scr.deliveryvsn
+,scr.gm_completion
+,scr.cofins_law
+,scr.pis_law
+,scr.iss_law
+,scr.budget_period
+,scr.kanban_indicat_lips
+,scr.type
+,scr.spec_iss_val_sit_lips
+,scr.reqmnt_segment
+,scr.stock_segment
+,scr.confirmed_lips
+,scr.financial_doc_lips
+,scr.exptcreditinsur_lips
+,scr.interco_billst
+,scr.billing_status_lips
+,scr.overall_status_lips
+,scr.dlyitemnotcomp
+,scr.confirmation_1
+,scr.picking_status
+,scr.wm_activ_status
+,scr.pod_status_lips
+,scr.packing_status_lips
+,scr.item_3
+,scr.item_bill_data_lips
+,scr.it_data_pckgng
+,scr.item_data_pck_putawy
+,scr.item_deliv_data_lips
+,scr.item_data_gm_lips
+,scr.decentr_whse
+,scr.goodsmovementst
+,scr.item_reserves_1
+,scr.item_reserves_2
+,scr.item_reserves_3
+,scr.item_reserves_4
+,scr.item_reserves_5
+,scr.embargo_status
+,scr.wls_status
+,scr.ovr_status
+,scr.prod_marktablty_sts_lips
+,scr.prod_marktablty_sts_1
+,scr.sfty_data_sheet_sts_lips
+,scr.dtucsta_lips
+,scr.data_filter_value_for_data_agi_lips
+,scr.deliv_qty_puom
+,scr.cwm_duom
+,scr.picked_qty_puom
+,scr.puom_qty_picked
+,scr.pq_entered
+,scr.to_entry
+,scr.cum_cw_batch_qty
+,scr.qty_to_post_in_puom
+,scr.dummy_function_in_length_1_lips
+,scr.inverted
+,scr.dtuc
+,scr.prov_conv_fact
+,scr.door_for_whse_lips
+,scr.season_year
+,scr.season
+,scr.collection
+,scr.theme
+,scr.customer_grp_6
+,scr.customer_grp_7
+,scr.customer_grp_8
+,scr.customer_grp_5_1
+,scr.customer_grp_10
+,scr.vas_relevant
+,scr.item_4
+,scr.transaction_number_lips
+,scr.item_group
+,scr.item_number
+,scr.reservation_1
+,scr.item_no_1
+,scr.ob_purity
+,scr.consignment
+,scr.characteristic_1
+,scr.characteristic_2
+,scr.characteristic_3
+,scr.finalmd5key
+,scr.input_last_update_date
+,scr.dw_active_indicator
+,CURRENT_DATETIME()
+,DATETIME(9999, 12, 31, 23, 59, 59)
+,CURRENT_DATETIME());
+
+MERGE INTO 
+`{{ projectid }}.{{ slt_l0_staging }}.layer1_audit_table` tgt
+USING ( SELECT 
+         'delivery_fact' as table_name
+         ,CASE WHEN (select full_delta_indicator from `{{ projectid }}.{{ slt_l0_staging }}.layer1_audit_table` where table_name = 'delivery_fact') IS NULL
+                    OR (select full_delta_indicator from `{{ projectid }}.{{ slt_l0_staging }}.layer1_audit_table` where table_name = 'delivery_fact') = 'F'
+               THEN 'F'
+               ELSE 'D'
+          END AS full_delta_indicator
+        ,'delivery_header,delivery_item' as source_table_names
+        ,CAST('1900-01-01T00:00:00' AS DATETIME) as full_load_datetime
+        ,COALESCE((select max(input_last_update_date) as delta_load_datatime from `{{ projectid }}.{{ slt_l1_facts }}.delivery_fact`),CAST('1900-01-01T00:00:00' AS DATETIME))  as delta_load_datetime
+        ,(coalesce((select COUNT(*) AS inserted_record_count from `{{ projectid }}.{{ slt_l1_facts }}.delivery_fact` a 
+          where a.dw_active_indicator = 'Y'  and a.dw_last_update_date > COALESCE((SELECT CASE WHEN b.full_delta_indicator = 'F' 
+                                                              THEN b.full_load_datetime
+                                                              WHEN b.full_delta_indicator <> 'F' THEN b.delta_load_datetime
+                                                          END
+                                                    from `{{ projectid }}.{{ slt_l0_staging }}.layer1_audit_table` b
+                                        where b.table_name = 'delivery_fact'),CAST('1900-01-01T00:00:00' AS DATETIME))),(select count(*) as inserted_record_count from `{{ projectid }}.{{ slt_l1_facts }}.delivery_fact` where dw_active_indicator = 'Y'))) as inserted_record_count
+        ,CURRENT_DATETIME() as last_update_date
+) scr
+on tgt.table_name = scr.table_name
+WHEN MATCHED THEN 
+UPDATE set tgt.full_load_datetime ='1900-01-01T00:00:00'
+          ,tgt.delta_load_datetime = scr.delta_load_datetime
+          ,tgt.inserted_record_count = scr.inserted_record_count
+          ,tgt.last_update_date = scr.last_update_date
+          ,tgt.source_table_names = scr.source_table_names
+WHEN NOT MATCHED THEN
+INSERT (table_name,
+        full_delta_indicator,
+        source_table_names,
+        full_load_datetime,
+        delta_load_datetime,
+        inserted_record_count,
+        last_update_date)
+VALUES(scr.table_name,
+       scr.full_delta_indicator,
+       scr.source_table_names,
+       scr.full_load_datetime,
+       scr.delta_load_datetime,
+       scr.inserted_record_count,
+       scr.last_update_date);

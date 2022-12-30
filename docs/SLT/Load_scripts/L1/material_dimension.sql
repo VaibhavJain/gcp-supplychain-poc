@@ -1,0 +1,2226 @@
+MERGE INTO `{{ projectid }}.{{ slt_l1_dimension }}.material_dimension` tgt
+USING (
+with tmp_scr AS(
+SELECT  CONCAT(mm.client,'-',mm.material,'-',pd.plant) as material_key
+       ,mm.client
+       ,mm.material
+       ,mm.created_on
+       ,mm.created_time
+       ,mm.created_by
+       ,mm.last_change
+       ,mm.changed_by
+       ,mm.complete_status
+       ,mm.maint_status
+       ,mm.df_client_level
+       ,mm.material_type
+       ,mm.industry_sector
+       ,mm.material_group
+       ,mm.old_matl_number
+       ,mm.base_unit
+       ,mm.order_unit
+       ,mm.document
+       ,mm.document_type
+       ,mm.doc_version
+       ,mm.page_format
+       ,mm.doc_change_no
+       ,mm.page_number
+       ,mm.no_of_sheets
+       ,mm.prod_insp_memo
+       ,mm.page_format_1
+       ,mm.size_dimensions
+       ,mm.basic_material
+       ,mm.ind_std_desc
+       ,mm.lab_office
+       ,mm.purch_value_key
+       ,mm.gross_weight
+       ,mm.net_weight
+       ,mm.weight_unit
+       ,mm.volume
+       ,mm.volume_unit
+       ,mm.container
+       ,mm.stor_conditions
+       ,mm.temperature
+       ,mm.low_level_code
+       ,mm.trans_group
+       ,mm.haz_matl_no
+       ,mm.division
+       ,mm.competitor
+       ,mm.ean_number
+       ,mm.gr_slips_quantity
+       ,mm.procure_rule
+       ,mm.supply_source
+       ,mm.season
+       ,mm.label_type
+       ,mm.label_form
+       ,mm.field_deact
+       ,mm.ean_upc
+       ,mm.ean_category
+       ,mm.length_obj
+       ,mm.width
+       ,mm.height
+       ,mm.unit
+       ,mm.prod_hierarchy
+       ,mm.net_change_cstg
+       ,mm.cad_indicator
+       ,mm.qm_procurement
+       ,mm.allowed_pkg_wt
+       ,mm.unit_of_weight
+       ,mm.allowed_volume
+       ,mm.volume_unit_1
+       ,mm.excess_wt_tolerance
+       ,mm.excess_volume_tol
+       ,mm.var_order_unit
+       ,mm.revision_level
+       ,mm.configurable
+       ,mm.batch_mgmt_rqt
+       ,mm.packag_mat_type
+       ,mm.maximum_level
+       ,mm.stacking_factor
+       ,mm.matl_grp_pckmat
+       ,mm.authorizgroup
+       ,mm.valid_from
+       ,mm.valid_to
+       ,mm.season_year
+       ,mm.price_band_cat
+       ,mm.w_empties_bom
+       ,mm.ext_matl_group
+       ,mm.cross_plant_cm
+       ,mm.matl_category
+       ,mm.co_product
+       ,mm.follow_up_matl
+       ,mm.pr_ref_matl
+       ,mm.x_plant_status
+       ,mm.x_dchain_status
+       ,mm.valid_from_1
+       ,mm.valid_from_2
+       ,mm.tax_class
+       ,mm.catalog_profile
+       ,mm.rem_shelf_life
+       ,mm.tot_shelf_life
+       ,mm.storage
+       ,mm.content_unit
+       ,mm.net_contents
+       ,mm.comp_price_unit
+       ,mm.label_matl_grpg
+       ,mm.gross_contents
+       ,mm.conv_method
+       ,mm.int_object_no
+       ,mm.envt_relevant
+       ,mm.prod_allocation
+       ,mm.pricing_profile
+       ,mm.disc_in_kind
+       ,mm.mfr_part_number
+       ,mm.manufacturer
+       ,mm.int_material_no
+       ,mm.mfr_part_profile
+       ,mm.units_meas_use
+       ,mm.rollout
+       ,mm.dgindprofile
+       ,mm.highly_viscous
+       ,mm.in_bulk_liquid
+       ,mm.serializlevel
+       ,mm.closed
+       ,mm.batch_rec_req
+       ,mm.assign_eff_vals
+       ,mm.comp_level
+       ,mm.period_ind
+       ,mm.rounding_rule
+       ,mm.prodcomposition
+       ,mm.genitemcatgroup
+       ,mm.log_variants
+       ,mm.material_locked
+       ,mm.cm_relevant
+       ,mm.astmt_list_type
+       ,mm.expiration_date
+       ,mm.ean_variant
+       ,mm.genericmaterial
+       ,mm.ref_mat_for_pckg
+       ,mm.gds_relevant
+       ,mm.origin_accept
+       ,mm.stand_hu_type
+       ,mm.pilferable
+       ,mm.wh_stor_cond
+       ,mm.wh_mat_grp
+       ,mm.handling_ind
+       ,mm.haz_sub
+       ,mm.hutyp
+       ,mm.variable_tw
+       ,mm.max_capacity
+       ,mm.overcapac_tol
+       ,mm.max_length
+       ,mm.max_pack_width
+       ,mm.max_height
+       ,mm.unit_of_measure
+       ,mm.ctry_of_origin
+       ,mm.mat_freight_grp
+       ,mm.quarant_per
+       ,mm.time_unit
+       ,mm.qual_insp_grp
+       ,mm.serial_no_prf
+       ,mm.form_name
+       ,mm.logistics_uom
+       ,mm.cw_relevant
+       ,mm.cw_profile
+       ,mm.catch_wt_tol_grp
+       ,mm.adjust_profile
+       ,mm.intel_property
+       ,mm.var_price_allowed
+       ,mm.medium
+       ,mm.commodity
+       ,mm.animal_origin
+       ,mm.texcompactive
+       ,mm.last_chgd_time
+       ,mm.material_1
+       ,mm.chemical_compliance_relevance
+       ,mm.logl_material_cat
+       ,mm.sales_material_no
+       ,mm.tag_type
+       ,mm.seg_structure
+       ,mm.seg_strategy
+       ,mm.seg_status
+       ,mm.seg_scope
+       ,mm.seg_relevant
+       ,mm.anp_code
+       ,mm.psm_code
+       ,mm.fsh_attribute1
+       ,mm.fsh_attribute2
+       ,mm.fsh_attribute3
+       ,mm.season_usage
+       ,mm.season_act_im
+       ,mm.mat_conv_id
+       ,mm.dummy_field
+       ,mm.product
+       ,mm.product_id
+       ,mm.maturation_time
+       ,mm.req_min_sh_life
+       ,mm.req_max_sh_life
+       ,mm.preferred_uom
+       ,mm.reference_product
+       ,mm.product_shape
+       ,mm.prod_orient_prof
+       ,mm.overhang_threshold
+       ,mm.bridge_threshold
+       ,mm.maximum_slope
+       ,mm.abs_height_thresh
+       ,mm.abs_height_thresh_1
+       ,mm.product_for_kito
+       ,mm.procure_to_order
+       ,mm.push_depl_fr_supp
+       ,mm.no_inv_balancing
+       ,mm.glb_stk_entry_loc
+       ,mm.no_express_shipment
+       ,mm.cw_material
+       ,mm.valuation_uom
+       ,mm.tolerance_group
+       ,mm.fixed_tare
+       ,mm.tare_calc
+       ,mm.loading_units
+       ,mm.loading_unit_group
+       ,mm.struct_category
+       ,mm.tolerance_type
+       ,mm.counting_group
+       ,mm.dsd_grouping
+       ,mm.cable_diameter
+       ,mm.unit_for_dimensions
+       ,mm.cabdia_allow
+       ,mm.bending_factor
+       ,mm.inner_width
+       ,mm.outer_diameter
+       ,mm.core_diameter
+       ,mm.load_capacity
+       ,mm.r_o_flange_thick
+       ,mm.r_o_flange_height
+       ,mm.coil_delivery
+       ,mm.run_out_flange
+       ,mm.no_vert_layers
+       ,mm.clearance
+       ,mm.serialization_type
+       ,mm.sync_active
+       ,mm.last_synchronized
+       ,mm.changed_since_int
+       ,mm.prof_rel_country
+       ,mm.product_category
+       ,mm.tilting_allowed
+       ,mm.no_stacking
+       ,mm.bottom_layer
+       ,mm.top_layer
+       ,mm.stacking_factor_1
+       ,mm.load_w_o_pkm
+       ,mm.overhang_depth
+       ,mm.overhang_width
+       ,mm.max_stack_hght
+       ,mm.min_stack_hght
+       ,mm.stackh_toleran
+       ,mm.no_mat_pkm
+       ,mm.uom_vso
+       ,mm.closed_pkm_req
+       ,mm.packaging_code
+       ,mm.dg_pckg_status
+       ,mm.work_duration
+       ,mm.unit_1
+       ,mm.service_profile
+       ,mm.response_prof
+       ,mm.billing_cycle
+       ,mm.billing_cycle_determ
+       ,mm.assignment_schema
+       ,mm.condition_mgmt
+       ,mm.return_code
+       ,mm.return_to_log_level
+       ,mm.nsn
+       ,mm.ammunition_code
+       ,mm.ric_id
+       ,mm.overlength_part_num
+       ,mm.spare_prt_class_code
+       ,mm.var_obj_id
+       ,mm.ms_book_part_no
+       ,mm.su_btch_default_val
+       ,mm.sng_un_bch_rcp
+       ,mm.fff_class
+       ,mm.chain_no
+       ,mm.creation_status
+       ,mm.internal_char
+       ,mm.internal_char_1
+       ,mm.internal_char_2
+       ,mm.color
+       ,mm.main_size
+       ,mm.second_size
+       ,mm.char_value
+       ,mm.care_code
+       ,mm.brand
+       ,mm.component_1
+       ,mm.perc_share_1
+       ,mm.component_2
+       ,mm.perc_share_2
+       ,mm.component_3
+       ,mm.perc_share_3
+       ,mm.component_4
+       ,mm.perc_share_4
+       ,mm.component_5
+       ,mm.perc_share_5
+       ,mm.fashion_grade
+       ,pd.material as material_marc
+       ,pd.plant
+       ,pd.maint_status as maint_status_marc
+       ,pd.df_plant_level
+       ,pd.valuation_cat
+       ,pd.batches
+       ,pd.p_s_matl_status
+       ,pd.valid_from as valid_from_marc
+       ,pd.abc_indicator
+       ,pd.critical_part
+       ,pd.purch_group
+       ,pd.unit_of_issue
+       ,pd.mrp_profile
+       ,pd.mrp_type
+       ,pd.mrp_controller
+       ,pd.mrpctrllr_buyer
+       ,pd.pl_deliv_time
+       ,pd.gr_proc_time
+       ,pd.period_ind as period_ind_marc
+       ,pd.assembly_scrap
+       ,pd.lot_sizing_procedure
+       ,pd.procurement
+       ,pd.specprocurement
+       ,pd.reorder_point
+       ,pd.safety_stock
+       ,pd.min_lot_size
+       ,pd.max_lot_size
+       ,pd.fixed_lot_size
+       ,pd.rounding_value
+       ,pd.max_stock_level
+       ,pd.lsi_costs
+       ,pd.indiv_coll
+       ,pd.storage_costs
+       ,pd.selectionmethod
+       ,pd.discontin_ind
+       ,pd.eff_out_date
+       ,pd.follow_up_matl as follow_up_matl_marc
+       ,pd.reqmts_grouping
+       ,pd.mixed_mrp
+       ,pd.schedmargin_key
+       ,pd.autom_fix_pl_ords
+       ,pd.autom_release
+       ,pd.backflush
+       ,pd.prodn_supervisor
+       ,pd.processing_time
+       ,pd.setup_time
+       ,pd.interoperation
+       ,pd.base_quantity
+       ,pd.inhseprodtime
+       ,pd.max_storage
+       ,pd.time_unit as time_unit_marc
+       ,pd.withd_fm_pr_bin
+       ,pd.rough_cut_plng
+       ,pd.overdely_tol
+       ,pd.unlimited
+       ,pd.underdely_tol
+       ,pd.total_rl_time
+       ,pd.replacemt_part
+       ,pd.surcharge
+       ,pd.state_of_manufac
+       ,pd.post_to_insp_stk
+       ,pd.sample
+       ,pd.quarantine
+       ,pd.qm_control_key
+       ,pd.mean_insp_dur
+       ,pd.insp_plan_ind
+       ,pd.doc_required
+       ,pd.active_subst
+       ,pd.insp_interval
+       ,pd.next_inspection
+       ,pd.stock_in_tfr
+       ,pd.loading_group
+       ,pd.batch_mgmt_rqt_plnt
+       ,pd.quota_arr_usage
+       ,pd.service_level
+       ,pd.splitting_ind
+       ,pd.plan_version
+       ,pd.object_type
+       ,pd.object_id
+       ,pd.avail_check
+       ,pd.fi_year_variant
+       ,pd.corr_factors
+       ,pd.setup_time_1
+       ,pd.base_quantity_1
+       ,pd.processing_time_1
+       ,pd.deactivated
+       ,pd.supply_source as supply_source_marc
+       ,pd.autom_po
+       ,pd.source_list
+       ,pd.commodity_code
+       ,pd.ctry_of_origin as ctry_of_origin_marc
+       ,pd.reg_of_origin
+       ,pd.comm_code_unit
+       ,pd.intrastat_group
+       ,pd.profit_center
+       ,pd.stk_in_transit
+       ,pd.plng_calendar
+       ,pd.repetitive_mfg
+       ,pd.plng_time_fence
+       ,pd.consmption_mode
+       ,pd.bwd_cons_per
+       ,pd.fwd_cons_period
+       ,pd.version
+       ,pd.alternative
+       ,pd.usage
+       ,pd.group_key_list
+       ,pd.group_counter
+       ,pd.cstg_lot_size
+       ,pd.specproctype
+       ,pd.production_unit
+       ,pd.prod_stor_loc
+       ,pd.mrp_group
+       ,pd.component_scrap
+       ,pd.certificatetype
+       ,pd.insp_setup
+       ,pd.takt_time
+       ,pd.coverage_prof
+       ,pd.field_name
+       ,pd.cc_phys_inv
+       ,pd.variance_key
+       ,pd.serialnoprofile
+       ,pd.int_object_no as int_object_no_marc
+       ,pd.confble_matl
+       ,pd.rem_profile
+       ,pd.neg_stocks
+       ,pd.target_qm_sys
+       ,pd.planning_cycle
+       ,pd.rnding_profile
+       ,pd.ref_matl_cons
+       ,pd.ref_plant_cons
+       ,pd.date_to
+       ,pd.multiplier
+       ,pd.autom_reset
+       ,pd.cus_preference
+       ,pd.exemption_cert
+       ,pd.exempt_cert_no
+       ,pd.iss_date_of_crt
+       ,pd.vendor_decl
+       ,pd.vdr_decl_date
+       ,pd.military_goods
+       ,pd.service_level_1
+       ,pd.co_product as co_product_marc
+       ,pd.strategy_group
+       ,pd.int_object_no_1
+       ,pd.stor_loc_ep
+       ,pd.bulk_material
+       ,pd.cc_ind_fixed
+       ,pd.stock_det_grp
+       ,pd.qm_mat_auth
+       ,pd.adjustmt_period
+       ,pd.task_list_type
+       ,pd.uom_group
+       ,pd.conv_group
+       ,pd.air_buoy_fact
+       ,pd.prod_sched_profile
+       ,pd.safety_time_ind
+       ,pd.safety_time
+       ,pd.action_control
+       ,pd.enter_batch
+       ,pd.uom_group_1
+       ,pd.mat_freight_grp as mat_freight_grp_marc
+       ,pd.backfl_profile
+       ,pd.stk_transfer_sv
+       ,pd.st_in_trans_sp
+       ,pd.smth_prom_cons
+       ,pd.prod_version
+       ,pd.fixed_price_co_prod
+       ,pd.logistics_group
+       ,pd.dist_prof
+       ,pd.tied_empties
+       ,pd.slsval_tiedempt
+       ,pd.mat_category
+       ,pd.eu_prod_list_no
+       ,pd.cap_prod_group
+       ,pd.cas_no_pharm
+       ,pd.prodcom_no
+       ,pd.control_code
+       ,pd.jit_indicator
+       ,pd.mat_grouping
+       ,pd.proposed_s_area
+       ,pd.fair_share_rule
+       ,pd.push_distribution
+       ,pd.deploymnt_hrzn
+       ,pd.min_lot_size_1
+       ,pd.max_lot_size_1
+       ,pd.fix_lot_size
+       ,pd.lot_size_incr
+       ,pd.this_field_is_no_longer_used
+       ,pd.conv_type
+       ,pd.st_per_profile
+       ,pd.mrp_dep_reqmts
+       ,pd.mrp_area_exists
+       ,pd.cross_project
+       ,pd.overall_profile
+       ,pd.relevant_to_apo
+       ,pd.mardh_rec_already_exists_for
+       ,pd.current_period
+       ,pd.year_cur_period
+       ,pd.min_safetystock
+       ,pd.do_not_cost
+       ,pd.putaway_stkrmvl
+       ,pd.ob_management
+       ,pd.ob_ref_matrial
+       ,pd.excise_tax_relevance_indicator
+       ,pd.val_gr_blocked_stck
+       ,pd.seg_strategy as seg_strategy_marc
+       ,pd.seg_status_mrp
+       ,pd.seg_scope as seg_scope_marc
+       ,pd.sort_stk_method
+       ,pd.cons_prio
+       ,pd.discr_batch_no
+       ,pd.stk_prot
+       ,pd.def_segment
+       ,pd.atp_mrp_status
+       ,pd.valid_from_1 as valid_from_1_marc
+       ,pd.arun
+       ,pd.season_act_im as season_act_im_marc
+       ,pd.variant_group
+       ,pd.batch_assignment
+       ,pd.calendar_group
+       ,pd.assign_batches
+       ,pd.advanced_planning
+       ,pd.consign_control
+       ,pd.gi_proc_time
+       ,pd.across_purch_group
+       ,pd.deter_schema
+       ,pd.minimum_target_range
+       ,pd.maximum_target_range
+       ,pd.target_stock
+       ,pd.nf_metals
+       ,pd.stock_in_tfr_1
+       ,pd.stk_in_transit_1
+       ,pd.val_gr_blocked_stck_1
+       ,pd.product as product_marc
+       ,pd.loc_prod_id
+       ,pd.gr_processng_time
+       ,pd.gi_processng_time
+       ,pd.prod_stor_costs
+       ,pd.repl_lead_time
+       ,pd.pp_plng_proced
+       ,pd.heuristic
+       ,pd.plan_package
+       ,pd.safety_stk_pen
+       ,pd.product_alerts
+       ,pd.network_name
+       ,pd.gr_handlg_cap_cons
+       ,pd.uom_handlcap_gr
+       ,pd.gi_handlg_cap_cons
+       ,pd.uom_handlcap_gi
+       ,pd.shelf_life_loc
+       ,pd.loc_shelf_life
+       ,pd.loc_matur_time
+       ,pd.min_shelf_life
+       ,pd.max_shelf_life
+       ,pd.lot_size_unit
+       ,pd.reorder_ds
+       ,pd.trgt_days_sup
+       ,pd.per_ls_plng_cal
+       ,pd.requirement_str
+       ,pd.pegg_alertback
+       ,pd.pegg_alert
+       ,pd.peggng_strategy
+       ,pd.avoid_alerts
+       ,pd.fixed_pegging
+       ,pd.plan_explosion
+       ,pd.planning_group
+       ,pd.profile
+       ,pd.priority
+       ,pd.min_passing_amt
+       ,pd.conversion_rule
+       ,pd.entire_receipt
+       ,pd.entire_stock
+       ,pd.throughput_time
+       ,pd.tpop
+       ,pd.safety_stock_for_vcl
+       ,pd.sft_parent_location
+       ,pd.sft_parent_loc_vcl
+       ,pd.rep_safety_st
+       ,pd.rep_sft_f_vcl
+       ,pd.reord_point_vcl
+       ,pd.maximum_stock_vcl
+       ,pd.holding_cost_factor
+       ,pd.procuremt_costs
+       ,pd.gr_costs
+       ,pd.gi_costs
+       ,pd.md_product_plant_extensible_fi
+       ,pd.tolerance_plus
+       ,pd.tol_minus
+       ,pd.serialized_from
+       ,pd.packing_group
+       ,pd.picking_line
+       ,pd.matno_pkm_ve
+       ,pd.pick_pkm_length
+       ,pd.iuid_relevant
+       ,pd.iuid_type
+       ,pd.ext_allocation
+       ,pd.su_btch_default_val as su_btch_default_val_marc
+       ,mmad.material as material_mbew
+       ,mmad.valuation_area
+       ,mmad.valuation_type
+       ,mmad.valuation_type_1
+       ,mmad.total_stock
+       ,mmad.total_value
+       ,mmad.price_control
+       ,mmad.moving_price
+       ,mmad.standard_price
+       ,mmad.price_unit
+       ,mmad.valuation_class
+       ,mmad.value_ma_price
+       ,mmad.total_stock_pp
+       ,mmad.total_value_pp
+       ,mmad.price_ctrl_pp
+       ,mmad.movavgprice_pp
+       ,mmad.std_price_pp
+       ,mmad.price_unit_pp
+       ,mmad.val_class_pp
+       ,mmad.value_prev_per
+       ,mmad.total_stock_py
+       ,mmad.total_value_py
+       ,mmad.price_ctrl_py
+       ,mmad.movavgprice_py
+       ,mmad.std_price_py
+       ,mmad.price_unit_py
+       ,mmad.val_class_py
+       ,mmad.value_prev_year
+       ,mmad.year_cur_period as year_cur_period_mbew
+       ,mmad.current_period as current_period_mbew
+       ,mmad.valuation_cat as valuation_cat_mbew
+       ,mmad.previous_price
+       ,mmad.last_price_chng
+       ,mmad.future_price
+       ,mmad.valid_from as valid_from_mbew
+       ,mmad.time_stamp
+       ,mmad.tax_price_1
+       ,mmad.comm_price_1
+       ,mmad.tax_price_3
+       ,mmad.coml_price_3
+       ,mmad.valued_at
+       ,mmad.total_stock_ybl
+       ,mmad.total_stock_pbl
+       ,mmad.valued_at_1
+       ,mmad.fut_plnd_price
+       ,mmad.planned_price_1
+       ,mmad.planned_price_2
+       ,mmad.planned_price_3
+       ,mmad.plnd_pr_date_1
+       ,mmad.plnd_pr_date_2
+       ,mmad.plnd_pr_date_3
+       ,mmad.fut_c_e_period
+       ,mmad.current_c_e_pd
+       ,mmad.prev_c_e_per
+       ,mmad.fut_cost_est
+       ,mmad.curr_cost_est
+       ,mmad.prev_cost_est
+       ,mmad.overhead_key
+       ,mmad.lifo_fifo_rel
+       ,mmad.lifo_pool
+       ,mmad.commercial_pr_2
+       ,mmad.tax_price_2
+       ,mmad.devaluation_ind
+       ,mmad.maint_status as maint_status_mbew
+       ,mmad.prodcostest_no
+       ,mmad.cost_estimateno
+       ,mmad.valuation_var
+       ,mmad.valuation_var_1
+       ,mmad.valuation_var_2
+       ,mmad.costing_version
+       ,mmad.costing_version_1
+       ,mmad.costing_version_2
+       ,mmad.origin_group
+       ,mmad.overhead_group
+       ,mmad.posting_period
+       ,mmad.current_period_1
+       ,mmad.previous_period
+       ,mmad.fut_fyyear
+       ,mmad.current_fyear
+       ,mmad.previous_fyear
+       ,mmad.cost_est_w_qs
+       ,mmad.prev_plnd_price
+       ,mmad.ml_act
+       ,mmad.price_determ
+       ,mmad.crnt_plan_price
+       ,mmad.total_sp_value
+       ,mmad.material_origin
+       ,mmad.phys_inv_blk
+       ,mmad.ph_inv_vo_mat
+       ,mmad.last_count_date
+       ,mmad.cc_phys_inv as cc_phys_inv_mbew
+       ,mmad.val_margin
+       ,mmad.fxd_curr_planprice
+       ,mmad.prev_plprice_fixed
+       ,mmad.fut_planprice_fxd
+       ,mmad.curr_val_strat
+       ,mmad.prev_valn_strat
+       ,mmad.future_valstratgy
+       ,mmad.vc_sal_ord_stk
+       ,mmad.project_stk_vc
+       ,mmad.material_usage
+       ,mmad.material_origin_1
+       ,mmad.prod_in_house
+       ,mmad.valuated_uom
+       ,mmad.price_unit_1
+       ,mmad.mbewh_rec_already_exists_for
+       ,mmad.vc_vendor
+       ,mmad.md_product_valuation_extension
+       ,mmad.prepaid_inv
+       ,case when mm.dw_last_update_date > pd.dw_last_update_date and mm.dw_last_update_date > mmad.dw_last_update_date
+             then mm.dw_last_update_date 
+             when pd.dw_last_update_date > mm.dw_last_update_date and pd.dw_last_update_date > mmad.dw_last_update_date
+             then pd.dw_last_update_date
+             else mmad.dw_last_update_date
+        end as input_last_update_date
+       ,mm.dw_active_indicator    
+  from `{{ projectid }}.{{ slt_l0_staging }}.material_master` mm
+       inner join `{{ projectid }}.{{ slt_l0_staging }}.plant_data` pd
+    on mm.client = pd.client
+   and mm.material = pd.material
+   and mm.dw_active_indicator = pd.dw_active_indicator
+       inner join `{{ projectid }}.{{ slt_l0_staging }}.material_master_accounting_data` mmad
+    on mm.client = mmad.client
+   and mm.material = mmad.material
+   and mm.dw_active_indicator = mmad.dw_active_indicator
+where mm.dw_active_indicator = 'Y'
+  and (mm.dw_last_update_date >= coalesce((SELECT CASE WHEN lat.full_delta_indicator = 'F' THEN lat.full_load_datetime
+                                             WHEN lat.full_delta_indicator <> 'F' THEN lat.delta_load_datetime
+                                             ELSE CAST('1900-01-01T00:00:00' AS DATETIME)
+                                        END FROM `{{ projectid }}.{{ slt_l0_staging }}.layer1_audit_table` lat
+                                WHERE lat.table_name = 'material_dimension'),CAST('1900-01-01T00:00:00' AS DATETIME))
+   or pd.dw_last_update_date >= coalesce((SELECT CASE WHEN lat.full_delta_indicator = 'F' THEN lat.full_load_datetime
+                                             WHEN lat.full_delta_indicator <> 'F' THEN lat.delta_load_datetime
+                                             ELSE CAST('1900-01-01T00:00:00' AS DATETIME)
+                                        END FROM `{{ projectid }}.{{ slt_l0_staging }}.layer1_audit_table` lat
+                                WHERE lat.table_name = 'material_dimension'),CAST('1900-01-01T00:00:00' AS DATETIME))
+   or mmad.dw_last_update_date >= coalesce((SELECT CASE WHEN lat.full_delta_indicator = 'F' THEN lat.full_load_datetime
+                                             WHEN lat.full_delta_indicator <> 'F' THEN lat.delta_load_datetime
+                                             ELSE CAST('1900-01-01T00:00:00' AS DATETIME)
+                                        END FROM `{{ projectid }}.{{ slt_l0_staging }}.layer1_audit_table` lat
+                                WHERE lat.table_name = 'material_dimension'),CAST('1900-01-01T00:00:00' AS DATETIME)))),
+tmp_mm AS (SELECT ts.*,
+     TO_HEX(MD5((select string_agg(CAST(col as STRING), ', ' order by offset)
+    from unnest(split(trim(format('%t',(select as struct ts.* except(input_last_update_date))), '()'),', ')) col with offset 
+    where not col IS NULL
+    ))) as finalmd5key 
+  from tmp_scr ts)
+SELECT t.material_key as materail_join_key,t.*
+  from tmp_mm t
+UNION ALL 
+SELECT NULL as materail_join_key,t.*
+  from tmp_mm t
+       INNER JOIN `{{ projectid }}.{{ slt_l1_dimension }}.material_dimension` mm
+    on mm.material_key = t.material_key
+   AND mm.finalmd5key <> t.finalmd5key
+ WHERE mm.dw_active_indicator = 'Y') scr
+ON tgt.material_key = scr.materail_join_key
+WHEN MATCHED AND tgt.finalmd5key <> scr.finalmd5key THEN 
+UPDATE set tgt.dw_end_date = CURRENT_DATETIME()
+          ,tgt.dw_active_indicator = 'N'
+WHEN NOT MATCHED THEN 
+INSERT(
+ material_uuid
+,material_key
+,client
+,material
+,created_on
+,created_time
+,created_by
+,last_change
+,changed_by
+,complete_status
+,maint_status
+,df_client_level
+,material_type
+,industry_sector
+,material_group
+,old_matl_number
+,base_unit
+,order_unit
+,document
+,document_type
+,doc_version
+,page_format
+,doc_change_no
+,page_number
+,no_of_sheets
+,prod_insp_memo
+,page_format_1
+,size_dimensions
+,basic_material
+,ind_std_desc
+,lab_office
+,purch_value_key
+,gross_weight
+,net_weight
+,weight_unit
+,volume
+,volume_unit
+,container
+,stor_conditions
+,temperature
+,low_level_code
+,trans_group
+,haz_matl_no
+,division
+,competitor
+,ean_number
+,gr_slips_quantity
+,procure_rule
+,supply_source
+,season
+,label_type
+,label_form
+,field_deact
+,ean_upc
+,ean_category
+,length_obj
+,width
+,height
+,unit
+,prod_hierarchy
+,net_change_cstg
+,cad_indicator
+,qm_procurement
+,allowed_pkg_wt
+,unit_of_weight
+,allowed_volume
+,volume_unit_1
+,excess_wt_tolerance
+,excess_volume_tol
+,var_order_unit
+,revision_level
+,configurable
+,batch_mgmt_rqt
+,packag_mat_type
+,maximum_level
+,stacking_factor
+,matl_grp_pckmat
+,authorizgroup
+,valid_from
+,valid_to
+,season_year
+,price_band_cat
+,w_empties_bom
+,ext_matl_group
+,cross_plant_cm
+,matl_category
+,co_product
+,follow_up_matl
+,pr_ref_matl
+,x_plant_status
+,x_dchain_status
+,valid_from_1
+,valid_from_2
+,tax_class
+,catalog_profile
+,rem_shelf_life
+,tot_shelf_life
+,storage
+,content_unit
+,net_contents
+,comp_price_unit
+,label_matl_grpg
+,gross_contents
+,conv_method
+,int_object_no
+,envt_relevant
+,prod_allocation
+,pricing_profile
+,disc_in_kind
+,mfr_part_number
+,manufacturer
+,int_material_no
+,mfr_part_profile
+,units_meas_use
+,rollout
+,dgindprofile
+,highly_viscous
+,in_bulk_liquid
+,serializlevel
+,closed
+,batch_rec_req
+,assign_eff_vals
+,comp_level
+,period_ind
+,rounding_rule
+,prodcomposition
+,genitemcatgroup
+,log_variants
+,material_locked
+,cm_relevant
+,astmt_list_type
+,expiration_date
+,ean_variant
+,genericmaterial
+,ref_mat_for_pckg
+,gds_relevant
+,origin_accept
+,stand_hu_type
+,pilferable
+,wh_stor_cond
+,wh_mat_grp
+,handling_ind
+,haz_sub
+,hutyp
+,variable_tw
+,max_capacity
+,overcapac_tol
+,max_length
+,max_pack_width
+,max_height
+,unit_of_measure
+,ctry_of_origin
+,mat_freight_grp
+,quarant_per
+,time_unit
+,qual_insp_grp
+,serial_no_prf
+,form_name
+,logistics_uom
+,cw_relevant
+,cw_profile
+,catch_wt_tol_grp
+,adjust_profile
+,intel_property
+,var_price_allowed
+,medium
+,commodity
+,animal_origin
+,texcompactive
+,last_chgd_time
+,material_1
+,chemical_compliance_relevance
+,logl_material_cat
+,sales_material_no
+,tag_type
+,seg_structure
+,seg_strategy
+,seg_status
+,seg_scope
+,seg_relevant
+,anp_code
+,psm_code
+,fsh_attribute1
+,fsh_attribute2
+,fsh_attribute3
+,season_usage
+,season_act_im
+,mat_conv_id
+,dummy_field
+,product
+,product_id
+,maturation_time
+,req_min_sh_life
+,req_max_sh_life
+,preferred_uom
+,reference_product
+,product_shape
+,prod_orient_prof
+,overhang_threshold
+,bridge_threshold
+,maximum_slope
+,abs_height_thresh
+,abs_height_thresh_1
+,product_for_kito
+,procure_to_order
+,push_depl_fr_supp
+,no_inv_balancing
+,glb_stk_entry_loc
+,no_express_shipment
+,cw_material
+,valuation_uom
+,tolerance_group
+,fixed_tare
+,tare_calc
+,loading_units
+,loading_unit_group
+,struct_category
+,tolerance_type
+,counting_group
+,dsd_grouping
+,cable_diameter
+,unit_for_dimensions
+,cabdia_allow
+,bending_factor
+,inner_width
+,outer_diameter
+,core_diameter
+,load_capacity
+,r_o_flange_thick
+,r_o_flange_height
+,coil_delivery
+,run_out_flange
+,no_vert_layers
+,clearance
+,serialization_type
+,sync_active
+,last_synchronized
+,changed_since_int
+,prof_rel_country
+,product_category
+,tilting_allowed
+,no_stacking
+,bottom_layer
+,top_layer
+,stacking_factor_1
+,load_w_o_pkm
+,overhang_depth
+,overhang_width
+,max_stack_hght
+,min_stack_hght
+,stackh_toleran
+,no_mat_pkm
+,uom_vso
+,closed_pkm_req
+,packaging_code
+,dg_pckg_status
+,work_duration
+,unit_1
+,service_profile
+,response_prof
+,billing_cycle
+,billing_cycle_determ
+,assignment_schema
+,condition_mgmt
+,return_code
+,return_to_log_level
+,nsn
+,ammunition_code
+,ric_id
+,overlength_part_num
+,spare_prt_class_code
+,var_obj_id
+,ms_book_part_no
+,su_btch_default_val
+,sng_un_bch_rcp
+,fff_class
+,chain_no
+,creation_status
+,internal_char
+,internal_char_1
+,internal_char_2
+,color
+,main_size
+,second_size
+,char_value
+,care_code
+,brand
+,component_1
+,perc_share_1
+,component_2
+,perc_share_2
+,component_3
+,perc_share_3
+,component_4
+,perc_share_4
+,component_5
+,perc_share_5
+,fashion_grade
+,material_marc
+,plant
+,maint_status_marc
+,df_plant_level
+,valuation_cat
+,batches
+,p_s_matl_status
+,valid_from_marc
+,abc_indicator
+,critical_part
+,purch_group
+,unit_of_issue
+,mrp_profile
+,mrp_type
+,mrp_controller
+,mrpctrllr_buyer
+,pl_deliv_time
+,gr_proc_time
+,period_ind_marc
+,assembly_scrap
+,lot_sizing_procedure
+,procurement
+,specprocurement
+,reorder_point
+,safety_stock
+,min_lot_size
+,max_lot_size
+,fixed_lot_size
+,rounding_value
+,max_stock_level
+,lsi_costs
+,indiv_coll
+,storage_costs
+,selectionmethod
+,discontin_ind
+,eff_out_date
+,follow_up_matl_marc
+,reqmts_grouping
+,mixed_mrp
+,schedmargin_key
+,autom_fix_pl_ords
+,autom_release
+,backflush
+,prodn_supervisor
+,processing_time
+,setup_time
+,interoperation
+,base_quantity
+,inhseprodtime
+,max_storage
+,time_unit_marc
+,withd_fm_pr_bin
+,rough_cut_plng
+,overdely_tol
+,unlimited
+,underdely_tol
+,total_rl_time
+,replacemt_part
+,surcharge
+,state_of_manufac
+,post_to_insp_stk
+,sample
+,quarantine
+,qm_control_key
+,mean_insp_dur
+,insp_plan_ind
+,doc_required
+,active_subst
+,insp_interval
+,next_inspection
+,stock_in_tfr
+,loading_group
+,batch_mgmt_rqt_plnt
+,quota_arr_usage
+,service_level
+,splitting_ind
+,plan_version
+,object_type
+,object_id
+,avail_check
+,fi_year_variant
+,corr_factors
+,setup_time_1
+,base_quantity_1
+,processing_time_1
+,deactivated
+,supply_source_marc
+,autom_po
+,source_list
+,commodity_code
+,ctry_of_origin_marc
+,reg_of_origin
+,comm_code_unit
+,intrastat_group
+,profit_center
+,stk_in_transit
+,plng_calendar
+,repetitive_mfg
+,plng_time_fence
+,consmption_mode
+,bwd_cons_per
+,fwd_cons_period
+,version
+,alternative
+,usage
+,group_key_list
+,group_counter
+,cstg_lot_size
+,specproctype
+,production_unit
+,prod_stor_loc
+,mrp_group
+,component_scrap
+,certificatetype
+,insp_setup
+,takt_time
+,coverage_prof
+,field_name
+,cc_phys_inv
+,variance_key
+,serialnoprofile
+,int_object_no_marc
+,confble_matl
+,rem_profile
+,neg_stocks
+,target_qm_sys
+,planning_cycle
+,rnding_profile
+,ref_matl_cons
+,ref_plant_cons
+,date_to
+,multiplier
+,autom_reset
+,cus_preference
+,exemption_cert
+,exempt_cert_no
+,iss_date_of_crt
+,vendor_decl
+,vdr_decl_date
+,military_goods
+,service_level_1
+,co_product_marc
+,strategy_group
+,int_object_no_1
+,stor_loc_ep
+,bulk_material
+,cc_ind_fixed
+,stock_det_grp
+,qm_mat_auth
+,adjustmt_period
+,task_list_type
+,uom_group
+,conv_group
+,air_buoy_fact
+,prod_sched_profile
+,safety_time_ind
+,safety_time
+,action_control
+,enter_batch
+,uom_group_1
+,mat_freight_grp_marc
+,backfl_profile
+,stk_transfer_sv
+,st_in_trans_sp
+,smth_prom_cons
+,prod_version
+,fixed_price_co_prod
+,logistics_group
+,dist_prof
+,tied_empties
+,slsval_tiedempt
+,mat_category
+,eu_prod_list_no
+,cap_prod_group
+,cas_no_pharm
+,prodcom_no
+,control_code
+,jit_indicator
+,mat_grouping
+,proposed_s_area
+,fair_share_rule
+,push_distribution
+,deploymnt_hrzn
+,min_lot_size_1
+,max_lot_size_1
+,fix_lot_size
+,lot_size_incr
+,this_field_is_no_longer_used
+,conv_type
+,st_per_profile
+,mrp_dep_reqmts
+,mrp_area_exists
+,cross_project
+,overall_profile
+,relevant_to_apo
+,mardh_rec_already_exists_for
+,current_period
+,year_cur_period
+,min_safetystock
+,do_not_cost
+,putaway_stkrmvl
+,ob_management
+,ob_ref_matrial
+,excise_tax_relevance_indicator
+,val_gr_blocked_stck
+,seg_strategy_marc
+,seg_status_mrp
+,seg_scope_marc
+,sort_stk_method
+,cons_prio
+,discr_batch_no
+,stk_prot
+,def_segment
+,atp_mrp_status
+,valid_from_1_marc
+,arun
+,season_act_im_marc
+,variant_group
+,batch_assignment
+,calendar_group
+,assign_batches
+,advanced_planning
+,consign_control
+,gi_proc_time
+,across_purch_group
+,deter_schema
+,minimum_target_range
+,maximum_target_range
+,target_stock
+,nf_metals
+,stock_in_tfr_1
+,stk_in_transit_1
+,val_gr_blocked_stck_1
+,product_marc
+,loc_prod_id
+,gr_processng_time
+,gi_processng_time
+,prod_stor_costs
+,repl_lead_time
+,pp_plng_proced
+,heuristic
+,plan_package
+,safety_stk_pen
+,product_alerts
+,network_name
+,gr_handlg_cap_cons
+,uom_handlcap_gr
+,gi_handlg_cap_cons
+,uom_handlcap_gi
+,shelf_life_loc
+,loc_shelf_life
+,loc_matur_time
+,min_shelf_life
+,max_shelf_life
+,lot_size_unit
+,reorder_ds
+,trgt_days_sup
+,per_ls_plng_cal
+,requirement_str
+,pegg_alertback
+,pegg_alert
+,peggng_strategy
+,avoid_alerts
+,fixed_pegging
+,plan_explosion
+,planning_group
+,profile
+,priority
+,min_passing_amt
+,conversion_rule
+,entire_receipt
+,entire_stock
+,throughput_time
+,tpop
+,safety_stock_for_vcl
+,sft_parent_location
+,sft_parent_loc_vcl
+,rep_safety_st
+,rep_sft_f_vcl
+,reord_point_vcl
+,maximum_stock_vcl
+,holding_cost_factor
+,procuremt_costs
+,gr_costs
+,gi_costs
+,md_product_plant_extensible_fi
+,tolerance_plus
+,tol_minus
+,serialized_from
+,packing_group
+,picking_line
+,matno_pkm_ve
+,pick_pkm_length
+,iuid_relevant
+,iuid_type
+,ext_allocation
+,su_btch_default_val_marc
+,material_mbew
+,valuation_area
+,valuation_type
+,valuation_type_1
+,total_stock
+,total_value
+,price_control
+,moving_price
+,standard_price
+,price_unit
+,valuation_class
+,value_ma_price
+,total_stock_pp
+,total_value_pp
+,price_ctrl_pp
+,movavgprice_pp
+,std_price_pp
+,price_unit_pp
+,val_class_pp
+,value_prev_per
+,total_stock_py
+,total_value_py
+,price_ctrl_py
+,movavgprice_py
+,std_price_py
+,price_unit_py
+,val_class_py
+,value_prev_year
+,year_cur_period_mbew
+,current_period_mbew
+,valuation_cat_mbew
+,previous_price
+,last_price_chng
+,future_price
+,valid_from_mbew
+,time_stamp
+,tax_price_1
+,comm_price_1
+,tax_price_3
+,coml_price_3
+,valued_at
+,total_stock_ybl
+,total_stock_pbl
+,valued_at_1
+,fut_plnd_price
+,planned_price_1
+,planned_price_2
+,planned_price_3
+,plnd_pr_date_1
+,plnd_pr_date_2
+,plnd_pr_date_3
+,fut_c_e_period
+,current_c_e_pd
+,prev_c_e_per
+,fut_cost_est
+,curr_cost_est
+,prev_cost_est
+,overhead_key
+,lifo_fifo_rel
+,lifo_pool
+,commercial_pr_2
+,tax_price_2
+,devaluation_ind
+,maint_status_mbew
+,prodcostest_no
+,cost_estimateno
+,valuation_var
+,valuation_var_1
+,valuation_var_2
+,costing_version
+,costing_version_1
+,costing_version_2
+,origin_group
+,overhead_group
+,posting_period
+,current_period_1
+,previous_period
+,fut_fyyear
+,current_fyear
+,previous_fyear
+,cost_est_w_qs
+,prev_plnd_price
+,ml_act
+,price_determ
+,crnt_plan_price
+,total_sp_value
+,material_origin
+,phys_inv_blk
+,ph_inv_vo_mat
+,last_count_date
+,cc_phys_inv_mbew
+,val_margin
+,fxd_curr_planprice
+,prev_plprice_fixed
+,fut_planprice_fxd
+,curr_val_strat
+,prev_valn_strat
+,future_valstratgy
+,vc_sal_ord_stk
+,project_stk_vc
+,material_usage
+,material_origin_1
+,prod_in_house
+,valuated_uom
+,price_unit_1
+,mbewh_rec_already_exists_for
+,vc_vendor
+,md_product_valuation_extension
+,prepaid_inv
+,finalmd5key
+,input_last_update_date
+,dw_active_indicator
+,dw_start_date
+,dw_end_date
+,dw_last_update_date
+)
+VALUES
+(
+ TO_HEX(MD5(CONCAT(scr.material_key,scr.finalmd5key)))
+,scr.material_key
+,scr.client
+,scr.material
+,scr.created_on
+,scr.created_time
+,scr.created_by
+,scr.last_change
+,scr.changed_by
+,scr.complete_status
+,scr.maint_status
+,scr.df_client_level
+,scr.material_type
+,scr.industry_sector
+,scr.material_group
+,scr.old_matl_number
+,scr.base_unit
+,scr.order_unit
+,scr.document
+,scr.document_type
+,scr.doc_version
+,scr.page_format
+,scr.doc_change_no
+,scr.page_number
+,scr.no_of_sheets
+,scr.prod_insp_memo
+,scr.page_format_1
+,scr.size_dimensions
+,scr.basic_material
+,scr.ind_std_desc
+,scr.lab_office
+,scr.purch_value_key
+,scr.gross_weight
+,scr.net_weight
+,scr.weight_unit
+,scr.volume
+,scr.volume_unit
+,scr.container
+,scr.stor_conditions
+,scr.temperature
+,scr.low_level_code
+,scr.trans_group
+,scr.haz_matl_no
+,scr.division
+,scr.competitor
+,scr.ean_number
+,scr.gr_slips_quantity
+,scr.procure_rule
+,scr.supply_source
+,scr.season
+,scr.label_type
+,scr.label_form
+,scr.field_deact
+,scr.ean_upc
+,scr.ean_category
+,scr.length_obj
+,scr.width
+,scr.height
+,scr.unit
+,scr.prod_hierarchy
+,scr.net_change_cstg
+,scr.cad_indicator
+,scr.qm_procurement
+,scr.allowed_pkg_wt
+,scr.unit_of_weight
+,scr.allowed_volume
+,scr.volume_unit_1
+,scr.excess_wt_tolerance
+,scr.excess_volume_tol
+,scr.var_order_unit
+,scr.revision_level
+,scr.configurable
+,scr.batch_mgmt_rqt
+,scr.packag_mat_type
+,scr.maximum_level
+,scr.stacking_factor
+,scr.matl_grp_pckmat
+,scr.authorizgroup
+,scr.valid_from
+,scr.valid_to
+,scr.season_year
+,scr.price_band_cat
+,scr.w_empties_bom
+,scr.ext_matl_group
+,scr.cross_plant_cm
+,scr.matl_category
+,scr.co_product
+,scr.follow_up_matl
+,scr.pr_ref_matl
+,scr.x_plant_status
+,scr.x_dchain_status
+,scr.valid_from_1
+,scr.valid_from_2
+,scr.tax_class
+,scr.catalog_profile
+,scr.rem_shelf_life
+,scr.tot_shelf_life
+,scr.storage
+,scr.content_unit
+,scr.net_contents
+,scr.comp_price_unit
+,scr.label_matl_grpg
+,scr.gross_contents
+,scr.conv_method
+,scr.int_object_no
+,scr.envt_relevant
+,scr.prod_allocation
+,scr.pricing_profile
+,scr.disc_in_kind
+,scr.mfr_part_number
+,scr.manufacturer
+,scr.int_material_no
+,scr.mfr_part_profile
+,scr.units_meas_use
+,scr.rollout
+,scr.dgindprofile
+,scr.highly_viscous
+,scr.in_bulk_liquid
+,scr.serializlevel
+,scr.closed
+,scr.batch_rec_req
+,scr.assign_eff_vals
+,scr.comp_level
+,scr.period_ind
+,scr.rounding_rule
+,scr.prodcomposition
+,scr.genitemcatgroup
+,scr.log_variants
+,scr.material_locked
+,scr.cm_relevant
+,scr.astmt_list_type
+,scr.expiration_date
+,scr.ean_variant
+,scr.genericmaterial
+,scr.ref_mat_for_pckg
+,scr.gds_relevant
+,scr.origin_accept
+,scr.stand_hu_type
+,scr.pilferable
+,scr.wh_stor_cond
+,scr.wh_mat_grp
+,scr.handling_ind
+,scr.haz_sub
+,scr.hutyp
+,scr.variable_tw
+,scr.max_capacity
+,scr.overcapac_tol
+,scr.max_length
+,scr.max_pack_width
+,scr.max_height
+,scr.unit_of_measure
+,scr.ctry_of_origin
+,scr.mat_freight_grp
+,scr.quarant_per
+,scr.time_unit
+,scr.qual_insp_grp
+,scr.serial_no_prf
+,scr.form_name
+,scr.logistics_uom
+,scr.cw_relevant
+,scr.cw_profile
+,scr.catch_wt_tol_grp
+,scr.adjust_profile
+,scr.intel_property
+,scr.var_price_allowed
+,scr.medium
+,scr.commodity
+,scr.animal_origin
+,scr.texcompactive
+,scr.last_chgd_time
+,scr.material_1
+,scr.chemical_compliance_relevance
+,scr.logl_material_cat
+,scr.sales_material_no
+,scr.tag_type
+,scr.seg_structure
+,scr.seg_strategy
+,scr.seg_status
+,scr.seg_scope
+,scr.seg_relevant
+,scr.anp_code
+,scr.psm_code
+,scr.fsh_attribute1
+,scr.fsh_attribute2
+,scr.fsh_attribute3
+,scr.season_usage
+,scr.season_act_im
+,scr.mat_conv_id
+,scr.dummy_field
+,scr.product
+,scr.product_id
+,scr.maturation_time
+,scr.req_min_sh_life
+,scr.req_max_sh_life
+,scr.preferred_uom
+,scr.reference_product
+,scr.product_shape
+,scr.prod_orient_prof
+,scr.overhang_threshold
+,scr.bridge_threshold
+,scr.maximum_slope
+,scr.abs_height_thresh
+,scr.abs_height_thresh_1
+,scr.product_for_kito
+,scr.procure_to_order
+,scr.push_depl_fr_supp
+,scr.no_inv_balancing
+,scr.glb_stk_entry_loc
+,scr.no_express_shipment
+,scr.cw_material
+,scr.valuation_uom
+,scr.tolerance_group
+,scr.fixed_tare
+,scr.tare_calc
+,scr.loading_units
+,scr.loading_unit_group
+,scr.struct_category
+,scr.tolerance_type
+,scr.counting_group
+,scr.dsd_grouping
+,scr.cable_diameter
+,scr.unit_for_dimensions
+,scr.cabdia_allow
+,scr.bending_factor
+,scr.inner_width
+,scr.outer_diameter
+,scr.core_diameter
+,scr.load_capacity
+,scr.r_o_flange_thick
+,scr.r_o_flange_height
+,scr.coil_delivery
+,scr.run_out_flange
+,scr.no_vert_layers
+,scr.clearance
+,scr.serialization_type
+,scr.sync_active
+,scr.last_synchronized
+,scr.changed_since_int
+,scr.prof_rel_country
+,scr.product_category
+,scr.tilting_allowed
+,scr.no_stacking
+,scr.bottom_layer
+,scr.top_layer
+,scr.stacking_factor_1
+,scr.load_w_o_pkm
+,scr.overhang_depth
+,scr.overhang_width
+,scr.max_stack_hght
+,scr.min_stack_hght
+,scr.stackh_toleran
+,scr.no_mat_pkm
+,scr.uom_vso
+,scr.closed_pkm_req
+,scr.packaging_code
+,scr.dg_pckg_status
+,scr.work_duration
+,scr.unit_1
+,scr.service_profile
+,scr.response_prof
+,scr.billing_cycle
+,scr.billing_cycle_determ
+,scr.assignment_schema
+,scr.condition_mgmt
+,scr.return_code
+,scr.return_to_log_level
+,scr.nsn
+,scr.ammunition_code
+,scr.ric_id
+,scr.overlength_part_num
+,scr.spare_prt_class_code
+,scr.var_obj_id
+,scr.ms_book_part_no
+,scr.su_btch_default_val
+,scr.sng_un_bch_rcp
+,scr.fff_class
+,scr.chain_no
+,scr.creation_status
+,scr.internal_char
+,scr.internal_char_1
+,scr.internal_char_2
+,scr.color
+,scr.main_size
+,scr.second_size
+,scr.char_value
+,scr.care_code
+,scr.brand
+,scr.component_1
+,scr.perc_share_1
+,scr.component_2
+,scr.perc_share_2
+,scr.component_3
+,scr.perc_share_3
+,scr.component_4
+,scr.perc_share_4
+,scr.component_5
+,scr.perc_share_5
+,scr.fashion_grade
+,scr.material_marc
+,scr.plant
+,scr.maint_status_marc
+,scr.df_plant_level
+,scr.valuation_cat
+,scr.batches
+,scr.p_s_matl_status
+,scr.valid_from_marc
+,scr.abc_indicator
+,scr.critical_part
+,scr.purch_group
+,scr.unit_of_issue
+,scr.mrp_profile
+,scr.mrp_type
+,scr.mrp_controller
+,scr.mrpctrllr_buyer
+,scr.pl_deliv_time
+,scr.gr_proc_time
+,scr.period_ind_marc
+,scr.assembly_scrap
+,scr.lot_sizing_procedure
+,scr.procurement
+,scr.specprocurement
+,scr.reorder_point
+,scr.safety_stock
+,scr.min_lot_size
+,scr.max_lot_size
+,scr.fixed_lot_size
+,scr.rounding_value
+,scr.max_stock_level
+,scr.lsi_costs
+,scr.indiv_coll
+,scr.storage_costs
+,scr.selectionmethod
+,scr.discontin_ind
+,scr.eff_out_date
+,scr.follow_up_matl_marc
+,scr.reqmts_grouping
+,scr.mixed_mrp
+,scr.schedmargin_key
+,scr.autom_fix_pl_ords
+,scr.autom_release
+,scr.backflush
+,scr.prodn_supervisor
+,scr.processing_time
+,scr.setup_time
+,scr.interoperation
+,scr.base_quantity
+,scr.inhseprodtime
+,scr.max_storage
+,scr.time_unit_marc
+,scr.withd_fm_pr_bin
+,scr.rough_cut_plng
+,scr.overdely_tol
+,scr.unlimited
+,scr.underdely_tol
+,scr.total_rl_time
+,scr.replacemt_part
+,scr.surcharge
+,scr.state_of_manufac
+,scr.post_to_insp_stk
+,scr.sample
+,scr.quarantine
+,scr.qm_control_key
+,scr.mean_insp_dur
+,scr.insp_plan_ind
+,scr.doc_required
+,scr.active_subst
+,scr.insp_interval
+,scr.next_inspection
+,scr.stock_in_tfr
+,scr.loading_group
+,scr.batch_mgmt_rqt_plnt
+,scr.quota_arr_usage
+,scr.service_level
+,scr.splitting_ind
+,scr.plan_version
+,scr.object_type
+,scr.object_id
+,scr.avail_check
+,scr.fi_year_variant
+,scr.corr_factors
+,scr.setup_time_1
+,scr.base_quantity_1
+,scr.processing_time_1
+,scr.deactivated
+,scr.supply_source_marc
+,scr.autom_po
+,scr.source_list
+,scr.commodity_code
+,scr.ctry_of_origin_marc
+,scr.reg_of_origin
+,scr.comm_code_unit
+,scr.intrastat_group
+,scr.profit_center
+,scr.stk_in_transit
+,scr.plng_calendar
+,scr.repetitive_mfg
+,scr.plng_time_fence
+,scr.consmption_mode
+,scr.bwd_cons_per
+,scr.fwd_cons_period
+,scr.version
+,scr.alternative
+,scr.usage
+,scr.group_key_list
+,scr.group_counter
+,scr.cstg_lot_size
+,scr.specproctype
+,scr.production_unit
+,scr.prod_stor_loc
+,scr.mrp_group
+,scr.component_scrap
+,scr.certificatetype
+,scr.insp_setup
+,scr.takt_time
+,scr.coverage_prof
+,scr.field_name
+,scr.cc_phys_inv
+,scr.variance_key
+,scr.serialnoprofile
+,scr.int_object_no_marc
+,scr.confble_matl
+,scr.rem_profile
+,scr.neg_stocks
+,scr.target_qm_sys
+,scr.planning_cycle
+,scr.rnding_profile
+,scr.ref_matl_cons
+,scr.ref_plant_cons
+,scr.date_to
+,scr.multiplier
+,scr.autom_reset
+,scr.cus_preference
+,scr.exemption_cert
+,scr.exempt_cert_no
+,scr.iss_date_of_crt
+,scr.vendor_decl
+,scr.vdr_decl_date
+,scr.military_goods
+,scr.service_level_1
+,scr.co_product_marc
+,scr.strategy_group
+,scr.int_object_no_1
+,scr.stor_loc_ep
+,scr.bulk_material
+,scr.cc_ind_fixed
+,scr.stock_det_grp
+,scr.qm_mat_auth
+,scr.adjustmt_period
+,scr.task_list_type
+,scr.uom_group
+,scr.conv_group
+,scr.air_buoy_fact
+,scr.prod_sched_profile
+,scr.safety_time_ind
+,scr.safety_time
+,scr.action_control
+,scr.enter_batch
+,scr.uom_group_1
+,scr.mat_freight_grp_marc
+,scr.backfl_profile
+,scr.stk_transfer_sv
+,scr.st_in_trans_sp
+,scr.smth_prom_cons
+,scr.prod_version
+,scr.fixed_price_co_prod
+,scr.logistics_group
+,scr.dist_prof
+,scr.tied_empties
+,scr.slsval_tiedempt
+,scr.mat_category
+,scr.eu_prod_list_no
+,scr.cap_prod_group
+,scr.cas_no_pharm
+,scr.prodcom_no
+,scr.control_code
+,scr.jit_indicator
+,scr.mat_grouping
+,scr.proposed_s_area
+,scr.fair_share_rule
+,scr.push_distribution
+,scr.deploymnt_hrzn
+,scr.min_lot_size_1
+,scr.max_lot_size_1
+,scr.fix_lot_size
+,scr.lot_size_incr
+,scr.this_field_is_no_longer_used
+,scr.conv_type
+,scr.st_per_profile
+,scr.mrp_dep_reqmts
+,scr.mrp_area_exists
+,scr.cross_project
+,scr.overall_profile
+,scr.relevant_to_apo
+,scr.mardh_rec_already_exists_for
+,scr.current_period
+,scr.year_cur_period
+,scr.min_safetystock
+,scr.do_not_cost
+,scr.putaway_stkrmvl
+,scr.ob_management
+,scr.ob_ref_matrial
+,scr.excise_tax_relevance_indicator
+,scr.val_gr_blocked_stck
+,scr.seg_strategy_marc
+,scr.seg_status_mrp
+,scr.seg_scope_marc
+,scr.sort_stk_method
+,scr.cons_prio
+,scr.discr_batch_no
+,scr.stk_prot
+,scr.def_segment
+,scr.atp_mrp_status
+,scr.valid_from_1_marc
+,scr.arun
+,scr.season_act_im_marc
+,scr.variant_group
+,scr.batch_assignment
+,scr.calendar_group
+,scr.assign_batches
+,scr.advanced_planning
+,scr.consign_control
+,scr.gi_proc_time
+,scr.across_purch_group
+,scr.deter_schema
+,scr.minimum_target_range
+,scr.maximum_target_range
+,scr.target_stock
+,scr.nf_metals
+,scr.stock_in_tfr_1
+,scr.stk_in_transit_1
+,scr.val_gr_blocked_stck_1
+,scr.product_marc
+,scr.loc_prod_id
+,scr.gr_processng_time
+,scr.gi_processng_time
+,scr.prod_stor_costs
+,scr.repl_lead_time
+,scr.pp_plng_proced
+,scr.heuristic
+,scr.plan_package
+,scr.safety_stk_pen
+,scr.product_alerts
+,scr.network_name
+,scr.gr_handlg_cap_cons
+,scr.uom_handlcap_gr
+,scr.gi_handlg_cap_cons
+,scr.uom_handlcap_gi
+,scr.shelf_life_loc
+,scr.loc_shelf_life
+,scr.loc_matur_time
+,scr.min_shelf_life
+,scr.max_shelf_life
+,scr.lot_size_unit
+,scr.reorder_ds
+,scr.trgt_days_sup
+,scr.per_ls_plng_cal
+,scr.requirement_str
+,scr.pegg_alertback
+,scr.pegg_alert
+,scr.peggng_strategy
+,scr.avoid_alerts
+,scr.fixed_pegging
+,scr.plan_explosion
+,scr.planning_group
+,scr.profile
+,scr.priority
+,scr.min_passing_amt
+,scr.conversion_rule
+,scr.entire_receipt
+,scr.entire_stock
+,scr.throughput_time
+,scr.tpop
+,scr.safety_stock_for_vcl
+,scr.sft_parent_location
+,scr.sft_parent_loc_vcl
+,scr.rep_safety_st
+,scr.rep_sft_f_vcl
+,scr.reord_point_vcl
+,scr.maximum_stock_vcl
+,scr.holding_cost_factor
+,scr.procuremt_costs
+,scr.gr_costs
+,scr.gi_costs
+,scr.md_product_plant_extensible_fi
+,scr.tolerance_plus
+,scr.tol_minus
+,scr.serialized_from
+,scr.packing_group
+,scr.picking_line
+,scr.matno_pkm_ve
+,scr.pick_pkm_length
+,scr.iuid_relevant
+,scr.iuid_type
+,scr.ext_allocation
+,scr.su_btch_default_val_marc
+,scr.material_mbew
+,scr.valuation_area
+,scr.valuation_type
+,scr.valuation_type_1
+,scr.total_stock
+,scr.total_value
+,scr.price_control
+,scr.moving_price
+,scr.standard_price
+,scr.price_unit
+,scr.valuation_class
+,scr.value_ma_price
+,scr.total_stock_pp
+,scr.total_value_pp
+,scr.price_ctrl_pp
+,scr.movavgprice_pp
+,scr.std_price_pp
+,scr.price_unit_pp
+,scr.val_class_pp
+,scr.value_prev_per
+,scr.total_stock_py
+,scr.total_value_py
+,scr.price_ctrl_py
+,scr.movavgprice_py
+,scr.std_price_py
+,scr.price_unit_py
+,scr.val_class_py
+,scr.value_prev_year
+,scr.year_cur_period_mbew
+,scr.current_period_mbew
+,scr.valuation_cat_mbew
+,scr.previous_price
+,scr.last_price_chng
+,scr.future_price
+,scr.valid_from_mbew
+,scr.time_stamp
+,scr.tax_price_1
+,scr.comm_price_1
+,scr.tax_price_3
+,scr.coml_price_3
+,scr.valued_at
+,scr.total_stock_ybl
+,scr.total_stock_pbl
+,scr.valued_at_1
+,scr.fut_plnd_price
+,scr.planned_price_1
+,scr.planned_price_2
+,scr.planned_price_3
+,scr.plnd_pr_date_1
+,scr.plnd_pr_date_2
+,scr.plnd_pr_date_3
+,scr.fut_c_e_period
+,scr.current_c_e_pd
+,scr.prev_c_e_per
+,scr.fut_cost_est
+,scr.curr_cost_est
+,scr.prev_cost_est
+,scr.overhead_key
+,scr.lifo_fifo_rel
+,scr.lifo_pool
+,scr.commercial_pr_2
+,scr.tax_price_2
+,scr.devaluation_ind
+,scr.maint_status_mbew
+,scr.prodcostest_no
+,scr.cost_estimateno
+,scr.valuation_var
+,scr.valuation_var_1
+,scr.valuation_var_2
+,scr.costing_version
+,scr.costing_version_1
+,scr.costing_version_2
+,scr.origin_group
+,scr.overhead_group
+,scr.posting_period
+,scr.current_period_1
+,scr.previous_period
+,scr.fut_fyyear
+,scr.current_fyear
+,scr.previous_fyear
+,scr.cost_est_w_qs
+,scr.prev_plnd_price
+,scr.ml_act
+,scr.price_determ
+,scr.crnt_plan_price
+,scr.total_sp_value
+,scr.material_origin
+,scr.phys_inv_blk
+,scr.ph_inv_vo_mat
+,scr.last_count_date
+,scr.cc_phys_inv_mbew
+,scr.val_margin
+,scr.fxd_curr_planprice
+,scr.prev_plprice_fixed
+,scr.fut_planprice_fxd
+,scr.curr_val_strat
+,scr.prev_valn_strat
+,scr.future_valstratgy
+,scr.vc_sal_ord_stk
+,scr.project_stk_vc
+,scr.material_usage
+,scr.material_origin_1
+,scr.prod_in_house
+,scr.valuated_uom
+,scr.price_unit_1
+,scr.mbewh_rec_already_exists_for
+,scr.vc_vendor
+,scr.md_product_valuation_extension
+,scr.prepaid_inv
+,scr.finalmd5key
+,scr.input_last_update_date
+,scr.dw_active_indicator
+,CURRENT_DATETIME()
+,DATETIME(9999, 12, 31, 23, 59, 59)
+,CURRENT_DATETIME());
+
+MERGE INTO 
+`{{ projectid }}.{{ slt_l0_staging }}.layer1_audit_table` tgt
+USING ( SELECT 
+         'material_dimension' as table_name
+         ,CASE WHEN (select full_delta_indicator from `{{ projectid }}.{{ slt_l0_staging }}.layer1_audit_table` where table_name = 'material_dimension') IS NULL
+                    OR (select full_delta_indicator from `{{ projectid }}.{{ slt_l0_staging }}.layer1_audit_table` where table_name = 'material_dimension') = 'F'
+               THEN 'F'
+               ELSE 'D'
+          END AS full_delta_indicator
+        ,'material_master,plant_data,material_master_accounting_data' as source_table_names
+        ,CAST('1900-01-01T00:00:00' AS DATETIME) as full_load_datetime
+        ,COALESCE((select max(input_last_update_date) as delta_load_datatime from `{{ projectid }}.{{ slt_l1_dimension }}.material_dimension`),CAST('1900-01-01T00:00:00' AS DATETIME)) as delta_load_datetime
+        ,(coalesce((select COUNT(*) AS inserted_record_count from `{{ projectid }}.{{ slt_l1_dimension }}.material_dimension` a 
+          where a.dw_active_indicator = 'Y'  and a.dw_last_update_date > COALESCE((SELECT CASE WHEN b.full_delta_indicator = 'F' 
+                                                              THEN b.full_load_datetime
+                                                              WHEN b.full_delta_indicator <> 'F' THEN b.delta_load_datetime
+                                                          END
+                                                    from `{{ projectid }}.{{ slt_l0_staging }}.layer1_audit_table` b
+                                        where b.table_name = 'material_dimension'),CAST('1900-01-01T00:00:00' AS DATETIME))),(select count(*) as inserted_record_count from `{{ projectid }}.{{ slt_l1_dimension }}.material_dimension` where dw_active_indicator = 'Y'))) as inserted_record_count
+        ,CURRENT_DATETIME() as last_update_date
+) scr
+on tgt.table_name = scr.table_name
+WHEN MATCHED THEN 
+UPDATE set tgt.full_load_datetime ='1900-01-01T00:00:00'
+          ,tgt.delta_load_datetime = scr.delta_load_datetime
+          ,tgt.inserted_record_count = scr.inserted_record_count
+          ,tgt.last_update_date = scr.last_update_date
+          ,tgt.source_table_names = scr.source_table_names
+WHEN NOT MATCHED THEN
+INSERT (table_name,
+        full_delta_indicator,
+        source_table_names,
+        full_load_datetime,
+        delta_load_datetime,
+        inserted_record_count,
+        last_update_date)
+VALUES(scr.table_name,
+       scr.full_delta_indicator,
+       scr.source_table_names,
+       scr.full_load_datetime,
+       scr.delta_load_datetime,
+       scr.inserted_record_count,
+       scr.last_update_date);

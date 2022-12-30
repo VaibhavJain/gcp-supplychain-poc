@@ -1,0 +1,12 @@
+airflow:
+  default_args:
+    owner: 'airflow'
+    email: 'addanki.srinivas@cloudsufi.com'
+
+config:
+  project_id: 'sap-adapter'
+  slt_l0_raw: 'slt_raw'
+  slt_l0_staging: 'slt_staging'
+  slt_l1_dimension: 'slt_dimension'
+  slt_l1_facts: 'slt_facts'
+  slt_l2_canonical: 'slt_canonical'

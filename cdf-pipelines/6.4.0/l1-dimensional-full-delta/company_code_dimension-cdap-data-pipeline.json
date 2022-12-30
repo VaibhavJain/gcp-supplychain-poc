@@ -1,0 +1,109 @@
+{
+    "name": "company_code_dimension",
+    "description": "company code dimension",
+    "artifact": {
+        "name": "cdap-data-pipeline",
+        "version": "6.4.0",
+        "scope": "SYSTEM"
+    },
+    "config": {
+        "resources": {
+            "memoryMB": 2048,
+            "virtualCores": 1
+        },
+        "driverResources": {
+            "memoryMB": 2048,
+            "virtualCores": 1
+        },
+        "connections": [
+            {
+                "from": "Merge Statement",
+                "to": "Update Audit Table"
+            }
+        ],
+        "comments": [],
+        "postActions": [],
+        "properties": {},
+        "processTimingEnabled": true,
+        "stageLoggingEnabled": false,
+        "stages": [
+            {
+                "name": "Merge Statement",
+                "plugin": {
+                    "name": "BigQueryExecute",
+                    "type": "action",
+                    "label": "Merge Statement",
+                    "artifact": {
+                        "name": "google-cloud",
+                        "version": "0.17.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "project": "auto-detect",
+                        "sql": "MERGE INTO `${ProjectID}.${TargetDatasetNames2}.company_code_dimension` tgt\nUSING \n(WITH tmp_scr AS (\nselect cc.company_code as company_key\n      ,cc.company_code\n      ,cc.currency_key\n      ,cc.chart_of_accounts\n      ,cc.credit_control_area\n      ,cc.fiscal_year_variant\n      ,cc.company\n      ,ccd.address\n      ,ccd.valid_from\n      ,ccd.address_version\n      ,ccd.name_1\n      ,ccd.name_2\n      ,ccd.name_3\n      ,ccd.name_4\n      ,ccd.city\n      ,ccd.po_box\n      ,ccd.street\n      ,ccd.house_number\n      ,ccd.country_key\n      ,ccd.telephone_number\n      ,ccd.sequence_number\n      ,ccd.home_address\n      ,ccd.email_address\n      ,CASE WHEN cc.dw_last_update_date > ccd.dw_last_update_date\n            THEN cc.dw_last_update_date\n            ELSE ccd.dw_last_update_date\n       END AS input_last_update_date\n      ,cc.dw_active_indicator\n  from `${ProjectID}.${StagingDatasetName}.company_code` cc\n       inner join `${ProjectID}.${StagingDatasetName}.company_code_details` ccd\n    on cc.company_code = ccd.company_code\n   and ccd.dw_active_indicator = 'Y'\n       left join `${ProjectID}.${StagingDatasetName}.layer1_audit_table` lat\n        ON 1 = 1\n       AND lat.table_name = 'company_code_dimension'\n     WHERE cc.dw_active_indicator = 'Y'\n       AND (cc.dw_last_update_date >= CASE WHEN lat.full_delta_indicator = 'F' THEN lat.full_load_datetime\n                                           WHEN lat.full_delta_indicator <> 'F' THEN lat.delta_load_datetime\n                                           ELSE CAST('1900-01-01T00:00:00' AS DATETIME)\n                                      END\n        OR ccd.dw_last_update_date >= CASE WHEN lat.full_delta_indicator = 'F' THEN lat.full_load_datetime\n                                          WHEN lat.full_delta_indicator <> 'F' THEN lat.delta_load_datetime\n                                          ELSE CAST('1900-01-01T00:00:00' AS DATETIME)\n                                     END)),\ntmp_cmp AS (SELECT ts.*,\n     TO_HEX(MD5((select string_agg(CAST(col as STRING), ', ' order by offset)\n    from unnest(split(trim(format('%t',(select as struct ts.* except(input_last_update_date))), '()'),', ')) col with offset \n    where not col IS NULL\n    ))) as finalmd5key      \n  from tmp_scr ts)\nSELECT t.company_key as company_join_key,t.*\n  from tmp_cmp t\nUNION ALL \nSELECT NULL as company_join_key,t.*\n  from tmp_cmp t\n       INNER JOIN `${ProjectID}.${TargetDatasetNames2}.company_code_dimension` cd\n    on cd.company_key = t.company_key\n   AND cd.finalmd5key <> t.finalmd5key\n WHERE cd.dw_active_indicator = 'Y') scr\n  ON tgt.company_key = scr.company_join_key\nWHEN MATCHED AND tgt.finalmd5key <> scr.finalmd5key THEN \nUPDATE set tgt.dw_end_date = CURRENT_DATETIME()\n          ,tgt.dw_active_indicator = 'N'\nWHEN NOT MATCHED THEN \nINSERT (\ncompany_uuid\n,company_key\n,company_code\n,currency_key\n,chart_of_accounts\n,credit_control_area\n,fiscal_year_variant\n,company\n,address\n,valid_from\n,address_version\n,name_1\n,name_2\n,name_3\n,name_4\n,city\n,po_box\n,street\n,house_number\n,country_key\n,telephone_number\n,sequence_number\n,home_address\n,email_address\n,input_last_update_date\n,finalmd5key\n,dw_active_indicator\n,dw_start_date\n,dw_end_date\n,dw_last_update_date)\nVALUES (TO_HEX(MD5(scr.company_key))\n,scr.company_key\n,scr.company_code\n,scr.currency_key\n,scr.chart_of_accounts\n,scr.credit_control_area\n,scr.fiscal_year_variant\n,scr.company\n,scr.address\n,scr.valid_from\n,scr.address_version\n,scr.name_1\n,scr.name_2\n,scr.name_3\n,scr.name_4\n,scr.city\n,scr.po_box\n,scr.street\n,scr.house_number\n,scr.country_key\n,scr.telephone_number\n,scr.sequence_number\n,scr.home_address\n,scr.email_address\n,scr.input_last_update_date\n,scr.finalmd5key\n,scr.dw_active_indicator\n,CURRENT_DATETIME()\n,DATETIME(9999, 12, 31, 23, 59, 59)\n,CURRENT_DATETIME());",
+                        "dialect": "standard",
+                        "mode": "batch",
+                        "dataset": "${TargetDatasetNames2}",
+                        "table": "supplier_purchase_org_dimension",
+                        "useCache": "false",
+                        "location": "US",
+                        "rowAsArguments": "false",
+                        "serviceAccountType": "filePath",
+                        "serviceFilePath": "auto-detect"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": ""
+                    }
+                ],
+                "id": "Merge-Statement",
+                "type": "action",
+                "label": "Merge Statement",
+                "icon": "fa-plug"
+            },
+            {
+                "name": "Update Audit Table",
+                "plugin": {
+                    "name": "BigQueryExecute",
+                    "type": "action",
+                    "label": "Update Audit Table",
+                    "artifact": {
+                        "name": "google-cloud",
+                        "version": "0.17.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "project": "auto-detect",
+                        "sql": "MERGE INTO \n`${ProjectID}.${StagingDatasetName}.layer1_audit_table` tgt\nUSING ( SELECT \n         'company_code_dimension' as table_name\n         ,CASE WHEN (select full_delta_indicator from `${ProjectID}.${StagingDatasetName}.layer1_audit_table` where table_name = 'company_code_dimension') IS NULL\n                    OR (select full_delta_indicator from `${ProjectID}.${StagingDatasetName}.layer1_audit_table` where table_name = 'company_code_dimension') = 'F'\n               THEN 'F'\n               ELSE 'D'\n          END AS full_delta_indicator\n        ,'0COMP_CODE_ATTR,0COMP_CODE_ADDRESS' as extractors_names\n        ,CAST('1900-01-01T00:00:00' AS DATETIME) as full_load_datetime\n        ,(select max(input_last_update_date) as delta_load_datatime from `${ProjectID}.${TargetDatasetNames2}.company_code_dimension`) as delta_load_datetime\n        ,(select COUNT(*) AS inserted_record_count from `${ProjectID}.${TargetDatasetNames2}.company_code_dimension` a inner join `${ProjectID}.${StagingDatasetName}.layer1_audit_table` b\n          on 1 = 1 where b.table_name = 'company_code_dimension' and  a.dw_last_update_date > CASE WHEN b.full_delta_indicator = 'F' \n                                                                                               THEN b.full_load_datetime\n                                                                                               WHEN b.full_delta_indicator <> 'F' THEN b.delta_load_datetime\n                                                                                               ELSE CAST('1900-01-01T00:00:00' AS DATETIME)\n                                                                                          END\n          and a.dw_active_indicator = 'Y') AS inserted_record_count\n        ,CURRENT_DATETIME() as last_update_date\n) scr\non tgt.table_name = scr.table_name\nWHEN MATCHED THEN \nUPDATE set tgt.full_load_datetime ='1900-01-01T00:00:00'\n          ,tgt.delta_load_datetime = scr.delta_load_datetime\n          ,tgt.inserted_record_count = scr.inserted_record_count\n          ,tgt.last_update_date = scr.last_update_date\n          ,tgt.extractors_names = scr.extractors_names\nWHEN NOT MATCHED THEN\nINSERT (table_name,\n        full_delta_indicator,\n        extractors_names,\n        full_load_datetime,\n        delta_load_datetime,\n        inserted_record_count,\n        last_update_date)\nVALUES(scr.table_name,\n       scr.full_delta_indicator,\n       scr.extractors_names,\n       scr.full_load_datetime,\n       scr.delta_load_datetime,\n       scr.inserted_record_count,\n       scr.last_update_date);",
+                        "dialect": "standard",
+                        "mode": "batch",
+                        "dataset": "${StagingDatasetName}",
+                        "table": "layer1_audit_table",
+                        "useCache": "false",
+                        "location": "US",
+                        "rowAsArguments": "false",
+                        "serviceAccountType": "filePath",
+                        "serviceFilePath": "auto-detect"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": ""
+                    }
+                ],
+                "id": "Update-Audit-Table",
+                "type": "action",
+                "label": "Update Audit Table",
+                "icon": "fa-plug"
+            }
+        ],
+        "schedule": "0 * * * *",
+        "engine": "spark",
+        "numOfRecordsPreview": 100,
+        "description": "company code dimension",
+        "maxConcurrentRuns": 1
+    }
+}

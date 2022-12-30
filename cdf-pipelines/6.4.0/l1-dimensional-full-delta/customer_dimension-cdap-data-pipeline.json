@@ -1,0 +1,109 @@
+{
+    "name": "customer_dimension",
+    "description": "customer dimension",
+    "artifact": {
+        "name": "cdap-data-pipeline",
+        "version": "6.4.0",
+        "scope": "SYSTEM"
+    },
+    "config": {
+        "resources": {
+            "memoryMB": 2048,
+            "virtualCores": 1
+        },
+        "driverResources": {
+            "memoryMB": 2048,
+            "virtualCores": 1
+        },
+        "connections": [
+            {
+                "from": "Merge Statement",
+                "to": "Update Audit Table"
+            }
+        ],
+        "comments": [],
+        "postActions": [],
+        "properties": {},
+        "processTimingEnabled": true,
+        "stageLoggingEnabled": false,
+        "stages": [
+            {
+                "name": "Merge Statement",
+                "plugin": {
+                    "name": "BigQueryExecute",
+                    "type": "action",
+                    "label": "Merge Statement",
+                    "artifact": {
+                        "name": "google-cloud",
+                        "version": "0.17.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "project": "auto-detect",
+                        "sql": "MERGE \nINTO `${ProjectID}.${TargetDatasetNames2}.customer_dimension` tgt\nUSING (\nWITH tmp_scr AS(\nSELECT\n  cm.customer_number as customer_key,\n  cm.customer_number,\n  cm.address,\n  cm.title,\n  cm.central_order_block,\n  cm.express_station,\n  cm.train_station,\n  cm.international_location_number_1,\n  cm.international_location_number_2,\n  cm.authorization_group,\n  cm.industry_key,\n  cm.check_digit,\n  cm.data_line,\n  cm.created_on,\n  cm.created_by,\n  cm.unloading_points,\n  cm.central_billing_block,\n  cm.fiscal_address,\n  cm.working_times,\n  cm.alternative_payer,\n  cm.group_key,\n  cm.customer_account_group,\n  cm.customer_classification,\n  cm.country_key,\n  cm.vendors_account_number,\n  cm.central_delivery_block,\n  cm.location_code,\n  cm.central_deletion_flag,\n  cm.name_1,\n  cm.name_2,\n  cm.name_3,\n  cm.name_4,\n  cm.nielsen_indicator,\n  cm.city,\n  cm.district,\n  cm.post_office_box,\n  cm.po_box_postal_code,\n  cm.postal_code,\n  cm.region,\n  cm.county_code,\n  cm.city_code,\n  cm.regional_market,\n  cm.sort_field,\n  cm.central_posting_block,\n  cm.language_key,\n  cm.tax_number_1,\n  cm.tax_number_2,\n  cm.sales_equalization_tax,\n  cm.liable_for_vat,\n  cm.street_and_house_number,\n  cm.telebox_number,\n  cm.telephone_1,\n  cm.telephone_2,\n  cm.fax_number,\n  cm.teletex_number,\n  cm.telex_number,\n  cm.transportation_zone,\n  cm.one_time_account,\n  cm.payee_in_document,\n  cm.trading_partner,\n  cm.vat_registration_number,\n  cm.competitors_indicator,\n  cm.sales_partners_indicator,\n  cm.sales_prospect_indicator,\n  cm.customer_type_4,\n  cm.default_sold_to_party,\n  cm.consumer_indicator,\n  cm.legal_status,\n  cm.industry_code_1,\n  cm.industry_code_2,\n  cm.industry_code_3,\n  cm.industry_code_4,\n  cm.industry_code_5,\n  cm.initial_contact,\n  cm.annual_sales_2,\n  cm.sales_year,\n  cm.currency_sales_figure,\n  cm.year_number_employees,\n  cm.year_number_given,\n  cm.attribute_1,\n  cm.attribute_2,\n  cm.attribute_3,\n  cm.attribute_4,\n  cm.attribute_5,\n  cm.attribute_6,\n  cm.attribute_7,\n  cm.attribute_8,\n  cm.attribute_9,\n  cm.attribute_10,\n  cm.natural_person,\n  cm.annual_sales_1,\n  cm.tax_jurisdiction,\n  cm.matchcode_name_1,\n  cm.matchcode_name_2,\n  cm.matcgcode_city,\n  cm.fiscal_year_variant,\n  cm.usage_indicator,\n  cm.by_customer,\n  cm.after_delivery,\n  cm.reference_account_group,\n  cm.post_office_box_city,\n  cm.plant,\n  cm.date_medium_exchange_indicator,\n  cm.instruction_key,\n  cm.data_transfer_status,\n  cm.hierarchy_assignment,\n  cm.payment_block,\n  cm.labeking_customer_group,\n  cm.non_military_use,\n  cm.military_use,\n  cm.condition_group_1,\n  cm.condition_group_2,\n  cm.condition_group_3,\n  cm.condition_group_4,\n  cm.condition_group_5,\n  cm.alternative_payer_account,\n  cm.tax_type,\n  cm.tax_number_type,\n  cm.tax_number_3,\n  cm.tax_number_4,\n  cm.icms_exempt,\n  cm.ipi_exempt,\n  cm.subtrib_group,\n  cm.customer_cfop_category,\n  cm.icms_law,\n  cm.ipi_law,\n  cm.biochemical_warfare,\n  cm.nuclear_nonprolif,\n  cm.national_security,\n  cm.missile_technology,\n  cm.central_sales_block,\n  cm.uniform_resource_locator,\n  cm.dw_last_update_date as input_last_update_date,\n  cm.dw_active_indicator,\n  cm.dw_last_update_date\nFROM\n  `${ProjectID}.${StagingDatasetName}.customer_master` cm\nINNER JOIN\n  `${ProjectID}.${StagingDatasetName}.layer1_audit_table` lat\nON\n  lat.table_name = 'customer_dimension'\n  AND cm.dw_last_update_date >= CASE WHEN lat.full_delta_indicator = 'F' THEN lat.full_load_datetime\n                                     WHEN lat.full_delta_indicator <> 'F' THEN lat.delta_load_datetime\n                                     ELSE CAST('1900-01-01T00:00:00' AS DATETIME)\n                                END\nWHERE cm.dw_active_indicator = 'Y'),\n  tmp_cust AS (SELECT ts.*,\n     TO_HEX(MD5((select string_agg(CAST(col as STRING), ', ' order by offset)\n    from unnest(split(trim(format('%t',(select as struct ts.* except(input_last_update_date))), '()'),', ')) col with offset \n    where not col IS NULL\n    ))) as finalmd5key      \n  from tmp_scr ts)\nSELECT t.customer_key as customer_join_key,t.*\n  from tmp_cust t\nUNION ALL \nSELECT NULL as customer_join_key,t.*\n  from tmp_cust t\n     INNER JOIN `${ProjectID}.${TargetDatasetNames2}.customer_dimension` cd \n  ON cd.customer_key = t.customer_key \n AND cd.finalmd5key <> t.finalmd5key\nWHERE cd.dw_active_indicator = 'Y') scr \non tgt.customer_key = scr.customer_join_key\nWHEN MATCHED AND tgt.finalmd5key <> scr.finalmd5key THEN\nUPDATE set tgt.dw_end_date = CURRENT_DATETIME()\n               ,tgt.dw_active_indicator = 'N'\nWHEN NOT MATCHED \nTHEN INSERT (customer_uuid\n,customer_key\n,customer_number\n,address\n,title\n,central_order_block\n,express_station\n,train_station\n,international_location_number_1\n,international_location_number_2\n,authorization_group\n,industry_key\n,check_digit\n,data_line\n,created_on\n,created_by\n,unloading_points\n,central_billing_block\n,fiscal_address\n,working_times\n,alternative_payer\n,group_key\n,customer_account_group\n,customer_classification\n,country_key\n,vendors_account_number\n,central_delivery_block\n,location_code\n,central_deletion_flag\n,name_1\n,name_2\n,name_3\n,name_4\n,nielsen_indicator\n,city\n,district\n,post_office_box\n,po_box_postal_code\n,postal_code\n,region\n,county_code\n,city_code\n,regional_market\n,sort_field\n,central_posting_block\n,language_key\n,tax_number_1\n,tax_number_2\n,sales_equalization_tax\n,liable_for_vat\n,street_and_house_number\n,telebox_number\n,telephone_1\n,telephone_2\n,fax_number\n,teletex_number\n,telex_number\n,transportation_zone\n,one_time_account\n,payee_in_document\n,trading_partner\n,vat_registration_number\n,competitors_indicator\n,sales_partners_indicator\n,sales_prospect_indicator\n,customer_type_4\n,default_sold_to_party\n,consumer_indicator\n,legal_status\n,industry_code_1\n,industry_code_2\n,industry_code_3\n,industry_code_4\n,industry_code_5\n,initial_contact\n,annual_sales_2\n,sales_year\n,currency_sales_figure\n,year_number_employees\n,year_number_given\n,attribute_1\n,attribute_2\n,attribute_3\n,attribute_4\n,attribute_5\n,attribute_6\n,attribute_7\n,attribute_8\n,attribute_9\n,attribute_10\n,natural_person\n,annual_sales_1\n,tax_jurisdiction\n,matchcode_name_1\n,matchcode_name_2\n,matcgcode_city\n,fiscal_year_variant\n,usage_indicator\n,by_customer\n,after_delivery\n,reference_account_group\n,post_office_box_city\n,plant\n,date_medium_exchange_indicator\n,instruction_key\n,data_transfer_status\n,hierarchy_assignment\n,payment_block\n,labeking_customer_group\n,non_military_use\n,military_use\n,condition_group_1\n,condition_group_2\n,condition_group_3\n,condition_group_4\n,condition_group_5\n,alternative_payer_account\n,tax_type\n,tax_number_type\n,tax_number_3\n,tax_number_4\n,icms_exempt\n,ipi_exempt\n,subtrib_group\n,customer_cfop_category\n,icms_law\n,ipi_law\n,biochemical_warfare\n,nuclear_nonprolif\n,national_security\n,missile_technology\n,central_sales_block\n,uniform_resource_locator\n,input_last_update_date\n,finalmd5key\n,dw_active_indicator\n,dw_start_date\n,dw_end_date\n,dw_last_update_date)\nVALUES \n(\n TO_HEX(MD5(scr.customer_key))\n,scr.customer_key\n,scr.customer_number\n,scr.address\n,scr.title\n,scr.central_order_block\n,scr.express_station\n,scr.train_station\n,scr.international_location_number_1\n,scr.international_location_number_2\n,scr.authorization_group\n,scr.industry_key\n,scr.check_digit\n,scr.data_line\n,scr.created_on\n,scr.created_by\n,scr.unloading_points\n,scr.central_billing_block\n,scr.fiscal_address\n,scr.working_times\n,scr.alternative_payer\n,scr.group_key\n,scr.customer_account_group\n,scr.customer_classification\n,scr.country_key\n,scr.vendors_account_number\n,scr.central_delivery_block\n,scr.location_code\n,scr.central_deletion_flag\n,scr.name_1\n,scr.name_2\n,scr.name_3\n,scr.name_4\n,scr.nielsen_indicator\n,scr.city\n,scr.district\n,scr.post_office_box\n,scr.po_box_postal_code\n,scr.postal_code\n,scr.region\n,scr.county_code\n,scr.city_code\n,scr.regional_market\n,scr.sort_field\n,scr.central_posting_block\n,scr.language_key\n,scr.tax_number_1\n,scr.tax_number_2\n,scr.sales_equalization_tax\n,scr.liable_for_vat\n,scr.street_and_house_number\n,scr.telebox_number\n,scr.telephone_1\n,scr.telephone_2\n,scr.fax_number\n,scr.teletex_number\n,scr.telex_number\n,scr.transportation_zone\n,scr.one_time_account\n,scr.payee_in_document\n,scr.trading_partner\n,scr.vat_registration_number\n,scr.competitors_indicator\n,scr.sales_partners_indicator\n,scr.sales_prospect_indicator\n,scr.customer_type_4\n,scr.default_sold_to_party\n,scr.consumer_indicator\n,scr.legal_status\n,scr.industry_code_1\n,scr.industry_code_2\n,scr.industry_code_3\n,scr.industry_code_4\n,scr.industry_code_5\n,scr.initial_contact\n,scr.annual_sales_2\n,scr.sales_year\n,scr.currency_sales_figure\n,scr.year_number_employees\n,scr.year_number_given\n,scr.attribute_1\n,scr.attribute_2\n,scr.attribute_3\n,scr.attribute_4\n,scr.attribute_5\n,scr.attribute_6\n,scr.attribute_7\n,scr.attribute_8\n,scr.attribute_9\n,scr.attribute_10\n,scr.natural_person\n,scr.annual_sales_1\n,scr.tax_jurisdiction\n,scr.matchcode_name_1\n,scr.matchcode_name_2\n,scr.matcgcode_city\n,scr.fiscal_year_variant\n,scr.usage_indicator\n,scr.by_customer\n,scr.after_delivery\n,scr.reference_account_group\n,scr.post_office_box_city\n,scr.plant\n,scr.date_medium_exchange_indicator\n,scr.instruction_key\n,scr.data_transfer_status\n,scr.hierarchy_assignment\n,scr.payment_block\n,scr.labeking_customer_group\n,scr.non_military_use\n,scr.military_use\n,scr.condition_group_1\n,scr.condition_group_2\n,scr.condition_group_3\n,scr.condition_group_4\n,scr.condition_group_5\n,scr.alternative_payer_account\n,scr.tax_type\n,scr.tax_number_type\n,scr.tax_number_3\n,scr.tax_number_4\n,scr.icms_exempt\n,scr.ipi_exempt\n,scr.subtrib_group\n,scr.customer_cfop_category\n,scr.icms_law\n,scr.ipi_law\n,scr.biochemical_warfare\n,scr.nuclear_nonprolif\n,scr.national_security\n,scr.missile_technology\n,scr.central_sales_block\n,scr.uniform_resource_locator\n,scr.input_last_update_date\n,scr.finalmd5key\n,scr.dw_active_indicator\n,CURRENT_DATETIME()\n,DATETIME(9999, 12, 31, 00, 00, 00)\n,CURRENT_DATETIME()\n);\n",
+                        "dialect": "standard",
+                        "mode": "batch",
+                        "dataset": "${TargetDatasetNames2}",
+                        "table": "customer_dimension",
+                        "useCache": "false",
+                        "location": "US",
+                        "rowAsArguments": "false",
+                        "serviceAccountType": "filePath",
+                        "serviceFilePath": "auto-detect"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": ""
+                    }
+                ],
+                "id": "Merge-Statement",
+                "type": "action",
+                "label": "Merge Statement",
+                "icon": "fa-plug"
+            },
+            {
+                "name": "Update Audit Table",
+                "plugin": {
+                    "name": "BigQueryExecute",
+                    "type": "action",
+                    "label": "Update Audit Table",
+                    "artifact": {
+                        "name": "google-cloud",
+                        "version": "0.17.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "project": "auto-detect",
+                        "sql": "MERGE INTO\n`${ProjectID}.${StagingDatasetName}.layer1_audit_table` tgt\nUSING ( SELECT \n         'customer_dimension' as table_name\n         ,CASE WHEN (select full_delta_indicator from `${ProjectID}.${StagingDatasetName}.layer1_audit_table` where table_name = 'customer_dimension') IS NULL\n                    OR (select full_delta_indicator from `${ProjectID}.${StagingDatasetName}.layer1_audit_table` where table_name = 'customer_dimension') = 'F'\n               THEN 'F'\n               ELSE 'D'\n          END AS full_delta_indicator\n        ,'0CUSTOMER_ATTR,0BP_DEF_ADDRESS_ATTR' as extractors_names\n        ,CAST('1900-01-01T00:00:00' AS DATETIME) as full_load_datetime\n        ,(select max(input_last_update_date) as delta_load_datatime from `${ProjectID}.${TargetDatasetNames2}.customer_dimension`) as delta_load_datetime\n        ,(select COUNT(*) AS inserted_record_count from `${ProjectID}.${TargetDatasetNames2}.customer_dimension` a inner join `${ProjectID}.${StagingDatasetName}.layer1_audit_table` b\n          on 1 = 1 where b.table_name = 'customer_dimension' and  a.dw_last_update_date > CASE WHEN b.full_delta_indicator = 'F' \n                                                                                            THEN b.full_load_datetime\n                                                                                            WHEN b.full_delta_indicator <> 'F' THEN b.delta_load_datetime\n                                                                                            ELSE CAST('1900-01-01T00:00:00' AS DATETIME)\n                                                                                       END\n          and a.dw_active_indicator = 'Y') AS inserted_record_count\n        ,CURRENT_DATETIME() as last_update_date\n) scr\non tgt.table_name = scr.table_name\nWHEN MATCHED THEN \nUPDATE set tgt.full_load_datetime ='1900-01-01T00:00:00'\n          ,tgt.delta_load_datetime = scr.delta_load_datetime\n          ,tgt.inserted_record_count = scr.inserted_record_count\n          ,tgt.last_update_date = scr.last_update_date\n          ,tgt.extractors_names = scr.extractors_names\nWHEN NOT MATCHED THEN\nINSERT (table_name,\n        full_delta_indicator,\n        extractors_names,\n        full_load_datetime,\n        delta_load_datetime,\n        inserted_record_count,\n        last_update_date)\nVALUES(scr.table_name,\n       scr.full_delta_indicator,\n       scr.extractors_names,\n       scr.full_load_datetime,\n       scr.delta_load_datetime,\n       scr.inserted_record_count,\n       scr.last_update_date);",
+                        "dialect": "standard",
+                        "mode": "batch",
+                        "dataset": "${StagingDatasetName}",
+                        "table": "layer1_audit_table",
+                        "useCache": "false",
+                        "location": "US",
+                        "rowAsArguments": "false",
+                        "serviceAccountType": "filePath",
+                        "serviceFilePath": "auto-detect"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": ""
+                    }
+                ],
+                "id": "Update-Audit-Table",
+                "type": "action",
+                "label": "Update Audit Table",
+                "icon": "fa-plug"
+            }
+        ],
+        "schedule": "0 * * * *",
+        "engine": "spark",
+        "numOfRecordsPreview": 100,
+        "description": "customer dimension",
+        "maxConcurrentRuns": 1
+    }
+}

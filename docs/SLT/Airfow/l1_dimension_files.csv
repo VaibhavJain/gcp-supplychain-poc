@@ -1,0 +1,13 @@
+sql_file_names
+company_code_dimension.sql
+customer_dimension.sql
+customer_sales_org_dimension.sql
+material_dimension.sql
+plant_dimension.sql
+shipping_point_dimension.sql
+storage_location_dimension.sql
+supplier_code_dimension.sql
+supplier_dimension.sql
+transportation_hub_dimension.sql
+valuation_area_dimension.sql
+warehouse_dimension.sql

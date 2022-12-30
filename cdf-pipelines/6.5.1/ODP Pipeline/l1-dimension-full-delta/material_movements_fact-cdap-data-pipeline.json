@@ -1,0 +1,107 @@
+{
+    "name": "material_movements_fact",
+    "description": "material movements",
+    "artifact": {
+        "name": "cdap-data-pipeline",
+        "version": "6.5.0",
+        "scope": "SYSTEM"
+    },
+    "config": {
+        "resources": {
+            "memoryMB": 2048,
+            "virtualCores": 1
+        },
+        "driverResources": {
+            "memoryMB": 2048,
+            "virtualCores": 1
+        },
+        "connections": [
+            {
+                "from": "Merge Statement",
+                "to": "Update Audit Table"
+            }
+        ],
+        "comments": [],
+        "postActions": [],
+        "properties": {},
+        "processTimingEnabled": true,
+        "stageLoggingEnabled": false,
+        "stages": [
+            {
+                "name": "Merge Statement",
+                "plugin": {
+                    "name": "BigQueryExecute",
+                    "type": "action",
+                    "label": "Merge Statement",
+                    "artifact": {
+                        "name": "google-cloud",
+                        "version": "0.18.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "project": "auto-detect",
+                        "sql": "MERGE INTO `${ProjectID}.${TargetDatasetNames2}.material_movements_fact` tgt\nUSING (\nwith tmp_scr AS(\nSELECT  CONCAT(CAST(mm.posting_date AS STRING),'-',mm.material_number,'-',mm.material_document,'-',mm.plant) as material_movement_key\n       ,mm.cancel_data_record\n       ,mm.promotion\n       ,mm.order_number\n       ,mm.operation_task_list_number\n       ,mm.valuation_class\n       ,mm.document_date\n       ,mm.delivery_costs\n       ,mm.logistics_stock_values\n       ,mm.stock_category_logistics\n       ,mm.posting_date\n       ,mm.company_code\n       ,mm.application_component\n       ,mm.movement_type\n       ,mm.stock_relevance\n       ,mm.unique_identification\n       ,mm.cost_value_local_currency\n       ,mm.retail_value_local_currency\n       ,mm.retail_tax_local_currency\n       ,mm.valuation_area\n       ,mm.quantity_in_base_unit\n       ,mm.wbs_element_external\n       ,mm.valuation_type\n       ,mm.transfer_process\n       ,mm.batch_number\n       ,mm.local_currency_account\n       ,mm.purchasing_document_number\n       ,mm.item_number\n       ,mm.unit_of_entry\n       ,mm.quantity_unit_of_entry\n       ,mm.reason_for_movement\n       ,mm.business_area\n       ,mm.sales_order_number\n       ,mm.sales_order_schedule\n       ,mm.sales_order_item\n       ,mm.controlling_area\n       ,mm.cost_center\n       ,mm.cost_object\n       ,mm.customer_number\n       ,mm.movement_indicator\n       ,mm.special_stock_valuation\n       ,mm.warehouse_number\n       ,mm.storage_location\n       ,mm.storage_bin\n       ,mm.storage_type\n       ,mm.vendors_account_number\n       ,mm.material_number\n       ,mm.material_document\n       ,mm.base_unit_of_measure\n       ,mm.order_quantity\n       ,mm.material_document_year\n       ,mm.network_number\n       ,mm.number_of_pallets\n       ,mm.profitability_segment_number\n       ,mm.profit_center\n       ,mm.wbs_element\n       ,mm.gl_account_number\n       ,mm.debit_credit_indicator\n       ,mm.special_stock_indicator\n       ,mm.receiving_plant\n       ,mm.local_currency_key\n       ,mm.goods_recipient\n       ,mm.plant\n       ,mm.material_document_item\n       ,mm.fiscal_year_variant\n       ,mm.counter_items\n       ,mm.item_type\n       ,mm.record_type_ea_rt\n       ,mm.material_category\n       ,mm.plant_category\n       ,mm.item_automatically_created\n       ,mm.structured_material\n       ,mm.sales_value_including_vat\n       ,mm.sales_value_excluding_vat\n       ,mm.stock_transfer\n       ,mm.return_from_call\n       ,mm.physical_inventory\n       ,mm.inventory_correction\n       ,mm.transfer_posting_material_to_material\n       ,mm.currency_key\n       ,mm.dw_last_update_date as input_last_update_date\n       ,mm.dw_active_indicator   \n       ,md.material_uuid\n       ,md.material_key\n       ,pd.plant_uuid\n       ,pd.plant_key\n       ,ccd.company_uuid\n       ,ccd.company_key\n  from `${ProjectID}.${StagingDatasetName}.material_movements` mm\n       left join `${ProjectID}.${TargetDatasetNames1}.material_dimension` md\n    on md.material_key = CONCAT(mm.material_number,'-',mm.plant)\n   and md.dw_active_indicator = 'Y'\n       left join `${ProjectID}.${TargetDatasetNames1}.plant_dimension` pd\n    on pd.plant_key = mm.plant\n   and pd.dw_active_indicator = 'Y'\n       left join `${ProjectID}.${TargetDatasetNames1}.company_code_dimension` ccd\n    on ccd.company_key = mm.company_code\n   and ccd.dw_active_indicator = 'Y'\n where mm.dw_active_indicator = 'Y' \n  and (mm.dw_last_update_date >= coalesce((SELECT CASE WHEN lat.full_delta_indicator = 'F' THEN lat.full_load_datetime\n                                             WHEN lat.full_delta_indicator <> 'F' THEN lat.delta_load_datetime\n                                             ELSE CAST('1900-01-01T00:00:00' AS DATETIME)\n                                        END FROM `${ProjectID}.${StagingDatasetName}.layer1_audit_table` lat\n                                WHERE lat.table_name = 'material_movements_fact'),CAST('1900-01-01T00:00:00' AS DATETIME)))),\ntmp_pr AS (SELECT ts.*,\n     TO_HEX(MD5((select string_agg(CAST(col as STRING), ', ' order by offset)\n    from unnest(split(trim(format('%t',(select as struct ts.* except(input_last_update_date))), '()'),', ')) col with offset \n    where not col IS NULL\n    ))) as finalmd5key \n  from tmp_scr ts)\nSELECT t.material_movement_key as material_movement_join_key,t.*\n  from tmp_pr t\nUNION ALL \nSELECT NULL as materail_movements_join_key,t.*\n  from tmp_pr t\n       INNER JOIN `${ProjectID}.${TargetDatasetNames2}.material_movements_fact` prf\n    on prf.material_movement_key = t.material_movement_key\n   AND prf.finalmd5key <> t.finalmd5key\n WHERE prf.dw_active_indicator = 'Y') scr\nON tgt.material_movement_key = scr.material_movement_join_key\nWHEN MATCHED AND tgt.finalmd5key <> scr.finalmd5key THEN \nUPDATE set tgt.dw_end_date = CURRENT_DATETIME()\n          ,tgt.dw_active_indicator = 'N'\nWHEN NOT MATCHED THEN \nINSERT(\n material_movement_uuid\n,material_movement_key\n,material_uuid\n,material_key\n,plant_uuid\n,plant_key\n,company_uuid\n,company_key\n,cancel_data_record\n,promotion\n,order_number\n,operation_task_list_number\n,valuation_class\n,document_date\n,delivery_costs\n,logistics_stock_values\n,stock_category_logistics\n,posting_date\n,company_code\n,application_component\n,movement_type\n,stock_relevance\n,unique_identification\n,cost_value_local_currency\n,retail_value_local_currency\n,retail_tax_local_currency\n,valuation_area\n,quantity_in_base_unit\n,wbs_element_external\n,valuation_type\n,transfer_process\n,batch_number\n,local_currency_account\n,purchasing_document_number\n,item_number\n,unit_of_entry\n,quantity_unit_of_entry\n,reason_for_movement\n,business_area\n,sales_order_number\n,sales_order_schedule\n,sales_order_item\n,controlling_area\n,cost_center\n,cost_object\n,customer_number\n,movement_indicator\n,special_stock_valuation\n,warehouse_number\n,storage_location\n,storage_bin\n,storage_type\n,vendors_account_number\n,material_number\n,material_document\n,base_unit_of_measure\n,order_quantity\n,material_document_year\n,network_number\n,number_of_pallets\n,profitability_segment_number\n,profit_center\n,wbs_element\n,gl_account_number\n,debit_credit_indicator\n,special_stock_indicator\n,receiving_plant\n,local_currency_key\n,goods_recipient\n,plant\n,material_document_item\n,fiscal_year_variant\n,counter_items\n,item_type\n,record_type_ea_rt\n,material_category\n,plant_category\n,item_automatically_created\n,structured_material\n,sales_value_including_vat\n,sales_value_excluding_vat\n,stock_transfer\n,return_from_call\n,physical_inventory\n,inventory_correction\n,transfer_posting_material_to_material\n,currency_key\n,input_last_update_date\n,finalmd5key\n,dw_active_indicator\n,dw_start_date\n,dw_end_date\n,dw_last_update_date\n)\nVALUES\n(\n TO_HEX(MD5(CONCAT(scr.material_movement_key,scr.finalmd5key)))\n,scr.material_movement_key\n,scr.material_uuid\n,scr.material_key\n,scr.plant_uuid\n,scr.plant_key\n,scr.company_uuid\n,scr.company_key\n,scr.cancel_data_record\n,scr.promotion\n,scr.order_number\n,scr.operation_task_list_number\n,scr.valuation_class\n,scr.document_date\n,scr.delivery_costs\n,scr.logistics_stock_values\n,scr.stock_category_logistics\n,scr.posting_date\n,scr.company_code\n,scr.application_component\n,scr.movement_type\n,scr.stock_relevance\n,scr.unique_identification\n,scr.cost_value_local_currency\n,scr.retail_value_local_currency\n,scr.retail_tax_local_currency\n,scr.valuation_area\n,scr.quantity_in_base_unit\n,scr.wbs_element_external\n,scr.valuation_type\n,scr.transfer_process\n,scr.batch_number\n,scr.local_currency_account\n,scr.purchasing_document_number\n,scr.item_number\n,scr.unit_of_entry\n,scr.quantity_unit_of_entry\n,scr.reason_for_movement\n,scr.business_area\n,scr.sales_order_number\n,scr.sales_order_schedule\n,scr.sales_order_item\n,scr.controlling_area\n,scr.cost_center\n,scr.cost_object\n,scr.customer_number\n,scr.movement_indicator\n,scr.special_stock_valuation\n,scr.warehouse_number\n,scr.storage_location\n,scr.storage_bin\n,scr.storage_type\n,scr.vendors_account_number\n,scr.material_number\n,scr.material_document\n,scr.base_unit_of_measure\n,scr.order_quantity\n,scr.material_document_year\n,scr.network_number\n,scr.number_of_pallets\n,scr.profitability_segment_number\n,scr.profit_center\n,scr.wbs_element\n,scr.gl_account_number\n,scr.debit_credit_indicator\n,scr.special_stock_indicator\n,scr.receiving_plant\n,scr.local_currency_key\n,scr.goods_recipient\n,scr.plant\n,scr.material_document_item\n,scr.fiscal_year_variant\n,scr.counter_items\n,scr.item_type\n,scr.record_type_ea_rt\n,scr.material_category\n,scr.plant_category\n,scr.item_automatically_created\n,scr.structured_material\n,scr.sales_value_including_vat\n,scr.sales_value_excluding_vat\n,scr.stock_transfer\n,scr.return_from_call\n,scr.physical_inventory\n,scr.inventory_correction\n,scr.transfer_posting_material_to_material\n,scr.currency_key\n,scr.input_last_update_date\n,scr.finalmd5key\n,scr.dw_active_indicator\n,CURRENT_DATETIME()\n,DATETIME(9999, 12, 31, 23, 59, 59)\n,CURRENT_DATETIME());",
+                        "dialect": "standard",
+                        "mode": "batch",
+                        "useCache": "false",
+                        "location": "US",
+                        "rowAsArguments": "false",
+                        "serviceAccountType": "filePath",
+                        "serviceFilePath": "auto-detect"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": ""
+                    }
+                ],
+                "id": "Merge-Statement",
+                "type": "action",
+                "label": "Merge Statement",
+                "icon": "fa-plug"
+            },
+            {
+                "name": "Update Audit Table",
+                "plugin": {
+                    "name": "BigQueryExecute",
+                    "type": "action",
+                    "label": "Update Audit Table",
+                    "artifact": {
+                        "name": "google-cloud",
+                        "version": "0.18.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "project": "auto-detect",
+                        "sql": "MERGE INTO \n`${ProjectID}.${StagingDatasetName}.layer1_audit_table` tgt\nUSING ( SELECT \n         'material_movements_fact' as table_name\n         ,CASE WHEN (select full_delta_indicator from `${ProjectID}.${StagingDatasetName}.layer1_audit_table` where table_name = 'material_movements_fact') IS NULL\n                    OR (select full_delta_indicator from `${ProjectID}.${StagingDatasetName}.layer1_audit_table` where table_name = 'material_movements_fact') = 'F'\n               THEN 'F'\n               ELSE 'D'\n          END AS full_delta_indicator\n        ,'2LIS_03_BF' as extractors_names\n        ,CAST('1900-01-01T00:00:00' AS DATETIME) as full_load_datetime\n        ,COALESCE((select max(input_last_update_date) as delta_load_datatime from `${ProjectID}.${TargetDatasetNames2}.material_movements_fact`),CAST('1900-01-01T00:00:00' AS DATETIME)) as delta_load_datetime\n        ,(coalesce((select COUNT(*) AS inserted_record_count from `${ProjectID}.${TargetDatasetNames2}.material_movements_fact` a \n          where a.dw_active_indicator = 'Y'  and a.dw_last_update_date > COALESCE((SELECT CASE WHEN b.full_delta_indicator = 'F' \n                                                              THEN b.full_load_datetime\n                                                              WHEN b.full_delta_indicator <> 'F' THEN b.delta_load_datetime\n                                                          END\n                                                    from `${ProjectID}.${StagingDatasetName}.layer1_audit_table` b\n                                        where b.table_name = 'material_movements_fact'),CAST('1900-01-01T00:00:00' AS DATETIME))),(select count(*) as inserted_record_count from `${ProjectID}.${TargetDatasetNames2}.material_movements_fact` where dw_active_indicator = 'Y'))) as inserted_record_count\n        ,CURRENT_DATETIME() as last_update_date\n) scr\non tgt.table_name = scr.table_name\nWHEN MATCHED THEN \nUPDATE set tgt.full_load_datetime ='1900-01-01T00:00:00'\n          ,tgt.delta_load_datetime = scr.delta_load_datetime\n          ,tgt.inserted_record_count = scr.inserted_record_count\n          ,tgt.last_update_date = scr.last_update_date\n          ,tgt.extractors_names = scr.extractors_names\nWHEN NOT MATCHED THEN\nINSERT (table_name,\n        full_delta_indicator,\n        extractors_names,\n        full_load_datetime,\n        delta_load_datetime,\n        inserted_record_count,\n        last_update_date)\nVALUES(scr.table_name,\n       scr.full_delta_indicator,\n       scr.extractors_names,\n       scr.full_load_datetime,\n       scr.delta_load_datetime,\n       scr.inserted_record_count,\n       scr.last_update_date);",
+                        "dialect": "standard",
+                        "mode": "batch",
+                        "dataset": "${StagingDatasetName}",
+                        "table": "layer1_audit_table",
+                        "useCache": "false",
+                        "location": "US",
+                        "rowAsArguments": "false",
+                        "serviceAccountType": "filePath",
+                        "serviceFilePath": "auto-detect"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": ""
+                    }
+                ],
+                "id": "Update-Audit-Table",
+                "type": "action",
+                "label": "Update Audit Table",
+                "icon": "fa-plug"
+            }
+        ],
+        "schedule": "0 * * * *",
+        "engine": "spark",
+        "numOfRecordsPreview": 100,
+        "description": "material movements",
+        "maxConcurrentRuns": 1
+    }
+}

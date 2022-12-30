@@ -1,0 +1,101 @@
+{
+    "name": "delivery_fact",
+    "description": "delivery fact",
+    "artifact": {
+        "name": "cdap-data-pipeline",
+        "version": "6.5.0",
+        "scope": "SYSTEM"
+    },
+    "config": {
+        "resources": {
+            "memoryMB": 2048,
+            "virtualCores": 1
+        },
+        "driverResources": {
+            "memoryMB": 2048,
+            "virtualCores": 1
+        },
+        "connections": [
+            {
+                "from": "Merge Statement",
+                "to": "Update Audit Table"
+            }
+        ],
+        "comments": [],
+        "postActions": [],
+        "properties": {},
+        "processTimingEnabled": true,
+        "stageLoggingEnabled": false,
+        "stages": [
+            {
+                "name": "Merge Statement",
+                "plugin": {
+                    "name": "BigQueryExecute",
+                    "type": "action",
+                    "label": "Merge Statement",
+                    "artifact": {
+                        "name": "google-cloud",
+                        "version": "0.18.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "project": "auto-detect",
+                        "sql": "MERGE INTO `${ProjectID}.${TargetDatasetNames2}.delivery_fact` tgt\nUSING (\nWITH tmp_scr AS (SELECT\n(dh.sales_document || '-' || di.item_number) AS delivery_key,\ndh.sales_document,\ndi.item_number,\ndh.total_weight,\ndh.sd_document_category,\ndh.number_deliveries,\ndh.number_packages,\ndi.picking_confirmation,\ndi.picking_status,\ndi.goods_movement_status,\ndi.unloading_point,\ndi.company_code,\ndi.sales_district,\ndi.billing_block_sd_document,\ndi.incoterms_part_1,\ndi.incoterms_part_2,\ndi.customer_group,\ndi.sold_to_party,\ndi.customer_number,\ndi.delivery_type,\ndi.delivery_date,\ndi.vendors_account_number,\ndi.delivery_block,\ndi.departure_loading_point,\ndi.shipment_route,\ndi.sd_document_category_1,\ndi.sales_organization,\ndi.shipping_point,\ndi.planned_goods_movement_date,\ndi.actual_goods_movement_date,\ndi.changed_on,\ndi.promotion,\ndi.gross_weight,\ndi.application_component,\ndi.transfer_process,\ndi.batch_number,\ndi.international_article_number,\ndi.created_on,\ndi.created_by,\ndi.entry_time,\ndi.billing_block,\ndi.weight_unit,\ndi.business_area,\ndi.picking_indicator,\ndi.customer_group_1,\ndi.customer_group_2,\ndi.customer_group_3,\ndi.customer_group_4,\ndi.customer_group_5,\ndi.consumption_posting,\ndi.delivery_quantity,\ndi.actual_delivery_quantity,\ndi.warehouse_number,\ndi.storage_location,\ndi.storage_bin,\ndi.storage_type,\ndi.material_group,\ndi.material_number,\ndi.material_entered,\ndi.base_unit_of_measure,\ndi.material_group_1,\ndi.material_group_2,\ndi.material_group_3,\ndi.material_group_4,\ndi.material_group_5,\ndi.net_weight,\ndi.bill_to_party,\ndi.payer,\ndi.item_type,\ndi.product_hierarchy,\ndi.forwarding_agent,\ndi.item_category,\ndi.sales_employee,\ndi.statistics_date,\ndi.denominator,\ndi.numerator,\ndi.fixed_processing_time,\ndi.variable_processing_time,\ndi.update_date_statistics,\ndi.reference_document,\ndi.reference_item,\ndi.sd_document_category_2,\ndi.sales_office,\ndi.sales_group,\ndi.volume_unit,\ndi.volume,\ndi.sales_unit,\ndi.distribution_channel,\ndi.plant,\ndi.number_delivery_items,\ndi.division_for_order_header,\ndi.wbs_element,\ndi.fiscal_year_variant,\ndi.goods_issue_delay,\ndi.campaign_order_item,\ncoalesce(oid.confirmation_status,ohd.confirmation_status) as confirmation_status,\ncoalesce(oid.billing_status_order_related,ohd.billing_status_order_related) as billing_status_order_related,\noid.billing_status_delivery_related,\ncoalesce(oid.overall_processing_status,ohd.overall_processing_status) as overall_processing_status,\ncoalesce(oid.overall_Deliver_status,ohd.overall_deliver_status) as overall_deliver_status,\ncoalesce(oid.delivery_status,ohd.delivery_status) as delivery_status,\nCASE WHEN dh.dw_last_update_date > di.dw_last_update_date\n     THEN dh.dw_last_update_date\n     ELSE di.dw_last_update_date\nEND as input_last_update_date,\ndh.dw_active_indicator,\nmd.material_uuid,\npd.plant_uuid,\nsd.supplier_uuid,\ncd.customer_uuid,\ncsod.customer_sales_org_uuid,\ndi.vendors_account_number as supplier_key,\n(di.material_number || '-' || di.plant) as material_key,\ndi.plant as plant_key,\ndi.customer_number as customer_key,\n(di.customer_number || '-' || di.sales_organization || '-' || di.distribution_channel || '-' || di.division_for_order_header) as customer_sales_org_key\n  from  `${ProjectID}.${StagingDatasetName}.delivery_header` dh \n        INNER JOIN `${ProjectID}.${StagingDatasetName}.delivery_item` di \n    ON  dh.sales_document = di.sales_document\n   AND  dh.dw_active_indicator = di.dw_active_indicator\n       LEFT JOIN `${ProjectID}.${StagingDatasetName}.order_header_data` ohd\n    on ohd.sales_document = dh.sales_document\n   and ohd.dw_active_indicator = 'Y'\n       LEFT JOIN `${ProjectID}.${StagingDatasetName}.order_item_data` oid \n    on oid.sales_document = dh.sales_document\n   and oid.item_number = di.item_number\n   and oid.dw_active_indicator = 'Y'\n        LEFT JOIN `${ProjectID}.${TargetDatasetNames1}.material_dimension` md\n    ON md.material_key = (di.material_number || '-' || di.plant)\n   AND md.dw_active_indicator = 'Y'\n        LEFT JOIN `${ProjectID}.${TargetDatasetNames1}.plant_dimension` pd\n    ON pd.plant_key = di.plant \n   AND pd.dw_active_indicator = 'Y'\n        LEFT JOIN `${ProjectID}.${TargetDatasetNames1}.supplier_dimension` sd\n    ON sd.supplier_key = di.vendors_account_number \n   AND sd.dw_active_indicator = 'Y'\n        LEFT JOIN `${ProjectID}.${TargetDatasetNames1}.customer_dimension` cd\n    ON cd.customer_key = di.customer_number \n   AND cd.dw_active_indicator = 'Y'\n        LEFT JOIN `${ProjectID}.${TargetDatasetNames1}.customer_sales_org_dimension` csod\n    ON csod.customer_sales_org_key = (di.customer_number || '-' || di.sales_organization || '-' || di.distribution_channel || '-' || di.division_for_order_header)\n   AND csod.dw_active_indicator = 'Y'\n  WHERE trim(dh.cancel_data_record) = ''\n    AND trim(di.cancel_data_record) = ''\n    AND dh.dw_active_indicator = 'Y'\n    AND (dh.dw_last_update_date >= coalesce((SELECT CASE WHEN lat.full_delta_indicator = 'F' THEN lat.full_load_datetime\n                                             WHEN lat.full_delta_indicator <> 'F' THEN lat.delta_load_datetime\n                                             ELSE CAST('1900-01-01T00:00:00' AS DATETIME)\n                                        END FROM `${ProjectID}.${StagingDatasetName}.layer1_audit_table` lat\n                                WHERE lat.table_name = 'delivery_fact'),CAST('1900-01-01T00:00:00' AS DATETIME))\n     OR  di.dw_last_update_date >= coalesce((SELECT CASE WHEN lat.full_delta_indicator = 'F' THEN lat.full_load_datetime\n                                             WHEN lat.full_delta_indicator <> 'F' THEN lat.delta_load_datetime\n                                             ELSE CAST('1900-01-01T00:00:00' AS DATETIME)\n                                        END FROM `${ProjectID}.${StagingDatasetName}.layer1_audit_table` lat\n                                WHERE lat.table_name = 'delivery_fact'),CAST('1900-01-01T00:00:00' AS DATETIME)))),\ntmp_del AS (SELECT ts.*,\n     TO_HEX(MD5((select string_agg(CAST(col as STRING), ', ' order by offset)\n    from unnest(split(trim(format('%t',(select as struct ts.* except(input_last_update_date))), '()'),', ')) col with offset \n    where not col IS NULL\n    ))) as finalmd5key      \n  from tmp_scr ts)\nSELECT t.delivery_key as delivery_join_key,t.*\n  from tmp_del t\nUNION ALL \nSELECT NULL as delivery_join_key,t.*\n  from tmp_del t\n       INNER JOIN `${ProjectID}.${TargetDatasetNames2}.delivery_fact` df\n    ON df.delivery_key = t.delivery_key\n   AND df.finalmd5key <> t.finalmd5key\n WHERE df.dw_active_indicator = 'Y') scr \n ON tgt.delivery_key = scr.delivery_join_key\nWHEN MATCHED AND tgt.finalmd5key <> scr.finalmd5key THEN\nUPDATE set tgt.dw_end_date = CURRENT_DATETIME()\n          ,tgt.dw_active_indicator = 'N'\nWHEN NOT MATCHED THEN \nINSERT (\ndelivery_uuid,\ndelivery_key,\nsales_document,\nitem_number,\nplant_uuid,\nmaterial_uuid,\nsupplier_uuid,\ncustomer_uuid,\ncustomer_sales_org_uuid,\nmaterial_key,\nplant_key,\nsupplier_key,\ncustomer_key,\ncustomer_sales_org_key,\ntotal_weight,\nsd_document_category,\nnumber_deliveries,\nnumber_packages,\npicking_confirmation,\npicking_status,\ngoods_movement_status,\nunloading_point,\ncompany_code,\nsales_district,\nbilling_block_sd_document,\nincoterms_part_1,\nincoterms_part_2,\ncustomer_group,\nsold_to_party,\ncustomer_number,\ndelivery_type,\ndelivery_date,\ndelivery_block,\ndeparture_loading_point,\nshipment_route,\nsd_document_category_1,\nsales_organization,\nshipping_point,\nplanned_goods_movement_date,\nactual_goods_movement_date,\nchanged_on,\npromotion,\ngross_weight,\napplication_component,\ntransfer_process,\nbatch_number,\ninternational_article_number,\ncreated_on,\ncreated_by,\nentry_time,\nbilling_block,\nweight_unit,\nbusiness_area,\npicking_indicator,\ncustomer_group_1,\ncustomer_group_2,\ncustomer_group_3,\ncustomer_group_4,\ncustomer_group_5,\nconsumption_posting,\ndelivery_quantity,\nactual_delivery_quantity,\nwarehouse_number,\nstorage_location,\nstorage_bin,\nstorage_type,\nmaterial_group,\nmaterial_entered,\nbase_unit_of_measure,\nmaterial_group_1,\nmaterial_group_2,\nmaterial_group_3,\nmaterial_group_4,\nmaterial_group_5,\nnet_weight,\nbill_to_party,\npayer,\nitem_type,\nproduct_hierarchy,\nforwarding_agent,\nitem_category,\nsales_employee,\nstatistics_date,\ndenominator,\nnumerator,\nfixed_processing_time,\nvariable_processing_time,\nupdate_date_statistics,\nreference_document,\nreference_item,\nsd_document_category_2,\nsales_office,\nsales_group,\nvolume_unit,\nvolume,\nsales_unit,\ndistribution_channel,\nnumber_delivery_items,\ndivision_for_order_header,\nwbs_element,\nfiscal_year_variant,\ngoods_issue_delay,\ncampaign_order_item,\nconfirmation_status,\nbilling_status_order_related,\nbilling_status_delivery_related,\noverall_processing_status,\noverall_deliver_status,\ndelivery_status,\ninput_last_update_date,\nfinalmd5key,\ndw_active_indicator,\ndw_start_date,\ndw_end_date,\ndw_last_update_date\n) VALUES \n(\nTO_HEX(MD5(CONCAT(scr.delivery_key,scr.finalmd5key))),\nscr.delivery_key,\nscr.sales_document,\nscr.item_number,\nscr.plant_uuid,\nscr.material_uuid,\nscr.supplier_uuid,\nscr.customer_uuid,\nscr.customer_sales_org_uuid,\nscr.material_key,\nscr.plant_key,\nscr.supplier_key,\nscr.customer_key,\nscr.customer_sales_org_key,\nscr.total_weight,\nscr.sd_document_category,\nscr.number_deliveries,\nscr.number_packages,\nscr.picking_confirmation,\nscr.picking_status,\nscr.goods_movement_status,\nscr.unloading_point,\nscr.company_code,\nscr.sales_district,\nscr.billing_block_sd_document,\nscr.incoterms_part_1,\nscr.incoterms_part_2,\nscr.customer_group,\nscr.sold_to_party,\nscr.customer_number,\nscr.delivery_type,\nscr.delivery_date,\nscr.delivery_block,\nscr.departure_loading_point,\nscr.shipment_route,\nscr.sd_document_category_1,\nscr.sales_organization,\nscr.shipping_point,\nscr.planned_goods_movement_date,\nscr.actual_goods_movement_date,\nscr.changed_on,\nscr.promotion,\nscr.gross_weight,\nscr.application_component,\nscr.transfer_process,\nscr.batch_number,\nscr.international_article_number,\nscr.created_on,\nscr.created_by,\nscr.entry_time,\nscr.billing_block,\nscr.weight_unit,\nscr.business_area,\nscr.picking_indicator,\nscr.customer_group_1,\nscr.customer_group_2,\nscr.customer_group_3,\nscr.customer_group_4,\nscr.customer_group_5,\nscr.consumption_posting,\nscr.delivery_quantity,\nscr.actual_delivery_quantity,\nscr.warehouse_number,\nscr.storage_location,\nscr.storage_bin,\nscr.storage_type,\nscr.material_group,\nscr.material_entered,\nscr.base_unit_of_measure,\nscr.material_group_1,\nscr.material_group_2,\nscr.material_group_3,\nscr.material_group_4,\nscr.material_group_5,\nscr.net_weight,\nscr.bill_to_party,\nscr.payer,\nscr.item_type,\nscr.product_hierarchy,\nscr.forwarding_agent,\nscr.item_category,\nscr.sales_employee,\nscr.statistics_date,\nscr.denominator,\nscr.numerator,\nscr.fixed_processing_time,\nscr.variable_processing_time,\nscr.update_date_statistics,\nscr.reference_document,\nscr.reference_item,\nscr.sd_document_category_2,\nscr.sales_office,\nscr.sales_group,\nscr.volume_unit,\nscr.volume,\nscr.sales_unit,\nscr.distribution_channel,\nscr.number_delivery_items,\nscr.division_for_order_header,\nscr.wbs_element,\nscr.fiscal_year_variant,\nscr.goods_issue_delay,\nscr.campaign_order_item,\nscr.confirmation_status,\nscr.billing_status_order_related,\nscr.billing_status_delivery_related,\nscr.overall_processing_status,\nscr.overall_deliver_status,\nscr.delivery_status,\nscr.input_last_update_date,\nscr.finalmd5key,\nscr.dw_active_indicator,\nCURRENT_DATETIME(),\nDATETIME(9999, 12, 31, 23, 59, 59),\nCURRENT_DATETIME()\n);",
+                        "dialect": "standard",
+                        "mode": "batch",
+                        "useCache": "false",
+                        "location": "US",
+                        "rowAsArguments": "false",
+                        "serviceAccountType": "filePath",
+                        "serviceFilePath": "auto-detect"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": ""
+                    }
+                ],
+                "id": "Merge-Statement"
+            },
+            {
+                "name": "Update Audit Table",
+                "plugin": {
+                    "name": "BigQueryExecute",
+                    "type": "action",
+                    "label": "Update Audit Table",
+                    "artifact": {
+                        "name": "google-cloud",
+                        "version": "0.18.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "project": "auto-detect",
+                        "sql": "MERGE INTO \n`${ProjectID}.${StagingDatasetName}.layer1_audit_table` tgt\nUSING ( SELECT \n         'delivery_fact' as table_name\n         ,CASE WHEN (select full_delta_indicator from `${ProjectID}.${StagingDatasetName}.layer1_audit_table` where table_name = 'delivery_fact') IS NULL\n                    OR (select full_delta_indicator from `${ProjectID}.${StagingDatasetName}.layer1_audit_table` where table_name = 'delivery_fact') = 'F'\n               THEN 'F'\n               ELSE 'D'\n          END AS full_delta_indicator\n        ,'2LIS_12_VCHDR,2LIS_12_VCITM,2LIS_11_VASTI,2LIS_11_VASTH' as extractors_names\n        ,CAST('1900-01-01T00:00:00' AS DATETIME) as full_load_datetime\n        ,(select max(input_last_update_date) as delta_load_datatime from `${ProjectID}.${TargetDatasetNames2}.delivery_fact`) as delta_load_datetime\n        ,(coalesce((select COUNT(*) AS inserted_record_count from `${ProjectID}.${TargetDatasetNames2}.delivery_fact` a \n          where a.dw_active_indicator = 'Y'  and a.dw_last_update_date > COALESCE((SELECT CASE WHEN b.full_delta_indicator = 'F' \n                                                              THEN b.full_load_datetime\n                                                              WHEN b.full_delta_indicator <> 'F' THEN b.delta_load_datetime\n                                                          END\n                                                    from `${ProjectID}.${StagingDatasetName}.layer1_audit_table` b\n                                        where b.table_name = 'delivery_fact'),CAST('1900-01-01T00:00:00' AS DATETIME))),(select count(*) as inserted_record_count from `${ProjectID}.${TargetDatasetNames2}.delivery_fact` where dw_active_indicator = 'Y')))  AS inserted_record_count\n        ,CURRENT_DATETIME() as last_update_date\n) scr\non tgt.table_name = scr.table_name\nWHEN MATCHED THEN \nUPDATE set tgt.full_load_datetime ='1900-01-01T00:00:00'\n          ,tgt.delta_load_datetime = scr.delta_load_datetime\n          ,tgt.inserted_record_count = scr.inserted_record_count\n          ,tgt.last_update_date = scr.last_update_date\nWHEN NOT MATCHED THEN\nINSERT (table_name,\n        full_delta_indicator,\n        extractors_names,\n        full_load_datetime,\n        delta_load_datetime,\n        inserted_record_count,\n        last_update_date)\nVALUES(scr.table_name,\n       scr.full_delta_indicator,\n       scr.extractors_names,\n       scr.full_load_datetime,\n       scr.delta_load_datetime,\n       scr.inserted_record_count,\n       scr.last_update_date);",
+                        "dialect": "standard",
+                        "mode": "batch",
+                        "dataset": "${StagingDatasetName}",
+                        "table": "layer1_audit_table",
+                        "useCache": "false",
+                        "location": "US",
+                        "rowAsArguments": "false",
+                        "serviceAccountType": "filePath",
+                        "serviceFilePath": "auto-detect"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": ""
+                    }
+                ],
+                "id": "Update-Audit-Table"
+            }
+        ],
+        "schedule": "0 * * * *",
+        "engine": "spark",
+        "numOfRecordsPreview": 100,
+        "description": "delivery fact",
+        "maxConcurrentRuns": 1
+    }
+}

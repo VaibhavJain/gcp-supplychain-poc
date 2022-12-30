@@ -1,0 +1,101 @@
+{
+    "name": "plant_dimension",
+    "description": "plant dimension",
+    "artifact": {
+        "name": "cdap-data-pipeline",
+        "version": "6.5.0",
+        "scope": "SYSTEM"
+    },
+    "config": {
+        "resources": {
+            "memoryMB": 2048,
+            "virtualCores": 1
+        },
+        "driverResources": {
+            "memoryMB": 2048,
+            "virtualCores": 1
+        },
+        "connections": [
+            {
+                "from": "Merge Statement",
+                "to": "Update Audit Table"
+            }
+        ],
+        "comments": [],
+        "postActions": [],
+        "properties": {},
+        "processTimingEnabled": true,
+        "stageLoggingEnabled": false,
+        "stages": [
+            {
+                "name": "Merge Statement",
+                "plugin": {
+                    "name": "BigQueryExecute",
+                    "type": "action",
+                    "label": "Merge Statement",
+                    "artifact": {
+                        "name": "google-cloud",
+                        "version": "0.18.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "project": "auto-detect",
+                        "sql": "MERGE INTO `${ProjectID}.${TargetDatasetNames1}.plant_dimension` tgt\nUSING \n(WITH tmp_scr AS (SELECT \npm.plant as plant_key,\npm.plant,\npm.purchasing_organization,\npm.sales_organization,\npm.country_key,\npm.Region,\npm.postal_code,\npm.name,\npm.name_2,\npm.street_house_number,\npm.po_box,\npm.city,\npm.valuationion_area,\npm.batch_status_management,\npm.factory_calendar,\npm.condition_plant_level,\npm.source_list,\npm.requirement_planning,\npm.country_code,\npm.city_code,\npm.planning_plant,\npm.tax_jurisdiction,\npm.distribution_channel,\npm.intercompany_nilling_division,\npm.customer_number_plant,\npm.language_key,\npm.sop_plant,\npm.variance_key,\npm.plant_category,\npm.supply_number_plant,\npm.sales_district,\npm.supply_region,\npm.plant_tax_indicator,\npm.regular_supplier,\npm.tolerance_1,\npm.tolerance_2,\npm.tolerance_3,\npm.text_1st_dunning,\npm.text_2nd_dunning,\npm.text_3rd_dunning,\npm.po_tolerance,\npm.store_category,\npm.superior_department_store,\npm.dw_last_update_date as input_last_update_date,\npm.dw_active_indicator,\nva.company_code\nFROM `${ProjectID}.${StagingDatasetName}.plant_master` pm\n      LEFT JOIN `${ProjectID}.${StagingDatasetName}.valuation_area` va\n  ON va.valuation_area = pm.valuationion_area\n AND va.dw_active_indicator = 'Y'\nWHERE pm.dw_active_indicator = 'Y'\n  AND pm.dw_last_update_date >= coalesce((SELECT CASE WHEN lat.full_delta_indicator = 'F' THEN lat.full_load_datetime\n                                             WHEN lat.full_delta_indicator <> 'F' THEN lat.delta_load_datetime\n                                             ELSE CAST('1900-01-01T00:00:00' AS DATETIME)\n                                        END FROM `${ProjectID}.${StagingDatasetName}.layer1_audit_table` lat\n                                WHERE lat.table_name = 'plant_dimension'),CAST('1900-01-01T00:00:00' AS DATETIME))),\n  tmp_plant AS (SELECT ts.*,\n     TO_HEX(MD5((select string_agg(CAST(col as STRING), ', ' order by offset)\n    from unnest(split(trim(format('%t',(select as struct ts.* except(input_last_update_date))), '()'),', ')) col with offset \n    where not col IS NULL\n    ))) as finalmd5key      \n  from tmp_scr ts)\nSELECT t.plant_key as plant_join_key,t.*\n  from tmp_plant t\nUNION ALL \nSELECT NULL as plant_join_key,t.*\n  from tmp_plant t\n       INNER JOIN `${ProjectID}.${TargetDatasetNames1}.plant_dimension` pd\n    ON pd.plant_key = t.plant_key\n   AND pd.finalmd5key <> t.finalmd5key\nWHERE pd.dw_active_indicator = 'Y') scr\n ON tgt.plant_key = scr.plant_join_key\nWHEN MATCHED AND tgt.finalmd5key <> scr.finalmd5key THEN \nUPDATE set tgt.dw_end_date = CURRENT_DATETIME()\n          ,tgt.dw_active_indicator = 'N'\nWHEN NOT MATCHED THEN \nINSERT (plant_uuid,\nplant_key,\nplant,\npurchasing_organization,\nsales_organization,\ncountry_key,\nRegion,\npostal_code,\nname,\nname_2,\nstreet_house_number,\npo_box,\ncity,\nvaluationion_area,\nbatch_status_management,\nfactory_calendar,\ncondition_plant_level,\nsource_list,\nrequirement_planning,\ncountry_code,\ncity_code,\nplanning_plant,\ntax_jurisdiction,\ndistribution_channel,\nintercompany_nilling_division,\ncustomer_number_plant,\nlanguage_key,\nsop_plant,\nvariance_key,\nplant_category,\nsupply_number_plant,\nsales_district,\nsupply_region,\nplant_tax_indicator,\nregular_supplier,\ntolerance_1,\ntolerance_2,\ntolerance_3,\ntext_1st_dunning,\ntext_2nd_dunning,\ntext_3rd_dunning,\npo_tolerance,\nstore_category,\nsuperior_department_store,\ncompany_code,\ninput_last_update_date,\nfinalmd5key,\ndw_active_indicator,\ndw_start_date,\ndw_end_date,\ndw_last_update_date)\nVALUES (TO_HEX(MD5(CONCAT(scr.plant_key,scr.finalmd5key))),\nscr.plant_key,\nscr.plant,\nscr.purchasing_organization,\nscr.sales_organization,\nscr.country_key,\nscr.Region,\nscr.postal_code,\nscr.name,\nscr.name_2,\nscr.street_house_number,\nscr.po_box,\nscr.city,\nscr.valuationion_area,\nscr.batch_status_management,\nscr.factory_calendar,\nscr.condition_plant_level,\nscr.source_list,\nscr.requirement_planning,\nscr.country_code,\nscr.city_code,\nscr.planning_plant,\nscr.tax_jurisdiction,\nscr.distribution_channel,\nscr.intercompany_nilling_division,\nscr.customer_number_plant,\nscr.language_key,\nscr.sop_plant,\nscr.variance_key,\nscr.plant_category,\nscr.supply_number_plant,\nscr.sales_district,\nscr.supply_region,\nscr.plant_tax_indicator,\nscr.regular_supplier,\nscr.tolerance_1,\nscr.tolerance_2,\nscr.tolerance_3,\nscr.text_1st_dunning,\nscr.text_2nd_dunning,\nscr.text_3rd_dunning,\nscr.po_tolerance,\nscr.store_category,\nscr.superior_department_store,\nscr.company_code,\nscr.input_last_update_date,\nscr.finalmd5key,\nscr.dw_active_indicator,\nCURRENT_DATETIME(),\nDATETIME(9999, 12, 31, 23, 59, 59),\nCURRENT_DATETIME());",
+                        "dialect": "standard",
+                        "mode": "batch",
+                        "useCache": "false",
+                        "location": "US",
+                        "rowAsArguments": "false",
+                        "serviceAccountType": "filePath",
+                        "serviceFilePath": "auto-detect"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": ""
+                    }
+                ],
+                "id": "Merge-Statement"
+            },
+            {
+                "name": "Update Audit Table",
+                "plugin": {
+                    "name": "BigQueryExecute",
+                    "type": "action",
+                    "label": "Update Audit Table",
+                    "artifact": {
+                        "name": "google-cloud",
+                        "version": "0.18.0",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "project": "auto-detect",
+                        "sql": "MERGE INTO\n`${ProjectID}.${StagingDatasetName}.layer1_audit_table` tgt\nUSING ( SELECT \n         'plant_dimension' as table_name\n         ,CASE WHEN (select full_delta_indicator from `${ProjectID}.${StagingDatasetName}.layer1_audit_table` where table_name = 'plant_dimension') IS NULL\n                    OR (select full_delta_indicator from `${ProjectID}.${StagingDatasetName}.layer1_audit_table` where table_name = 'plant_dimension') = 'F'\n               THEN 'F'\n               ELSE 'D'\n          END AS full_delta_indicator\n        ,'0PLANT_ATTR' as extractors_names\n        ,CAST('1900-01-01T00:00:00' AS DATETIME) as full_load_datetime\n        ,(select max(input_last_update_date) as delta_load_datatime from `${ProjectID}.${TargetDatasetNames1}.plant_dimension`) as delta_load_datetime\n        ,(coalesce((select COUNT(*) AS inserted_record_count from `${ProjectID}.${TargetDatasetNames1}.plant_dimension` a \n          where a.dw_active_indicator = 'Y'  and a.dw_last_update_date > COALESCE((SELECT CASE WHEN b.full_delta_indicator = 'F' \n                                                              THEN b.full_load_datetime\n                                                              WHEN b.full_delta_indicator <> 'F' THEN b.delta_load_datetime\n                                                          END\n                                                    from `${ProjectID}.${StagingDatasetName}.layer1_audit_table` b\n                                        where b.table_name = 'plant_dimension'),CAST('1900-01-01T00:00:00' AS DATETIME))),(select count(*) as inserted_record_count from `${ProjectID}.${TargetDatasetNames1}.plant_dimension` where dw_active_indicator = 'Y'))) AS inserted_record_count\n        ,CURRENT_DATETIME() as last_update_date\n) scr\non tgt.table_name = scr.table_name\nWHEN MATCHED THEN \nUPDATE set tgt.full_load_datetime ='1900-01-01T00:00:00'\n          ,tgt.delta_load_datetime = scr.delta_load_datetime\n          ,tgt.inserted_record_count = scr.inserted_record_count\n          ,tgt.last_update_date = scr.last_update_date\n          ,tgt.extractors_names = scr.extractors_names\nWHEN NOT MATCHED THEN\nINSERT (table_name,\n        full_delta_indicator,\n        extractors_names,\n        full_load_datetime,\n        delta_load_datetime,\n        inserted_record_count,\n        last_update_date)\nVALUES(scr.table_name,\n       scr.full_delta_indicator,\n       scr.extractors_names,\n       scr.full_load_datetime,\n       scr.delta_load_datetime,\n       scr.inserted_record_count,\n       scr.last_update_date);",
+                        "dialect": "standard",
+                        "mode": "batch",
+                        "dataset": "${StagingDatasetName}",
+                        "table": "layer1_audit_table",
+                        "useCache": "false",
+                        "location": "US",
+                        "rowAsArguments": "false",
+                        "serviceAccountType": "filePath",
+                        "serviceFilePath": "auto-detect"
+                    }
+                },
+                "outputSchema": [
+                    {
+                        "name": "etlSchemaBody",
+                        "schema": ""
+                    }
+                ],
+                "id": "Update-Audit-Table"
+            }
+        ],
+        "schedule": "0 * * * *",
+        "engine": "spark",
+        "numOfRecordsPreview": 100,
+        "description": "plant dimension",
+        "maxConcurrentRuns": 1
+    }
+}

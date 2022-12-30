@@ -1,0 +1,77 @@
+{
+    "name": "TVTWT",
+    "artifact": {
+        "name": "delta-app",
+        "version": "0.4.1",
+        "scope": "SYSTEM"
+    },
+    "config": {
+        "description": "",
+        "connections": [
+            {
+                "from": "SAP Landscape Transformation (SLT)",
+                "to": "BigQuery"
+            }
+        ],
+        "stages": [
+            {
+                "name": "SAP Landscape Transformation (SLT)",
+                "plugin": {
+                    "name": "SapSlt",
+                    "type": "cdcSource",
+                    "artifact": {
+                        "name": "sap-slt-plugins",
+                        "version": "0.5.3-SNAPSHOT",
+                        "scope": "USER"
+                    },
+                    "properties": {
+                        "gcpProjectId": "auto-detect",
+                        "jco.client.lang": "EN",
+                        "suspendSltJob": "true",
+                        "replicateExistingData": "true",
+                        "serviceAccountKey": "auto-detect",
+                        "gcsDataPath": "gs://twin_slt_to_cdf_bucket",
+                        "massTransferId": "01C",
+                        "sapJcoLibGcsPath": "gs://cdf-sap-dependent-files",
+                        "jco.client.ashost": "10.132.0.114",
+                        "jco.client.sysnr": "00",
+                        "jco.client.client": "100",
+                        "jco.client.user": "srinivas",
+                        "jco.client.passwd": "Welcome@11"
+                    }
+                }
+            },
+            {
+                "name": "BigQuery",
+                "plugin": {
+                    "name": "bigquery",
+                    "type": "cdcTarget",
+                    "artifact": {
+                        "name": "bigquery-delta-plugins",
+                        "version": "0.4.2",
+                        "scope": "SYSTEM"
+                    },
+                    "properties": {
+                        "project": "auto-detect",
+                        "serviceAccountKey": "auto-detect",
+                        "stagingBucketLocation": "us",
+                        "loadInterval": "90",
+                        "stagingTablePrefix": "_staging_",
+                        "requireManualDrops": "false",
+                        "datasetName": "slt_raw"
+                    }
+                }
+            }
+        ],
+        "tables": [
+            {
+                "database": "01C",
+                "table": "TVTWT"
+            }
+        ],
+        "offsetBasePath": "gs://df-15645557908403801338-6aii4qk5sui6zllpaizbbqaaaa/delta/",
+        "parallelism": {
+            "numInstances": 1
+        }
+    }
+}
